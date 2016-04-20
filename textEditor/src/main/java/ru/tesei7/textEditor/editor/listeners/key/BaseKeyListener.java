@@ -3,35 +3,43 @@ package ru.tesei7.textEditor.editor.listeners.key;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import ru.tesei7.textEditor.editor.Line;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 
 public class BaseKeyListener implements KeyListener {
 	private SyntaxTextEditor editor;
+	private SyntaxCaret caret;
 
 	public void setEditor(SyntaxTextEditor editor) {
 		this.editor = editor;
+		caret = editor.getCaret();
 	}
-	
+
 	@Override
 	public void keyTyped(KeyEvent e) {
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		Line currentLine = editor.getDocument().getCurrentLine();
 		int code = e.getKeyCode();
 		switch (code) {
 		case KeyEvent.VK_LEFT:
-			currentLine.left();
+			caret.left();
 			editor.repaint();
 			break;
 		case KeyEvent.VK_RIGHT:
-			currentLine.right();
+			caret.right();
+			editor.repaint();
+			break;
+		case KeyEvent.VK_UP:
+			caret.up();
+			editor.repaint();
+			break;
+		case KeyEvent.VK_DOWN:
+			caret.down();
 			editor.repaint();
 			break;
 		}
-		
 	}
 
 	@Override

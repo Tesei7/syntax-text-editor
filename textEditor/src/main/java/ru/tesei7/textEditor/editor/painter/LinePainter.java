@@ -7,9 +7,8 @@ import ru.tesei7.textEditor.editor.Line;
 public class LinePainter {
 
 	public void paint(Graphics g, Line line, int height) {
-		g.drawChars(line.getText(), 0, line.getText().length, 0, height);
-		
-
+		char[] chars = line.getChars();
+		g.drawChars(chars, 0, chars.length, 0, height);
 	}
 
 }

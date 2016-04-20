@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import ru.tesei7.textEditor.editor.Line;
 import ru.tesei7.textEditor.editor.SyntaxDocument;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 
 public class SyntaxDocumentPainter {
 
@@ -18,9 +19,12 @@ public class SyntaxDocumentPainter {
 	private SyntaxTextEditor editor;
 	private SyntaxDocument document;
 
+	private SyntaxCaret caret;
+
 	public void setEditor(SyntaxTextEditor syntaxTextEditor) {
 		this.editor = syntaxTextEditor;
 		document = editor.getDocument();
+		caret = editor.getCaret();
 	}
 
 	public void paint(Graphics g) {
@@ -43,9 +47,9 @@ public class SyntaxDocumentPainter {
 		int ascent = fontMetrics.getAscent();
 		int width = fontMetrics.stringWidth("a");
 
-		Line currentLine = document.getCurrentLine();
-		g.drawRect(currentLine.getOffset() * width, (height - ascent) + (document.getCurrentLineRow()) * height, 0,
-				ascent);
+		int x = caret.getX() * width;
+		int y = (height - ascent) + caret.getY() * height;
+		g.drawRect(x, y, 0, ascent);
 	}
 
 }

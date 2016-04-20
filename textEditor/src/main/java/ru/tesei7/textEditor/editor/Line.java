@@ -3,13 +3,22 @@ package ru.tesei7.textEditor.editor;
 import java.awt.Graphics;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Line {
 	private Line previous;
 	private Line next;
-	private LinkedList<Character> text = new LinkedList<>();
-	private int offset = 0;
+	private List<Character> text = new LinkedList<>();
+	private int offset;
 	private LinkedList<Token> tokens = new LinkedList<>();
+
+	public Line() {
+		offset = 0;
+	}
+
+	public List<Character> getText() {
+		return text;
+	}
 
 	public Line getPrevious() {
 		return previous;
@@ -17,6 +26,10 @@ public class Line {
 
 	public boolean hasPrevious() {
 		return previous != null;
+	}
+
+	public void setPrevious(Line previous) {
+		this.previous = previous;
 	}
 
 	public Line getNext() {
@@ -27,14 +40,22 @@ public class Line {
 		return next != null;
 	}
 
+	public void setNext(Line next) {
+		this.next = next;
+	}
+
 	public LinkedList<Token> getTokens() {
 		return tokens;
 	}
 
-	public char[] getText() {
-		char[] out = new char[text.size()];
-		for (int i = 0; i < out.length; i++) {
-			out[i] = text.get(i);
+	public char[] getChars() {
+		return toPrimitive(text);
+	}
+
+	private char[] toPrimitive(List<Character> list) {
+		char[] out = new char[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			out[i] = list.get(i);
 		}
 		return out;
 	}
@@ -54,21 +75,18 @@ public class Line {
 	}
 
 	public void setOffset(int offset) {
-		this.offset = offset;
-	}
-
-	public void addChar(char c) {
-		if (c == '\n') {
-			addNewLine();
+		if (offset < 0) {
+			this.offset = 0;
+		} else if (offset > text.size()) {
+			this.offset = text.size();
 		} else {
-			text.add(offset, c);
-			offset++;
+			this.offset = offset;
 		}
 	}
 
-	private void addNewLine() {
-		// TODO Auto-generated method stub
-		
+	public void addChar(char c) {
+		text.add(offset, c);
+		offset++;
 	}
 
 	public void deleteChar() {
@@ -88,6 +106,11 @@ public class Line {
 		left();
 	}
 
+	public void setText(List<Character> text) {
+		this.text = new LinkedList<>(text);
+		offset = text.size();
+	}
+
 	public void right() {
 		if (offset < text.size()) {
 			offset++;
@@ -98,6 +121,10 @@ public class Line {
 		if (offset > 0) {
 			offset--;
 		}
+	}
+
+	public int getLenght() {
+		return text.size();
 	}
 
 }

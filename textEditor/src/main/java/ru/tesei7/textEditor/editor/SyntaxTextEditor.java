@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JPanel;
 
+import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 import ru.tesei7.textEditor.editor.listeners.key.BaseKeyListener;
 import ru.tesei7.textEditor.editor.listeners.key.TextKeyListener;
 import ru.tesei7.textEditor.editor.painter.SyntaxDocumentPainter;
@@ -27,6 +28,8 @@ public class SyntaxTextEditor extends JPanel {
 
 	@Inject
 	private SyntaxDocument document;
+	@Inject
+	private SyntaxCaret caret;
 
 	public SyntaxTextEditor() {
 		super();
@@ -42,12 +45,17 @@ public class SyntaxTextEditor extends JPanel {
 		textKeyListener.setEditor(this);
 
 		painter.setEditor(this);
+		caret.setDocument(document);
 		addKeyListener(textKeyListener);
 		addKeyListener(baseKeyListener);
 	}
 
 	public SyntaxDocument getDocument() {
 		return document;
+	}
+
+	public SyntaxCaret getCaret() {
+		return caret;
 	}
 
 	@Override

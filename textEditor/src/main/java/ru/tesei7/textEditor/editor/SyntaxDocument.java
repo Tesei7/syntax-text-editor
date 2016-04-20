@@ -13,6 +13,14 @@ public class SyntaxDocument {
 		currentLine = firstLine;
 	}
 
+	public Line getCurrentLine() {
+		return currentLine;
+	}
+
+	public void setCurrentLine(Line currentLine) {
+		this.currentLine = currentLine;
+	}
+
 	public List<Line> getLines() {
 		List<Line> lines = new ArrayList<>();
 		int rows = 10;
@@ -30,22 +38,39 @@ public class SyntaxDocument {
 		return lines;
 	}
 
-	public Line getCurrentLine() {
-		return currentLine;
-	}
-
 	public int getCurrentLineRow() {
-		int row = 0;
-		Line line = firstLine;
-		while (line.hasNext()) {
-			line = line.getNext();
-			row++;
+		Line tmp = firstLine;
+		for (int i=0; i<10;i++) {
+			if (tmp.equals(currentLine)){
+				return i;
+			}
+			if (!tmp.hasNext()){
+				break;
+			}
+			tmp = tmp.getNext();
 		}
-		return row;
+		return -1;
 	}
 
 	public void addChar(char c) {
-		currentLine.addChar(c);
+		if (c == '\n') {
+			addNewLine();
+		} else {
+			currentLine.addChar(c);
+		}
+	}
+
+	private void addNewLine() {
+		Line newLine = new Line();
+		newLine.setPrevious(currentLine);
+		newLine.setNext(currentLine.getNext());
+		currentLine.setNext(newLine);
+
+		int offset = currentLine.getOffset();
+		List<Character> curLineText = currentLine.getText();
+		newLine.setText(curLineText.subList(offset, curLineText.size()));
+		currentLine.setText(curLineText.subList(0, offset));
+		currentLine = newLine;
 	}
 
 	public void backspaceChar() {
