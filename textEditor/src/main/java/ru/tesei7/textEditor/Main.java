@@ -1,37 +1,20 @@
 package ru.tesei7.textEditor;
 
-import java.awt.FlowLayout;
-
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-
-import ru.tesei7.textEditor.app.MenuApplication;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 
 public class Main {
 
 	public static void main(String[] args) {
+		Weld weld = new Weld();
+		WeldContainer container = weld.initialize();
+		Application application = container.instance().select(Application.class).get();
+
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				createAndShowGUI();
+				application.createAndShowGUI();
 			}
 		});
 	}
 
-	protected static void createAndShowGUI() {
-		//let the ui manager know of our component
-		// the value must be the fully qualified classname
-		UIManager.put("SyntaxTextEditorUI", "ru.tesei7.textEditor.editor.SyntaxTextEditorUI");
-		// Create and set up the window.
-		JFrame frame = new JFrame("Text Editor");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new FlowLayout());
-		frame.setSize(800, 600);
-				
-		//Create and set up the content pane.
-        MenuApplication app = new MenuApplication();
-        frame.setJMenuBar(app.createMenuBar());
-        frame.setContentPane(app.createContentPane());
-		frame.setVisible(true);
-//		frame.pack();
-	}
 }

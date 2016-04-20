@@ -9,7 +9,6 @@ import java.util.Set;
 public class SyntaxDocument {
 
 	private LinkedList<Line> lines = new LinkedList<>();
-	private LinkedHashMap<Integer, Line> demaged = new LinkedHashMap<>();
 	private Line currentLine;
 
 	public SyntaxDocument() {
@@ -21,21 +20,15 @@ public class SyntaxDocument {
 		return lines;
 	}
 
-	public LinkedHashMap<Integer, Line> getDemaged() {
-		return demaged;
-	}
-	
 	public Line getCurrentLine() {
 		return currentLine;
 	}
 	
 	public void addChar(char c) {
-		demaged.put(lines.indexOf(currentLine), currentLine);
 		currentLine.addChar(c);
 	}
 
 	public void backspaceChar() {
-		demaged.put(lines.indexOf(currentLine), currentLine);
 		currentLine.backspaceChar();
 	}
 

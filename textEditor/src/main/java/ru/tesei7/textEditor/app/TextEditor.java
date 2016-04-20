@@ -2,31 +2,26 @@ package ru.tesei7.textEditor.app;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
+import javax.inject.Inject;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
-
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
 
 import ru.tesei7.textEditor.app.menuActions.LoadFileService;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 
-public class MenuApplication implements ActionListener {
-	private LoadFileService loadFileService = new LoadFileService();
+public class TextEditor implements ActionListener {
+	@Inject
+	private LoadFileService loadFileService;
+	@Inject
 	private SyntaxTextEditor textArea;
-	private JScrollPane scrollPane;
 
 	public JMenuBar createMenuBar() {
 		
@@ -56,19 +51,7 @@ public class MenuApplication implements ActionListener {
 		// Create the content-pane-to-be.
 		JPanel contentPane = new JPanel(new BorderLayout());
 		contentPane.setOpaque(true);
-
-		// Create a scrolled text area.
-//		textArea = new RSyntaxTextArea(40, 120);
-//		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-//		textArea.setCodeFoldingEnabled(true);
-		textArea = new SyntaxTextEditor();
-//		scrollPane = new RTextScrollPane(textArea);
-		scrollPane = new JScrollPane(textArea);
-//		scrollPane.setBounds(50, 30, 300, 50);
-
-		// Add the text area to the content pane.
-		contentPane.add(scrollPane, BorderLayout.CENTER);
-//		contentPane.setPreferredSize(new Dimension(500, 400));
+		contentPane.add(textArea, BorderLayout.CENTER);
 		return contentPane;
 	}
 

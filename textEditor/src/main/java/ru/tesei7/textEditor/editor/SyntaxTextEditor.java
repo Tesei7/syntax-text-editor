@@ -4,28 +4,16 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Map.Entry;
 
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 
 import ru.tesei7.textEditor.editor.text.BaseKeyListener;
 import ru.tesei7.textEditor.editor.text.SCaret;
 import ru.tesei7.textEditor.editor.utils.FontUtils;
 
 public class SyntaxTextEditor extends JPanel implements KeyListener {
-	private final static String ID = "SyntaxTextEditorUI";
-	
-	@Override
-	public void updateUI() {
-		setUI(UIManager.getUI(this));
-	}
+	private static final long serialVersionUID = 1485541136343010484L;
 
-	@Override
-	public String getUIClassID() {
-		return ID;
-	}
-	
 	protected FontUtils fontUtils = new FontUtils();
 	
 	private SyntaxDocument document = new SyntaxDocument();
@@ -33,7 +21,6 @@ public class SyntaxTextEditor extends JPanel implements KeyListener {
 
 	public SyntaxTextEditor() {
 		super();
-		setSize(400, 20000);
 		setFocusable(true);
 		addKeyListener(this);
 		addKeyListener(new BaseKeyListener(this));
