@@ -20,7 +20,7 @@ public class Main {
 	protected static void createAndShowGUI() {
 		//let the ui manager know of our component
 		// the value must be the fully qualified classname
-		UIManager.put("SyntaxTextEditorUI", "ru.tesei7.textEditor.editor.ui.SyntaxTextEditorUI");
+		UIManager.put("SyntaxTextEditorUI", "ru.tesei7.textEditor.editor.SyntaxTextEditorUI");
 		// Create and set up the window.
 		JFrame frame = new JFrame("Text Editor");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
