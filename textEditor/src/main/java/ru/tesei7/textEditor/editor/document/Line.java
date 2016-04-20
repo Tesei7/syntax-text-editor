@@ -1,7 +1,5 @@
-package ru.tesei7.textEditor.editor;
+package ru.tesei7.textEditor.editor.document;
 
-import java.awt.Graphics;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,9 +14,7 @@ public class Line {
 		offset = 0;
 	}
 
-	public List<Character> getText() {
-		return text;
-	}
+	// Prev/Next
 
 	public Line getPrevious() {
 		return previous;
@@ -48,6 +44,21 @@ public class Line {
 		return tokens;
 	}
 
+	// Text
+
+	public List<Character> getText() {
+		return text;
+	}
+
+	public void setText(List<Character> text) {
+		this.text = new LinkedList<>(text);
+		offset = text.size();
+	}
+
+	public int getLenght() {
+		return text.size();
+	}
+
 	public char[] getChars() {
 		return toPrimitive(text);
 	}
@@ -60,15 +71,17 @@ public class Line {
 		return out;
 	}
 
-	public void paint(Graphics g, int row) {
-		int offset = 0;
-		for (Iterator<Token> iterator = tokens.iterator(); iterator.hasNext();) {
-			Token token = (Token) iterator.next();
-			char[] text = token.getText();
-			g.drawChars(text, offset, text.length, 0, 17 * (row + 1));
-			offset += text.length;
-		}
-	}
+	// public void paint(Graphics g, int row) {
+	// int offset = 0;
+	// for (Iterator<Token> iterator = tokens.iterator(); iterator.hasNext();) {
+	// Token token = (Token) iterator.next();
+	// char[] text = token.getText();
+	// g.drawChars(text, offset, text.length, 0, 17 * (row + 1));
+	// offset += text.length;
+	// }
+	// }
+
+	// Offset
 
 	public int getOffset() {
 		return offset;
@@ -82,49 +95,6 @@ public class Line {
 		} else {
 			this.offset = offset;
 		}
-	}
-
-	public void addChar(char c) {
-		text.add(offset, c);
-		offset++;
-	}
-
-	public void deleteChar() {
-		if (offset == text.size()) {
-			// TODO concat lines
-			return;
-		}
-		text.remove(offset - 1);
-	}
-
-	public void backspaceChar() {
-		if (offset == 0) {
-			// TODO concat lines
-			return;
-		}
-		text.remove(offset - 1);
-		left();
-	}
-
-	public void setText(List<Character> text) {
-		this.text = new LinkedList<>(text);
-		offset = text.size();
-	}
-
-	public void right() {
-		if (offset < text.size()) {
-			offset++;
-		}
-	}
-
-	public void left() {
-		if (offset > 0) {
-			offset--;
-		}
-	}
-
-	public int getLenght() {
-		return text.size();
 	}
 
 }

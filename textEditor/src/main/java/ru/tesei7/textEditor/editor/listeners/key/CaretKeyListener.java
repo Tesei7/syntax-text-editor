@@ -6,7 +6,7 @@ import java.awt.event.KeyListener;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 
-public class BaseKeyListener implements KeyListener {
+public class CaretKeyListener implements KeyListener {
 	private SyntaxTextEditor editor;
 	private SyntaxCaret caret;
 
@@ -37,6 +37,14 @@ public class BaseKeyListener implements KeyListener {
 			break;
 		case KeyEvent.VK_DOWN:
 			caret.down();
+			editor.repaint();
+			break;
+		case KeyEvent.VK_HOME:
+			caret.home();
+			editor.repaint();
+			break;
+		case KeyEvent.VK_END:
+			caret.end();
 			editor.repaint();
 			break;
 		}

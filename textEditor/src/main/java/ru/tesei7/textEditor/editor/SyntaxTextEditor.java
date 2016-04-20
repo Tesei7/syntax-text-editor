@@ -8,7 +8,8 @@ import javax.inject.Inject;
 import javax.swing.JPanel;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
-import ru.tesei7.textEditor.editor.listeners.key.BaseKeyListener;
+import ru.tesei7.textEditor.editor.document.SyntaxDocument;
+import ru.tesei7.textEditor.editor.listeners.key.CaretKeyListener;
 import ru.tesei7.textEditor.editor.listeners.key.TextKeyListener;
 import ru.tesei7.textEditor.editor.painter.SyntaxDocumentPainter;
 import ru.tesei7.textEditor.editor.utils.FontUtils;
@@ -19,7 +20,7 @@ public class SyntaxTextEditor extends JPanel {
 	@Inject
 	protected FontUtils fontUtils;
 	@Inject
-	protected BaseKeyListener baseKeyListener;
+	protected CaretKeyListener baseKeyListener;
 	@Inject
 	protected TextKeyListener textKeyListener;
 

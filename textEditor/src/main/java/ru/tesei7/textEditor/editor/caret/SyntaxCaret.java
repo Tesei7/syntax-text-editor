@@ -2,8 +2,8 @@ package ru.tesei7.textEditor.editor.caret;
 
 import javax.annotation.PostConstruct;
 
-import ru.tesei7.textEditor.editor.Line;
-import ru.tesei7.textEditor.editor.SyntaxDocument;
+import ru.tesei7.textEditor.editor.document.Line;
+import ru.tesei7.textEditor.editor.document.SyntaxDocument;
 
 public class SyntaxCaret {
 
@@ -26,23 +26,29 @@ public class SyntaxCaret {
 	public void setType(CaretType type) {
 		this.type = type;
 	}
-	
-	public int getX(){
+
+	public int getX() {
 		return document.getCurrentLine().getOffset();
 	}
-	
-	public int getY(){
+
+	public int getY() {
 		return document.getCurrentLineRow();
 	}
-	
+
 	public void left() {
 		Line currentLine = document.getCurrentLine();
-		currentLine.left();
+		int offset = currentLine.getOffset();
+		if (offset > 0) {
+			currentLine.setOffset(offset - 1);
+		}
 	}
 
 	public void right() {
 		Line currentLine = document.getCurrentLine();
-		currentLine.right();
+		int offset = currentLine.getOffset();
+		if (offset < currentLine.getLenght()) {
+			currentLine.setOffset(offset + 1);
+		}
 	}
 
 	public void up() {
@@ -64,12 +70,12 @@ public class SyntaxCaret {
 		next.setOffset(currentLine.getOffset());
 		document.setCurrentLine(next);
 	}
-	
+
 	public void home() {
 		Line currentLine = document.getCurrentLine();
 		currentLine.setOffset(0);
 	}
-	
+
 	public void end() {
 		Line currentLine = document.getCurrentLine();
 		currentLine.setOffset(currentLine.getLenght());

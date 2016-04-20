@@ -1,4 +1,4 @@
-package ru.tesei7.textEditor.editor;
+package ru.tesei7.textEditor.editor.document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,31 +50,6 @@ public class SyntaxDocument {
 			tmp = tmp.getNext();
 		}
 		return -1;
-	}
-
-	public void addChar(char c) {
-		if (c == '\n') {
-			addNewLine();
-		} else {
-			currentLine.addChar(c);
-		}
-	}
-
-	private void addNewLine() {
-		Line newLine = new Line();
-		newLine.setPrevious(currentLine);
-		newLine.setNext(currentLine.getNext());
-		currentLine.setNext(newLine);
-
-		int offset = currentLine.getOffset();
-		List<Character> curLineText = currentLine.getText();
-		newLine.setText(curLineText.subList(offset, curLineText.size()));
-		currentLine.setText(curLineText.subList(0, offset));
-		currentLine = newLine;
-	}
-
-	public void backspaceChar() {
-		currentLine.backspaceChar();
 	}
 
 }

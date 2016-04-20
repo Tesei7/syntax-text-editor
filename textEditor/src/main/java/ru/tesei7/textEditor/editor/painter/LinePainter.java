@@ -2,7 +2,7 @@ package ru.tesei7.textEditor.editor.painter;
 
 import java.awt.Graphics;
 
-import ru.tesei7.textEditor.editor.Line;
+import ru.tesei7.textEditor.editor.document.Line;
 
 public class LinePainter {
 

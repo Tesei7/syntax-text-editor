@@ -6,10 +6,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import ru.tesei7.textEditor.editor.Line;
-import ru.tesei7.textEditor.editor.SyntaxDocument;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
+import ru.tesei7.textEditor.editor.document.Line;
+import ru.tesei7.textEditor.editor.document.SyntaxDocument;
 
 public class SyntaxDocumentPainter {
 
