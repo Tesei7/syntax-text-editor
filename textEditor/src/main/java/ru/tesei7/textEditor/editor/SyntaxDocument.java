@@ -1,29 +1,49 @@
 package ru.tesei7.textEditor.editor;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SyntaxDocument {
 
-	private LinkedList<Line> lines = new LinkedList<>();
+	private Line firstLine;
 	private Line currentLine;
 
 	public SyntaxDocument() {
-		currentLine = new Line();
-		lines.add(currentLine);
+		firstLine = new Line();
+		currentLine = firstLine;
 	}
 
-	public LinkedList<Line> getLines() {
+	public List<Line> getLines() {
+		List<Line> lines = new ArrayList<>();
+		int rows = 10;
+		Line line = firstLine;
+		do {
+			lines.add(line);
+			if (!line.hasNext()) {
+				break;
+			} else {
+				line = line.getNext();
+				rows--;
+			}
+
+		} while (rows > 0);
 		return lines;
 	}
 
 	public Line getCurrentLine() {
 		return currentLine;
 	}
-	
+
+	public int getCurrentLineRow() {
+		int row = 0;
+		Line line = firstLine;
+		while (line.hasNext()) {
+			line = line.getNext();
+			row++;
+		}
+		return row;
+	}
+
 	public void addChar(char c) {
 		currentLine.addChar(c);
 	}

@@ -5,12 +5,38 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Line {
-	private LinkedList<Token> tokens = new LinkedList<>();
+	private Line previous;
+	private Line next;
 	private LinkedList<Character> text = new LinkedList<>();
 	private int offset = 0;
+	private LinkedList<Token> tokens = new LinkedList<>();
+
+	public Line getPrevious() {
+		return previous;
+	}
+
+	public boolean hasPrevious() {
+		return previous != null;
+	}
+
+	public Line getNext() {
+		return next;
+	}
+
+	public boolean hasNext() {
+		return next != null;
+	}
 
 	public LinkedList<Token> getTokens() {
 		return tokens;
+	}
+
+	public char[] getText() {
+		char[] out = new char[text.size()];
+		for (int i = 0; i < out.length; i++) {
+			out[i] = text.get(i);
+		}
+		return out;
 	}
 
 	public void paint(Graphics g, int row) {
@@ -32,28 +58,43 @@ public class Line {
 	}
 
 	public void addChar(char c) {
-		text.add(offset, c);
-		offset++;
+		if (c == '\n') {
+			addNewLine();
+		} else {
+			text.add(offset, c);
+			offset++;
+		}
+	}
+
+	private void addNewLine() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void deleteChar() {
-		if (offset < 0 || offset >= text.size()) {
-			offset = text.size();
+		if (offset == text.size()) {
+			// TODO concat lines
+			return;
 		}
-		text.remove(offset);
+		text.remove(offset - 1);
 	}
 
 	public void backspaceChar() {
-		text.remove(offset);
+		if (offset == 0) {
+			// TODO concat lines
+			return;
+		}
+		text.remove(offset - 1);
+		left();
 	}
 
-	public void left() {
+	public void right() {
 		if (offset < text.size()) {
 			offset++;
 		}
 	}
 
-	public void right() {
+	public void left() {
 		if (offset > 0) {
 			offset--;
 		}
