@@ -21,7 +21,7 @@ public class SyntaxDocument {
 		this.currentLine = currentLine;
 	}
 
-	public List<Line> getLines() {
+	public List<Line> getVisibleLines() {
 		List<Line> lines = new ArrayList<>();
 		int rows = 10;
 		Line line = firstLine;
@@ -38,7 +38,7 @@ public class SyntaxDocument {
 		return lines;
 	}
 
-	public int getCurrentLineRow() {
+	public int getCurrentLineY() {
 		Line tmp = firstLine;
 		for (int i=0; i<10;i++) {
 			if (tmp.equals(currentLine)){

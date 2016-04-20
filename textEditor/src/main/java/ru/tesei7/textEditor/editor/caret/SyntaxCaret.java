@@ -1,5 +1,7 @@
 package ru.tesei7.textEditor.editor.caret;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import ru.tesei7.textEditor.editor.document.Line;
@@ -32,53 +34,55 @@ public class SyntaxCaret {
 	}
 
 	public int getY() {
-		return document.getCurrentLineRow();
+		return document.getCurrentLineY();
+	}
+
+	public void setX(int x) {
+		Line currentLine = document.getCurrentLine();
+		if (x < 0) {
+			x = 0;
+		}
+		if (x > currentLine.getLenght()) {
+			x = currentLine.getLenght();
+		}
+		currentLine.setOffset(x);
+	}
+
+	public void setY(int y) {
+		if (y < 0 || y > 10) {
+			return;
+		}
+		List<Line> visibleLines = document.getVisibleLines();
+		if (y > visibleLines.size() - 1) {
+			return;
+		}
+		int offset = document.getCurrentLine().getOffset();
+		document.setCurrentLine(visibleLines.get(y));
+		document.getCurrentLine().setOffset(offset);
 	}
 
 	public void left() {
-		Line currentLine = document.getCurrentLine();
-		int offset = currentLine.getOffset();
-		if (offset > 0) {
-			currentLine.setOffset(offset - 1);
-		}
+		setX(getX() - 1);
 	}
 
 	public void right() {
-		Line currentLine = document.getCurrentLine();
-		int offset = currentLine.getOffset();
-		if (offset < currentLine.getLenght()) {
-			currentLine.setOffset(offset + 1);
-		}
+		setX(getX() + 1);
 	}
 
 	public void up() {
-		Line currentLine = document.getCurrentLine();
-		if (!currentLine.hasPrevious()) {
-			return;
-		}
-		Line previous = currentLine.getPrevious();
-		previous.setOffset(currentLine.getOffset());
-		document.setCurrentLine(previous);
+		setY(getY() - 1);
 	}
 
 	public void down() {
-		Line currentLine = document.getCurrentLine();
-		if (!currentLine.hasNext()) {
-			return;
-		}
-		Line next = currentLine.getNext();
-		next.setOffset(currentLine.getOffset());
-		document.setCurrentLine(next);
+		setY(getY() + 1);
 	}
 
 	public void home() {
-		Line currentLine = document.getCurrentLine();
-		currentLine.setOffset(0);
+		setX(0);
 	}
 
 	public void end() {
-		Line currentLine = document.getCurrentLine();
-		currentLine.setOffset(currentLine.getLenght());
+		setX(document.getCurrentLine().getLenght());
 	}
 
 }

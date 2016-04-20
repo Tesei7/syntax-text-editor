@@ -35,7 +35,7 @@ public class SyntaxDocumentPainter {
 	private void paintLines(Graphics g) {
 		int rowHeight = g.getFontMetrics().getHeight();
 
-		List<Line> lines = document.getLines();
+		List<Line> lines = document.getVisibleLines();
 		for (int i = 0; i < lines.size(); i++) {
 			linePainter.paint(g, lines.get(i), rowHeight * (i + 1));
 		}
@@ -49,7 +49,7 @@ public class SyntaxDocumentPainter {
 
 		int x = caret.getX() * width;
 		int y = (height - ascent) + caret.getY() * height;
-		g.drawRect(x, y, 0, ascent);
+		g.fillRect(x, y, 2, ascent);
 	}
 
 }
