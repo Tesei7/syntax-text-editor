@@ -21,9 +21,7 @@ public class SyntaxDocumentEditor {
 		if (c == '\n') {
 			addNewLine();
 		} else {
-			Line currentLine = document.getCurrentLine();
-			lineEditor.setLine(currentLine);
-			lineEditor.printChar(c);
+			lineEditor.printChar(c, document.getCurrentLine());
 		}
 	}
 
@@ -39,26 +37,43 @@ public class SyntaxDocumentEditor {
 		newLine.setText(curLineText.subList(offset, curLineText.size()));
 		currentLine.setText(curLineText.subList(0, offset));
 		document.setCurrentLine(newLine);
+		newLine.setOffset(0);
 	}
 
 	public void delete() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == currentLine.getLenght()) {
-			// TODO concat lines
+			concatLines(currentLine, currentLine.getNext());
 			return;
+		} else {
+			lineEditor.delete(currentLine);
 		}
-		
-		lineEditor.setLine(currentLine);
-		lineEditor.delete();
 	}
 
 	public void backspace() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == 0) {
-			// TODO concat lines
+			concatLines(currentLine.getPrevious(), currentLine);
+			return;
+		} else {
+			lineEditor.backspace(currentLine);
+		}
+	}
+
+	private void concatLines(Line l1, Line l2) {
+		if (l1 == null || l2 == null) {
 			return;
 		}
-		lineEditor.setLine(currentLine);
-		lineEditor.backspace();
+		if (!l1.hasNext() || !l1.getNext().equals(l2)){
+			return;
+		}
+
+		Line next = l2.getNext();
+		l1.setNext(next);
+		if (next != null) {
+			next.setPrevious(l1);
+		}
+		l1.getText().addAll(l2.getText());
+		document.setCurrentLine(l1);
 	}
 }
