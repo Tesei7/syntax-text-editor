@@ -32,13 +32,8 @@ public class SyntaxDocumentPainter {
 
 		List<Line> lines = document.getVisibleLines();
 		for (int i = 0; i < lines.size(); i++) {
-			linePainter.paint(g, lines.get(i), 
-//					0
-					rowHeight * (i + 1) - descent
-					);
+			linePainter.paint(g, lines.get(i), rowHeight * (i + 1) - descent);
 		}
 	}
-
-	
 
 }

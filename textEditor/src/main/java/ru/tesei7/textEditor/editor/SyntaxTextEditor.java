@@ -72,8 +72,8 @@ public class SyntaxTextEditor extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		documentPainter.paint(g);
 		caretPainter.paint(g);
+		documentPainter.paint(g);
 	}
 
 	public String getText() {

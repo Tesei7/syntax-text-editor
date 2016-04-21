@@ -91,5 +91,9 @@ public class SyntaxCaret {
 	Line getCurrentLine() {
 		return document.getCurrentLine();
 	}
+	
+	public int getCols(){
+		return editor.getCols();
+	}
 
 }
