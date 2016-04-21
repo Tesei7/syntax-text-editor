@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 import ru.tesei7.textEditor.editor.document.SyntaxDocument;
@@ -18,6 +19,9 @@ public class SyntaxTextEditor extends JPanel {
 	private static final long serialVersionUID = 1485541136343010484L;
 
 	@Inject
+	private SyntaxDocument document;
+	
+	@Inject
 	protected FontUtils fontUtils;
 	@Inject
 	protected CaretKeyListener baseKeyListener;
@@ -26,18 +30,17 @@ public class SyntaxTextEditor extends JPanel {
 
 	@Inject
 	protected SyntaxDocumentPainter painter;
-
-	@Inject
-	private SyntaxDocument document;
 	@Inject
 	private SyntaxCaret caret;
+	@Inject
+	private SyntaxDocumentIO io;
 
 	public SyntaxTextEditor() {
 		super();
 	}
-
+	
 	@PostConstruct
-	public void init() {
+	public void init(){
 		setFocusable(true);
 		setFocusTraversalKeysEnabled(false);
 		setBackground(Color.WHITE);
@@ -48,6 +51,7 @@ public class SyntaxTextEditor extends JPanel {
 
 		painter.setEditor(this);
 		caret.setDocument(document);
+		io.setDocument(document);
 		addKeyListener(textKeyListener);
 		addKeyListener(baseKeyListener);
 	}
@@ -64,6 +68,15 @@ public class SyntaxTextEditor extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		painter.paint(g);
+	}
+	
+	public String getText(){
+		return io.getText();
+	}
+	
+	public void setText(String text){
+		io.setText(text);
+		repaint();
 	}
 
 }

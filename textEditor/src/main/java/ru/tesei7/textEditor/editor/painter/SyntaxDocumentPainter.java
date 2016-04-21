@@ -12,7 +12,7 @@ import ru.tesei7.textEditor.editor.document.Line;
 import ru.tesei7.textEditor.editor.document.SyntaxDocument;
 
 public class SyntaxDocumentPainter {
-
+	
 	@Inject
 	private LinePainter linePainter;
 

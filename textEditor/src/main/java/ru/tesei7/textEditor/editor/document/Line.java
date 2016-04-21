@@ -61,15 +61,15 @@ public class Line {
 	public int getLenght() {
 		return text.size();
 	}
-
+	
 	public char[] getChars() {
 		return toPrimitive(text);
 	}
 
-	private char[] toPrimitive(List<Character> list) {
+	public char[] getCharsToShow() {
 		ArrayList<Character> out = new ArrayList<>();
-		for (int i = 0; i < list.size(); i++) {
-			Character character = list.get(i);
+		for (int i = 0; i < text.size(); i++) {
+			Character character = text.get(i);
 			if (character.equals('\t')) {
 				out.add(' ');
 				out.add(' ');
@@ -79,7 +79,11 @@ public class Line {
 				out.add(character);
 			}
 		}
-		Character[] array = out.toArray(new Character[0]);
+		return toPrimitive(out);
+	}
+
+	private char[] toPrimitive(List<Character> list) {
+		Character[] array = list.toArray(new Character[0]);
 		return ArrayUtils.toPrimitive(array);
 	}
 

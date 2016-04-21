@@ -1,6 +1,7 @@
 package ru.tesei7.textEditor.app;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,29 +14,28 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.border.EmptyBorder;
 
-import ru.tesei7.textEditor.app.menuActions.LoadFileService;
+import ru.tesei7.textEditor.app.menuActions.SaveLoadFileService;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 
 public class TextEditor implements ActionListener {
 	@Inject
-	private LoadFileService loadFileService;
+	private SaveLoadFileService saveLoadFileService;
 	@Inject
 	private SyntaxTextEditor textArea;
+	private JPanel contentPane;
 
 	public JMenuBar createMenuBar() {
-		
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("File");
 		menuBar.add(menu);
 		JMenuItem openItem = new JMenuItem(MenuActions.OPEN, KeyEvent.VK_O);
-		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
-				InputEvent.CTRL_DOWN_MASK));
+		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
 		openItem.addActionListener(this);
 		menu.add(openItem);
 		JMenuItem saveItem = new JMenuItem(MenuActions.SAVE, KeyEvent.VK_S);
-		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-				InputEvent.CTRL_DOWN_MASK));
+		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		saveItem.addActionListener(this);
 		menu.add(saveItem);
 
@@ -48,9 +48,14 @@ public class TextEditor implements ActionListener {
 	}
 
 	public Container createContentPane() {
-		// Create the content-pane-to-be.
-		JPanel contentPane = new JPanel(new BorderLayout());
+		contentPane = new JPanel(new BorderLayout());
 		contentPane.setOpaque(true);
+		contentPane.setBackground(Color.WHITE);
+		contentPane.setBorder(new EmptyBorder(0, 5, 0, 0));
+		textArea.setText("sdfg^$(*dfgdsfgfdg\n"
+				+ "dsfsgg  435sdfgsdfg\n"
+				+ "45	36jhj\n"
+				+ "\n");
 		contentPane.add(textArea, BorderLayout.CENTER);
 		return contentPane;
 	}
@@ -62,13 +67,10 @@ public class TextEditor implements ActionListener {
 			System.exit(0);
 			break;
 		case MenuActions.OPEN:
-			String text = loadFileService.loadFileAsText();
-//			textArea.append(text);
+			String text = saveLoadFileService.loadFileAsText(contentPane);
+			textArea.setText(text);
 			break;
 		case MenuActions.SAVE:
-			System.exit(0);
-			break;
-		default:
 			break;
 		}
 	}

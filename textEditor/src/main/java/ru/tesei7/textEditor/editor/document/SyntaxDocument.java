@@ -6,11 +6,17 @@ import java.util.List;
 public class SyntaxDocument {
 
 	private Line firstLine;
+	private Line firstVisibleLine;
 	private Line currentLine;
 
 	public SyntaxDocument() {
 		firstLine = new Line();
-		currentLine = firstLine;
+		firstVisibleLine = firstLine;
+		currentLine = firstVisibleLine;
+	}
+	
+	public Line getFirstLine() {
+		return firstLine;
 	}
 
 	public Line getCurrentLine() {
@@ -24,7 +30,7 @@ public class SyntaxDocument {
 	public List<Line> getVisibleLines() {
 		List<Line> lines = new ArrayList<>();
 		int rows = 10;
-		Line line = firstLine;
+		Line line = firstVisibleLine;
 		do {
 			lines.add(line);
 			if (!line.hasNext()) {
@@ -39,7 +45,7 @@ public class SyntaxDocument {
 	}
 
 	public int getCurrentLineY() {
-		Line tmp = firstLine;
+		Line tmp = firstVisibleLine;
 		for (int i=0; i<10;i++) {
 			if (tmp.equals(currentLine)){
 				return i;
