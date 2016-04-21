@@ -3,16 +3,23 @@ package ru.tesei7.textEditor.editor.document;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.tesei7.textEditor.editor.SyntaxTextEditor;
+
 public class SyntaxDocument {
 
 	private Line firstLine;
 	private Line firstVisibleLine;
 	private Line currentLine;
+	private SyntaxTextEditor editor;
 
 	public SyntaxDocument() {
 		firstLine = new Line();
 		firstVisibleLine = firstLine;
 		currentLine = firstVisibleLine;
+	}
+	
+	public void setEditor(SyntaxTextEditor editor){
+		this.editor = editor;
 	}
 	
 	public Line getFirstLine() {
@@ -29,7 +36,7 @@ public class SyntaxDocument {
 
 	public List<Line> getVisibleLines() {
 		List<Line> lines = new ArrayList<>();
-		int rows = 10;
+		int rows = editor.getRows();
 		Line line = firstVisibleLine;
 		do {
 			lines.add(line);
@@ -46,7 +53,7 @@ public class SyntaxDocument {
 
 	public int getCurrentLineY() {
 		Line tmp = firstVisibleLine;
-		for (int i=0; i<10;i++) {
+		for (int i=0; i<editor.getRows();i++) {
 			if (tmp.equals(currentLine)){
 				return i;
 			}

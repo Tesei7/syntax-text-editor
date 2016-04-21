@@ -14,6 +14,7 @@ public class SyntaxCaret {
 	private CaretType type;
 	private SyntaxDocument document;
 	private SyntaxDocumentPainter painter;
+	private SyntaxTextEditor editor;
 
 	@PostConstruct
 	public void init() {
@@ -21,6 +22,7 @@ public class SyntaxCaret {
 	}
 
 	public void setEditor(SyntaxTextEditor editor) {
+		this.editor = editor;
 		this.document = editor.getDocument();
 		this.painter = editor.getPainter();
 	}
@@ -53,7 +55,7 @@ public class SyntaxCaret {
 	}
 
 	public void setY(int y) {
-		if (y < 0 || y > 10) {
+		if (y < 0 || y > editor.getRows()) {
 			return;
 		}
 		List<Line> visibleLines = document.getVisibleLines();

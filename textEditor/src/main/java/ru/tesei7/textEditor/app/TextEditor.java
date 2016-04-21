@@ -3,6 +3,7 @@ package ru.tesei7.textEditor.app;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -49,12 +50,12 @@ public class TextEditor implements ActionListener {
 	}
 
 	public Container createContentPane() {
-		contentPane = new JPanel(new BorderLayout());
+		contentPane = new JPanel(new FlowLayout());
 		contentPane.setOpaque(true);
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(0, 5, 0, 0));
 		textArea.setText("\n\nsdfg^$(*dfgdsfgfdg\n\n\n" + "dsfsgg  435sdfgsdfg\n" + "45	36jhj\n" + "\n");
-		contentPane.add(textArea, BorderLayout.CENTER);
+		contentPane.add(textArea);
 		return contentPane;
 	}
 
