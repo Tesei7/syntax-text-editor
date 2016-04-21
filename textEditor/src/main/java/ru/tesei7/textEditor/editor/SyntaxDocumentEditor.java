@@ -25,7 +25,7 @@ public class SyntaxDocumentEditor {
 		}
 	}
 
-	private void addNewLine() {
+	void addNewLine() {
 		Line currentLine = document.getCurrentLine();
 		Line newLine = new Line();
 		newLine.setPrevious(currentLine);
@@ -44,7 +44,6 @@ public class SyntaxDocumentEditor {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == currentLine.getLenght()) {
 			concatLines(currentLine, currentLine.getNext());
-			return;
 		} else {
 			lineEditor.delete(currentLine);
 		}
@@ -54,13 +53,12 @@ public class SyntaxDocumentEditor {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == 0) {
 			concatLines(currentLine.getPrevious(), currentLine);
-			return;
 		} else {
 			lineEditor.backspace(currentLine);
 		}
 	}
 
-	private void concatLines(Line l1, Line l2) {
+	void concatLines(Line l1, Line l2) {
 		if (l1 == null || l2 == null) {
 			return;
 		}
