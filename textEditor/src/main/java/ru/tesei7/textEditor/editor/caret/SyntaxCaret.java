@@ -4,21 +4,25 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.document.Line;
 import ru.tesei7.textEditor.editor.document.SyntaxDocument;
+import ru.tesei7.textEditor.editor.painter.SyntaxDocumentPainter;
 
 public class SyntaxCaret {
 
 	private CaretType type;
-	public SyntaxDocument document;
+	private SyntaxDocument document;
+	private SyntaxDocumentPainter painter;
 
 	@PostConstruct
 	public void init() {
 		type = CaretType.NORMAL;
 	}
 
-	public void setDocument(SyntaxDocument document) {
-		this.document = document;
+	public void setEditor(SyntaxTextEditor editor) {
+		this.document = editor.getDocument();
+		this.painter = editor.getPainter();
 	}
 
 	public CaretType getType() {
@@ -31,20 +35,6 @@ public class SyntaxCaret {
 
 	public int getX() {
 		return document.getCurrentLine().getOffset();
-	}
-
-	public int getXToPaint() {
-		int x = 0;
-		Line currentLine = document.getCurrentLine();
-		for (int i = 0; i < currentLine.getOffset(); i++) {
-			Character c = currentLine.getText().get(i);
-			if (c.equals('\t')) {
-				x += 4;
-			} else {
-				x += 1;
-			}
-		}
-		return x;
 	}
 
 	public int getY() {
@@ -70,9 +60,9 @@ public class SyntaxCaret {
 		if (y > visibleLines.size() - 1) {
 			return;
 		}
-		int offset = document.getCurrentLine().getOffset();
-		document.setCurrentLine(visibleLines.get(y));
-		document.getCurrentLine().setOffset(offset);
+		Line targetLine = visibleLines.get(y);
+		targetLine.setOffset(painter.getTargetLineOffset(targetLine));
+		document.setCurrentLine(targetLine);
 	}
 
 	public void left() {
@@ -97,6 +87,10 @@ public class SyntaxCaret {
 
 	public void end() {
 		setX(document.getCurrentLine().getLenght());
+	}
+
+	public Line getCurrentLine() {
+		return document.getCurrentLine();
 	}
 
 }

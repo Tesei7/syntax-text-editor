@@ -1,34 +1,33 @@
 package ru.tesei7.textEditor.editor.painter;
 
-import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
-import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 import ru.tesei7.textEditor.editor.document.Line;
 import ru.tesei7.textEditor.editor.document.SyntaxDocument;
 
 public class SyntaxDocumentPainter {
-	
+
 	@Inject
 	private LinePainter linePainter;
+	@Inject
+	private CaretPainter caretPainter;
 
 	private SyntaxTextEditor editor;
 	private SyntaxDocument document;
 
-	private SyntaxCaret caret;
-
 	public void setEditor(SyntaxTextEditor syntaxTextEditor) {
 		this.editor = syntaxTextEditor;
 		document = editor.getDocument();
-		caret = editor.getCaret();
+		caretPainter.setCaret(editor.getCaret());
 	}
 
 	public void paint(Graphics g) {
-		paintCaret(g);
+		caretPainter.paintCaret(g);
 		paintLines(g);
 	}
 
@@ -41,15 +40,19 @@ public class SyntaxDocumentPainter {
 		}
 	}
 
-	private void paintCaret(Graphics g) {
-		FontMetrics fontMetrics = g.getFontMetrics();
-		int height = fontMetrics.getHeight();
-		int ascent = fontMetrics.getAscent();
-		int width = fontMetrics.stringWidth("a");
+	public int getTargetLineOffset(Line targetLine) {
+		int xToPaint = caretPainter.getXToPaint();
 
-		int x = caret.getXToPaint() * width;
-		int y = (height - ascent) + caret.getY() * height;
-		g.fillRect(x, y, 2, height);
+		int i = 0;
+		for (Iterator<Character> iterator = targetLine.getText().iterator(); iterator.hasNext();) {
+			Character c = iterator.next();
+			xToPaint -= c.equals('\t') ? 4 : 1;
+			if (xToPaint < 0) {
+				break;
+			}
+			i++;
+		}
+		return i;
 	}
 
 }

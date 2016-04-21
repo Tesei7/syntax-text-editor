@@ -18,10 +18,13 @@ public class SyntaxDocumentIO {
 	public String getText() {
 		StringBuilder sb = new StringBuilder();
 		Line line = document.getFirstLine();
-		while (line.hasNext()) {
-			sb.append(line.getChars()).append("\n");
+		do {
+			sb.append(line.getChars());
+			if (line.hasNext()) {
+				sb.append("\n");
+			}
 			line = line.getNext();
-		}
+		} while (line != null);
 		return sb.toString();
 	}
 
@@ -30,7 +33,7 @@ public class SyntaxDocumentIO {
 		Line prev = null;
 		for (int i = 0; i < split.length; i++) {
 			Line l = null;
-			if(i==0){
+			if (i == 0) {
 				l = document.getFirstLine();
 			} else {
 				l = new Line();
@@ -43,5 +46,4 @@ public class SyntaxDocumentIO {
 			l.setOffset(0);
 		}
 	}
-
 }

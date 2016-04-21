@@ -1,4 +1,4 @@
-package ru.tesei7.textEditor.app;
+package ru.tesei7.textEditor.app.menuActions;
 
 public interface MenuActions {
 	String OPEN = "Open";

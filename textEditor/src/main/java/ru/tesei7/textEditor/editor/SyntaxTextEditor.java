@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 import ru.tesei7.textEditor.editor.document.SyntaxDocument;
@@ -50,7 +49,7 @@ public class SyntaxTextEditor extends JPanel {
 		textKeyListener.setEditor(this);
 
 		painter.setEditor(this);
-		caret.setDocument(document);
+		caret.setEditor(this);
 		io.setDocument(document);
 		addKeyListener(textKeyListener);
 		addKeyListener(baseKeyListener);
@@ -58,6 +57,10 @@ public class SyntaxTextEditor extends JPanel {
 
 	public SyntaxDocument getDocument() {
 		return document;
+	}
+	
+	public SyntaxDocumentPainter getPainter() {
+		return painter;
 	}
 
 	public SyntaxCaret getCaret() {

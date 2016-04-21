@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 
+import ru.tesei7.textEditor.app.menuActions.MenuActions;
 import ru.tesei7.textEditor.app.menuActions.SaveLoadFileService;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 
@@ -52,10 +53,7 @@ public class TextEditor implements ActionListener {
 		contentPane.setOpaque(true);
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(0, 5, 0, 0));
-		textArea.setText("sdfg^$(*dfgdsfgfdg\n"
-				+ "dsfsgg  435sdfgsdfg\n"
-				+ "45	36jhj\n"
-				+ "\n");
+		textArea.setText("\n\nsdfg^$(*dfgdsfgfdg\n\n\n" + "dsfsgg  435sdfgsdfg\n" + "45	36jhj\n" + "\n");
 		contentPane.add(textArea, BorderLayout.CENTER);
 		return contentPane;
 	}
@@ -67,10 +65,10 @@ public class TextEditor implements ActionListener {
 			System.exit(0);
 			break;
 		case MenuActions.OPEN:
-			String text = saveLoadFileService.loadFileAsText(contentPane);
-			textArea.setText(text);
+			textArea.setText(saveLoadFileService.loadFile(contentPane));
 			break;
 		case MenuActions.SAVE:
+			saveLoadFileService.saveFile(contentPane, textArea.getText());
 			break;
 		}
 	}
