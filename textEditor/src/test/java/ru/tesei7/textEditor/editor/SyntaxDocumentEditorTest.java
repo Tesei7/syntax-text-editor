@@ -9,8 +9,10 @@ import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 import java.util.Arrays;
 
@@ -18,18 +20,17 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import ru.tesei7.textEditor.editor.document.Line;
 import ru.tesei7.textEditor.editor.document.SyntaxDocument;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(SyntaxDocumentEditor.class)
 public class SyntaxDocumentEditorTest {
-	@InjectMocks
-	@Spy
 	private SyntaxDocumentEditor syntaxDocumentEditor;
 	@Mock
 	private SyntaxDocument document;
@@ -39,7 +40,10 @@ public class SyntaxDocumentEditorTest {
 	private Line cline;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		whenNew(LineEditor.class).withNoArguments().thenReturn(lineEditor);
+		syntaxDocumentEditor = spy(new SyntaxDocumentEditor(document));
 		when(document.getCurrentLine()).thenReturn(cline);
 	}
 
@@ -72,11 +76,11 @@ public class SyntaxDocumentEditorTest {
 		when(cline.getLenght()).thenReturn(3);
 		when(cline.getOffset()).thenReturn(3);
 		when(cline.getNext()).thenReturn(l2);
-		
+
 		doNothing().when(syntaxDocumentEditor).concatLines(any(), any(), eq(false));
 		syntaxDocumentEditor.delete();
 		verify(syntaxDocumentEditor).concatLines(cline, l2, false);
-		
+
 		when(cline.getOffset()).thenReturn(2);
 		syntaxDocumentEditor.delete();
 		verify(lineEditor).delete(cline);
@@ -87,11 +91,11 @@ public class SyntaxDocumentEditorTest {
 		Line l2 = mock(Line.class);
 		when(cline.getLenght()).thenReturn(3);
 		when(cline.getPrevious()).thenReturn(l2);
-		
+
 		doNothing().when(syntaxDocumentEditor).concatLines(any(), any(), eq(true));
 		syntaxDocumentEditor.backspace();
 		verify(syntaxDocumentEditor).concatLines(l2, cline, true);
-		
+
 		when(cline.getOffset()).thenReturn(2);
 		syntaxDocumentEditor.backspace();
 		verify(lineEditor).backspace(cline);

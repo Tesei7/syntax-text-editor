@@ -9,22 +9,22 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import ru.tesei7.textEditor.editor.document.Line;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LineEditorTest {
-	@InjectMocks
-	private LineEditor editor;
+	private LineEditor editor = new LineEditor();
 	@Mock
 	private Line line;
 	private List<Character> text = new LinkedList<>();
 
 	@Before
-	public void init() {
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
 		text.add('1');
 		text.add('2');
 		text.add('3');

@@ -1,5 +1,6 @@
 package ru.tesei7.textEditor.editor.painter;
 
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.List;
 
@@ -25,11 +26,16 @@ public class SyntaxDocumentPainter {
 	}
 
 	private void paintLines(Graphics g) {
-		int rowHeight = g.getFontMetrics().getHeight();
+		FontMetrics fontMetrics = g.getFontMetrics();
+		int rowHeight = fontMetrics.getHeight();
+		int descent = fontMetrics.getDescent();
 
 		List<Line> lines = document.getVisibleLines();
 		for (int i = 0; i < lines.size(); i++) {
-			linePainter.paint(g, lines.get(i), rowHeight * (i + 1));
+			linePainter.paint(g, lines.get(i), 
+//					0
+					rowHeight * (i + 1) - descent
+					);
 		}
 	}
 

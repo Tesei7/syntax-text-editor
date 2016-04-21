@@ -16,11 +16,10 @@ public class CaretPainter {
 	public void paint(Graphics g) {
 		FontMetrics fontMetrics = g.getFontMetrics();
 		int height = fontMetrics.getHeight();
-		int ascent = fontMetrics.getAscent();
 		int width = fontMetrics.stringWidth("a");
 
 		int x = caret.getXToPaint() * width;
-		int y = (height - ascent) + caret.getY() * height;
+		int y = caret.getY() * height;
 		g.fillRect(x, y, 2, height);
 	}
 

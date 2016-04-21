@@ -51,8 +51,8 @@ public class SyntaxTextEditor extends JPanel {
 		this.documentPainter = new SyntaxDocumentPainter(this);
 		this.io = new SyntaxDocumentIO(document);
 
-		this.baseKeyListener=new CaretKeyListener(this);
-		this.textKeyListener=new TextKeyListener(this);
+		this.baseKeyListener = new CaretKeyListener(this);
+		this.textKeyListener = new TextKeyListener(this);
 		addKeyListener(textKeyListener);
 		addKeyListener(baseKeyListener);
 	}
@@ -107,7 +107,7 @@ public class SyntaxTextEditor extends JPanel {
 
 	private void recalcSize() {
 		FontMetrics fm = getFontMetrics(getFont());
-		int height = fm.getHeight() * (rows + 1);
+		int height = fm.getHeight() * (rows + 1) + fm.getDescent();
 		int width = fm.charWidth('a') * cols;
 		setPreferredSize(new Dimension(width, height));
 	}
