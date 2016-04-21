@@ -12,10 +12,9 @@ import ru.tesei7.textEditor.editor.document.SyntaxDocument;
 public class TextKeyListener implements KeyListener {
 	@Inject
 	private SyntaxDocumentEditor documentEditor;
-	
+
 	private SyntaxTextEditor editor;
 	private SyntaxDocument document;
-	
 
 	public void setEditor(SyntaxTextEditor editor) {
 		this.editor = editor;
@@ -25,11 +24,17 @@ public class TextKeyListener implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		char keyChar = e.getKeyChar();
-		if (keyChar != KeyEvent.VK_BACK_SPACE && keyChar != KeyEvent.VK_DELETE && keyChar != KeyEvent.CHAR_UNDEFINED) {
-			documentEditor.printChar(keyChar);
+		char c = e.getKeyChar();
+		if (isPrintableChar(c) || c == '\n' || c == '\t') {
+			documentEditor.printChar(c);
 			editor.repaint();
 		}
+	}
+
+	public boolean isPrintableChar(char c) {
+		Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
+		return (!Character.isISOControl(c)) && c != KeyEvent.CHAR_UNDEFINED && block != null
+				&& block != Character.UnicodeBlock.SPECIALS;
 	}
 
 	@Override

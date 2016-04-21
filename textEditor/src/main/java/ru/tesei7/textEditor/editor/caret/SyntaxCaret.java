@@ -33,6 +33,20 @@ public class SyntaxCaret {
 		return document.getCurrentLine().getOffset();
 	}
 
+	public int getXToPaint() {
+		int x = 0;
+		Line currentLine = document.getCurrentLine();
+		for (int i = 0; i < currentLine.getOffset(); i++) {
+			Character c = currentLine.getText().get(i);
+			if (c.equals('\t')) {
+				x += 4;
+			} else {
+				x += 1;
+			}
+		}
+		return x;
+	}
+
 	public int getY() {
 		return document.getCurrentLineY();
 	}

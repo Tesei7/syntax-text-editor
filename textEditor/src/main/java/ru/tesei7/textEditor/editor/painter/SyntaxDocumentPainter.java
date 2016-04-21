@@ -47,9 +47,9 @@ public class SyntaxDocumentPainter {
 		int ascent = fontMetrics.getAscent();
 		int width = fontMetrics.stringWidth("a");
 
-		int x = caret.getX() * width;
+		int x = caret.getXToPaint() * width;
 		int y = (height - ascent) + caret.getY() * height;
-		g.fillRect(x, y, 2, ascent);
+		g.fillRect(x, y, 2, height);
 	}
 
 }

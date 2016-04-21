@@ -39,6 +39,7 @@ public class SyntaxTextEditor extends JPanel {
 	@PostConstruct
 	public void init() {
 		setFocusable(true);
+		setFocusTraversalKeysEnabled(false);
 		setBackground(Color.WHITE);
 		setFont(fontUtils.getFont());
 

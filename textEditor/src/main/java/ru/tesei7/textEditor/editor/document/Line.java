@@ -1,7 +1,10 @@
 package ru.tesei7.textEditor.editor.document;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.commons.lang.ArrayUtils;
 
 public class Line {
 	private Line previous;
@@ -64,11 +67,20 @@ public class Line {
 	}
 
 	private char[] toPrimitive(List<Character> list) {
-		char[] out = new char[list.size()];
+		ArrayList<Character> out = new ArrayList<>();
 		for (int i = 0; i < list.size(); i++) {
-			out[i] = list.get(i);
+			Character character = list.get(i);
+			if (character.equals('\t')) {
+				out.add(' ');
+				out.add(' ');
+				out.add(' ');
+				out.add(' ');
+			} else {
+				out.add(character);
+			}
 		}
-		return out;
+		Character[] array = out.toArray(new Character[0]);
+		return ArrayUtils.toPrimitive(array);
 	}
 
 	// public void paint(Graphics g, int row) {
