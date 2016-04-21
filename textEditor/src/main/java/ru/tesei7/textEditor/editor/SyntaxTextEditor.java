@@ -1,14 +1,18 @@
 package ru.tesei7.textEditor.editor;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 import ru.tesei7.textEditor.editor.document.SyntaxDocument;
+import ru.tesei7.textEditor.editor.listeners.HScrollListener;
+import ru.tesei7.textEditor.editor.listeners.VScrollListener;
 import ru.tesei7.textEditor.editor.listeners.key.CaretKeyListener;
 import ru.tesei7.textEditor.editor.listeners.key.TextKeyListener;
 import ru.tesei7.textEditor.editor.painter.CaretPainter;
@@ -23,16 +27,21 @@ public class SyntaxTextEditor extends JPanel {
 
 	private SyntaxDocument document;
 
-	protected CaretKeyListener baseKeyListener;
+	protected CaretKeyListener caretKeyListener;
 	protected TextKeyListener textKeyListener;
-
+	protected HScrollListener hScrollListener;
+	protected VScrollListener vScrollListener;
+	
 	private SyntaxDocumentPainter documentPainter;
 	private CaretPainter caretPainter;
 	private SyntaxCaret caret;
 	private SyntaxDocumentIO io;
+	private SyntaxTextEditorScroller scroller;
 
-	private int rows;
-	private int cols;
+	int rows;
+	int cols;
+	JScrollBar hbar;
+	JScrollBar vbar;
 
 	public SyntaxTextEditor() {
 		super();
@@ -44,17 +53,28 @@ public class SyntaxTextEditor extends JPanel {
 		setFocusTraversalKeysEnabled(false);
 		setBackground(Color.WHITE);
 		setFont(FontUtils.DEFAULT);
-
+		
+		setLayout(new BorderLayout());
+		hbar = new JScrollBar(JScrollBar.HORIZONTAL, 0, cols, 0, cols);
+	    vbar = new JScrollBar(JScrollBar.VERTICAL, 0, rows, 0, rows+200);
+	    add(hbar, BorderLayout.SOUTH);
+	    add(vbar, BorderLayout.EAST);
+	    this.hScrollListener = new HScrollListener(this);
+	    this.vScrollListener = new VScrollListener(this);
+	    hbar.addAdjustmentListener(hScrollListener);
+	    vbar.addAdjustmentListener(vScrollListener);
+	    
 		this.document = new SyntaxDocument(this);
 		this.caret = new SyntaxCaret(this);
+		this.scroller = new SyntaxTextEditorScroller(this);
 		this.caretPainter = new CaretPainter(caret);
 		this.documentPainter = new SyntaxDocumentPainter(this);
 		this.io = new SyntaxDocumentIO(document);
 
-		this.baseKeyListener = new CaretKeyListener(this);
+		this.caretKeyListener = new CaretKeyListener(this);
 		this.textKeyListener = new TextKeyListener(this);
 		addKeyListener(textKeyListener);
-		addKeyListener(baseKeyListener);
+		addKeyListener(caretKeyListener);
 	}
 
 	public SyntaxDocument getDocument() {
@@ -67,6 +87,10 @@ public class SyntaxTextEditor extends JPanel {
 
 	public SyntaxCaret getCaret() {
 		return caret;
+	}
+	
+	public SyntaxTextEditorScroller getScroller() {
+		return scroller;
 	}
 
 	@Override
@@ -105,7 +129,7 @@ public class SyntaxTextEditor extends JPanel {
 		repaint();
 	}
 
-	private void recalcSize() {
+	void recalcSize() {
 		FontMetrics fm = getFontMetrics(getFont());
 		int height = fm.getHeight() * (rows + 1) + fm.getDescent();
 		int width = fm.charWidth('a') * cols;

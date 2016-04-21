@@ -23,6 +23,14 @@ public class SyntaxDocument {
 		return firstLine;
 	}
 
+	public Line getFirstVisibleLine() {
+		return firstVisibleLine;
+	}
+
+	public void setFirstVisibleLine(Line firstVisibleLine) {
+		this.firstVisibleLine = firstVisibleLine;
+	}
+
 	public Line getCurrentLine() {
 		return currentLine;
 	}
