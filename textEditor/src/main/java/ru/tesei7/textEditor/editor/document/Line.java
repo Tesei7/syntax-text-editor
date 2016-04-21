@@ -27,9 +27,16 @@ public class Line {
 		return previous != null;
 	}
 
-	public void setPrevious(Line previous) {
-		this.previous = previous;
+	public void linkWith(Line l) {
+		next = l;
+		if (l != null) {
+			l.previous = this;
+		}
 	}
+
+	// public void setPrevious(Line previous) {
+	// this.previous = previous;
+	// }
 
 	public Line getNext() {
 		return next;
@@ -39,9 +46,9 @@ public class Line {
 		return next != null;
 	}
 
-	public void setNext(Line next) {
-		this.next = next;
-	}
+	// public void setNext(Line next) {
+	// this.next = next;
+	// }
 
 	public LinkedList<Token> getTokens() {
 		return tokens;
@@ -61,7 +68,7 @@ public class Line {
 	public int getLenght() {
 		return text.size();
 	}
-	
+
 	public char[] getChars() {
 		return toPrimitive(text);
 	}

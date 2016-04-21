@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -72,9 +73,9 @@ public class SyntaxDocumentEditorTest {
 		when(cline.getOffset()).thenReturn(3);
 		when(cline.getNext()).thenReturn(l2);
 		
-		doNothing().when(syntaxDocumentEditor).concatLines(any(), any());
+		doNothing().when(syntaxDocumentEditor).concatLines(any(), any(), eq(false));
 		syntaxDocumentEditor.delete();
-		verify(syntaxDocumentEditor).concatLines(cline, l2);
+		verify(syntaxDocumentEditor).concatLines(cline, l2, false);
 		
 		when(cline.getOffset()).thenReturn(2);
 		syntaxDocumentEditor.delete();
@@ -87,9 +88,9 @@ public class SyntaxDocumentEditorTest {
 		when(cline.getLenght()).thenReturn(3);
 		when(cline.getPrevious()).thenReturn(l2);
 		
-		doNothing().when(syntaxDocumentEditor).concatLines(any(), any());
+		doNothing().when(syntaxDocumentEditor).concatLines(any(), any(), eq(true));
 		syntaxDocumentEditor.backspace();
-		verify(syntaxDocumentEditor).concatLines(l2, cline);
+		verify(syntaxDocumentEditor).concatLines(l2, cline, true);
 		
 		when(cline.getOffset()).thenReturn(2);
 		syntaxDocumentEditor.backspace();

@@ -37,8 +37,7 @@ public class SyntaxDocumentIO {
 				l = document.getFirstLine();
 			} else {
 				l = new Line();
-				l.setPrevious(prev);
-				prev.setNext(l);
+				prev.linkWith(l);
 			}
 			List<Character> list = split[i].chars().mapToObj(c -> (char) c).collect(toList());
 			l.setText(list);

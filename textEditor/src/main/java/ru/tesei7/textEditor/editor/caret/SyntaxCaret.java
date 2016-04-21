@@ -34,7 +34,7 @@ public class SyntaxCaret {
 	}
 
 	public int getX() {
-		return document.getCurrentLine().getOffset();
+		return getCurrentLine().getOffset();
 	}
 
 	public int getY() {
@@ -86,7 +86,7 @@ public class SyntaxCaret {
 	}
 
 	public void end() {
-		setX(document.getCurrentLine().getLenght());
+		setX(getCurrentLine().getLenght());
 	}
 
 	public Line getCurrentLine() {

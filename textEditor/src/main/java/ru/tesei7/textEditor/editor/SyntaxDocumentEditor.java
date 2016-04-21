@@ -27,10 +27,11 @@ public class SyntaxDocumentEditor {
 
 	void addNewLine() {
 		Line currentLine = document.getCurrentLine();
+		Line nextLine = currentLine.getNext();
 		Line newLine = new Line();
-		newLine.setPrevious(currentLine);
-		newLine.setNext(currentLine.getNext());
-		currentLine.setNext(newLine);
+		
+		currentLine.linkWith(newLine);
+		newLine.linkWith(nextLine);
 
 		int offset = currentLine.getOffset();
 		List<Character> curLineText = currentLine.getText();
@@ -43,7 +44,7 @@ public class SyntaxDocumentEditor {
 	public void delete() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == currentLine.getLenght()) {
-			concatLines(currentLine, currentLine.getNext());
+			concatLines(currentLine, currentLine.getNext(), false);
 		} else {
 			lineEditor.delete(currentLine);
 		}
@@ -52,13 +53,13 @@ public class SyntaxDocumentEditor {
 	public void backspace() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == 0) {
-			concatLines(currentLine.getPrevious(), currentLine);
+			concatLines(currentLine.getPrevious(), currentLine, true);
 		} else {
 			lineEditor.backspace(currentLine);
 		}
 	}
 
-	void concatLines(Line l1, Line l2) {
+	void concatLines(Line l1, Line l2, boolean isBackspace) {
 		if (l1 == null || l2 == null) {
 			return;
 		}
@@ -67,11 +68,13 @@ public class SyntaxDocumentEditor {
 		}
 
 		Line next = l2.getNext();
-		l1.setNext(next);
-		if (next != null) {
-			next.setPrevious(l1);
-		}
+		l1.linkWith(next);
+		
+		int l1_lenght = l1.getLenght();
 		l1.getText().addAll(l2.getText());
 		document.setCurrentLine(l1);
+		if (isBackspace){
+			l1.setOffset(l1_lenght);
+		}
 	}
 }
