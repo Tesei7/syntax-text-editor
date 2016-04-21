@@ -5,14 +5,13 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.swing.JPanel;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 import ru.tesei7.textEditor.editor.document.SyntaxDocument;
 import ru.tesei7.textEditor.editor.listeners.key.CaretKeyListener;
 import ru.tesei7.textEditor.editor.listeners.key.TextKeyListener;
+import ru.tesei7.textEditor.editor.painter.CaretPainter;
 import ru.tesei7.textEditor.editor.painter.SyntaxDocumentPainter;
 import ru.tesei7.textEditor.editor.utils.FontUtils;
 
@@ -22,19 +21,14 @@ public class SyntaxTextEditor extends JPanel {
 	static final int DEFAULT_ROWS = 40;
 	static final int DEFAULT_COLS = 80;
 
-	@Inject
 	private SyntaxDocument document;
 
-	@Inject
 	protected CaretKeyListener baseKeyListener;
-	@Inject
 	protected TextKeyListener textKeyListener;
 
-	@Inject
-	protected SyntaxDocumentPainter painter;
-	@Inject
+	private SyntaxDocumentPainter documentPainter;
+	private CaretPainter caretPainter;
 	private SyntaxCaret caret;
-	@Inject
 	private SyntaxDocumentIO io;
 
 	private int rows;
@@ -42,10 +36,6 @@ public class SyntaxTextEditor extends JPanel {
 
 	public SyntaxTextEditor() {
 		super();
-	}
-
-	@PostConstruct
-	public void init() {
 		rows = SyntaxTextEditor.DEFAULT_ROWS;
 		cols = SyntaxTextEditor.DEFAULT_COLS;
 		recalcSize();
@@ -55,13 +45,14 @@ public class SyntaxTextEditor extends JPanel {
 		setBackground(Color.WHITE);
 		setFont(FontUtils.DEFAULT);
 
-		baseKeyListener.setEditor(this);
-		textKeyListener.setEditor(this);
+		this.document = new SyntaxDocument(this);
+		this.caret = new SyntaxCaret(this);
+		this.caretPainter = new CaretPainter(caret);
+		this.documentPainter = new SyntaxDocumentPainter(this);
+		this.io = new SyntaxDocumentIO(document);
 
-		document.setEditor(this);
-		painter.setEditor(this);
-		caret.setEditor(this);
-		io.setDocument(document);
+		this.baseKeyListener=new CaretKeyListener(this);
+		this.textKeyListener=new TextKeyListener(this);
 		addKeyListener(textKeyListener);
 		addKeyListener(baseKeyListener);
 	}
@@ -71,7 +62,7 @@ public class SyntaxTextEditor extends JPanel {
 	}
 
 	public SyntaxDocumentPainter getPainter() {
-		return painter;
+		return documentPainter;
 	}
 
 	public SyntaxCaret getCaret() {
@@ -81,7 +72,8 @@ public class SyntaxTextEditor extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		painter.paint(g);
+		documentPainter.paint(g);
+		caretPainter.paint(g);
 	}
 
 	public String getText() {

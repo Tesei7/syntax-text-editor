@@ -1,15 +1,11 @@
 package ru.tesei7.textEditor.editor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

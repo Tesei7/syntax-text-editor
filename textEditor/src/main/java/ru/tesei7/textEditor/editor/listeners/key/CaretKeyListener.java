@@ -10,7 +10,7 @@ public class CaretKeyListener implements KeyListener {
 	private SyntaxTextEditor editor;
 	private SyntaxCaret caret;
 
-	public void setEditor(SyntaxTextEditor editor) {
+	public CaretKeyListener(SyntaxTextEditor editor) {
 		this.editor = editor;
 		caret = editor.getCaret();
 	}

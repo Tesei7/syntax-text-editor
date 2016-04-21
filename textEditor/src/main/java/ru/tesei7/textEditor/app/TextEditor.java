@@ -1,6 +1,5 @@
 package ru.tesei7.textEditor.app;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
@@ -9,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
-import javax.inject.Inject;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -22,11 +20,8 @@ import ru.tesei7.textEditor.app.menuActions.SaveLoadFileService;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 
 public class TextEditor implements ActionListener {
-	@Inject
-	private SaveLoadFileService saveLoadFileService;
-	@Inject
-	private SyntaxTextEditor textArea;
 	private JPanel contentPane;
+	private SyntaxTextEditor textArea;
 
 	public JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
@@ -54,6 +49,7 @@ public class TextEditor implements ActionListener {
 		contentPane.setOpaque(true);
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(0, 5, 0, 0));
+		textArea = new SyntaxTextEditor();
 		textArea.setText("\n\nsdfg^$(*dfgdsfgfdg\n\n\n" + "dsfsgg  435sdfgsdfg\n" + "45	36jhj\n" + "\n");
 		contentPane.add(textArea);
 		return contentPane;
@@ -61,6 +57,7 @@ public class TextEditor implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
+		SaveLoadFileService saveLoadFileService = new SaveLoadFileService();
 		switch (actionCommand) {
 		case MenuActions.EXIT:
 			System.exit(0);

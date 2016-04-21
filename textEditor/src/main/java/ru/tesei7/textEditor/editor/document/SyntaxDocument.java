@@ -12,16 +12,13 @@ public class SyntaxDocument {
 	private Line currentLine;
 	private SyntaxTextEditor editor;
 
-	public SyntaxDocument() {
+	public SyntaxDocument(SyntaxTextEditor editor) {
+		this.editor = editor;
 		firstLine = new Line();
 		firstVisibleLine = firstLine;
 		currentLine = firstVisibleLine;
 	}
-	
-	public void setEditor(SyntaxTextEditor editor){
-		this.editor = editor;
-	}
-	
+
 	public Line getFirstLine() {
 		return firstLine;
 	}
@@ -53,11 +50,11 @@ public class SyntaxDocument {
 
 	public int getCurrentLineY() {
 		Line tmp = firstVisibleLine;
-		for (int i=0; i<editor.getRows();i++) {
-			if (tmp.equals(currentLine)){
+		for (int i = 0; i < editor.getRows(); i++) {
+			if (tmp.equals(currentLine)) {
 				return i;
 			}
-			if (!tmp.hasNext()){
+			if (!tmp.hasNext()) {
 				break;
 			}
 			tmp = tmp.getNext();

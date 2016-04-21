@@ -2,19 +2,17 @@ package ru.tesei7.textEditor.editor;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import ru.tesei7.textEditor.editor.document.Line;
 import ru.tesei7.textEditor.editor.document.SyntaxDocument;
 
 public class SyntaxDocumentEditor {
 
 	private SyntaxDocument document;
-	@Inject
 	private LineEditor lineEditor;
 
-	public void setDocument(SyntaxDocument document) {
+	public SyntaxDocumentEditor(SyntaxDocument document) {
 		this.document = document;
+		this.lineEditor = new LineEditor();
 	}
 
 	public void printChar(char c) {

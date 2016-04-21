@@ -1,10 +1,7 @@
 package ru.tesei7.textEditor.editor.painter;
 
 import java.awt.Graphics;
-import java.util.Iterator;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.document.Line;
@@ -12,22 +9,18 @@ import ru.tesei7.textEditor.editor.document.SyntaxDocument;
 
 public class SyntaxDocumentPainter {
 
-	@Inject
 	private LinePainter linePainter;
-	@Inject
-	private CaretPainter caretPainter;
 
 	private SyntaxTextEditor editor;
 	private SyntaxDocument document;
 
-	public void setEditor(SyntaxTextEditor syntaxTextEditor) {
+	public SyntaxDocumentPainter(SyntaxTextEditor syntaxTextEditor) {
 		this.editor = syntaxTextEditor;
-		document = editor.getDocument();
-		caretPainter.setCaret(editor.getCaret());
+		this.document = editor.getDocument();
+		this.linePainter = new LinePainter();
 	}
 
 	public void paint(Graphics g) {
-		caretPainter.paintCaret(g);
 		paintLines(g);
 	}
 
@@ -40,19 +33,6 @@ public class SyntaxDocumentPainter {
 		}
 	}
 
-	public int getTargetLineOffset(Line targetLine) {
-		int xToPaint = caretPainter.getXToPaint();
-
-		int i = 0;
-		for (Iterator<Character> iterator = targetLine.getText().iterator(); iterator.hasNext();) {
-			Character c = iterator.next();
-			xToPaint -= c.equals('\t') ? 4 : 1;
-			if (xToPaint < 0) {
-				break;
-			}
-			i++;
-		}
-		return i;
-	}
+	
 
 }

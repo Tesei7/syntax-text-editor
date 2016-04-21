@@ -2,16 +2,11 @@ package ru.tesei7.textEditor;
 
 import java.awt.FlowLayout;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.swing.JFrame;
 
 import ru.tesei7.textEditor.app.TextEditor;
 
-@ApplicationScoped
 public class Application {
-	@Inject
-	private TextEditor editor;
 
 	public void createAndShowGUI() {
 		// Create and set up the window.
@@ -20,6 +15,7 @@ public class Application {
 		frame.setLayout(new FlowLayout());
 
 		// Create and set up the content pane.
+		TextEditor editor = new TextEditor();
 		frame.setJMenuBar(editor.createMenuBar());
 		frame.setContentPane(editor.createContentPane());
 		frame.setResizable(false);

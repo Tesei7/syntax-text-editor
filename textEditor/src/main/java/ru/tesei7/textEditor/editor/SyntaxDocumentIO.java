@@ -11,7 +11,7 @@ public class SyntaxDocumentIO {
 
 	private SyntaxDocument document;
 
-	public void setDocument(SyntaxDocument document) {
+	public SyntaxDocumentIO(SyntaxDocument document) {
 		this.document = document;
 	}
 
