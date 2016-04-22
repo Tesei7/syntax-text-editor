@@ -1,5 +1,6 @@
 package ru.tesei7.textEditor.editor;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import ru.tesei7.textEditor.editor.document.Line;
@@ -8,18 +9,16 @@ import ru.tesei7.textEditor.editor.document.SyntaxDocument;
 public class SyntaxDocumentEditor {
 
 	private SyntaxDocument document;
-	private LineEditor lineEditor;
 
 	public SyntaxDocumentEditor(SyntaxDocument document) {
 		this.document = document;
-		this.lineEditor = new LineEditor();
 	}
 
 	public void printChar(char c) {
 		if (c == '\n') {
 			addNewLine();
 		} else {
-			lineEditor.printChar(c, document.getCurrentLine());
+			document.getCurrentLine().printChar(c);
 		}
 	}
 
@@ -27,14 +26,14 @@ public class SyntaxDocumentEditor {
 		Line currentLine = document.getCurrentLine();
 		Line nextLine = currentLine.getNext();
 		Line newLine = new Line();
-		
+
 		currentLine.linkWith(newLine);
 		newLine.linkWith(nextLine);
 
 		int offset = currentLine.getOffset();
-		List<Character> curLineText = currentLine.getText();
-		newLine.setText(curLineText.subList(offset, curLineText.size()));
-		currentLine.setText(curLineText.subList(0, offset));
+		List<Character> curLineText = currentLine.getChars();
+		newLine.setChars(curLineText.subList(offset, curLineText.size()));
+		currentLine.setChars(curLineText.subList(0, offset));
 		document.setCurrentLine(newLine);
 		newLine.setOffset(0);
 	}
@@ -44,7 +43,7 @@ public class SyntaxDocumentEditor {
 		if (currentLine.getOffset() == currentLine.getLenght()) {
 			concatLines(currentLine, currentLine.getNext(), false);
 		} else {
-			lineEditor.delete(currentLine);
+			currentLine.delete();
 		}
 	}
 
@@ -53,7 +52,7 @@ public class SyntaxDocumentEditor {
 		if (currentLine.getOffset() == 0) {
 			concatLines(currentLine.getPrevious(), currentLine, true);
 		} else {
-			lineEditor.backspace(currentLine);
+			currentLine.backspace();
 		}
 	}
 
@@ -61,17 +60,20 @@ public class SyntaxDocumentEditor {
 		if (l1 == null || l2 == null) {
 			return;
 		}
-		if (!l1.hasNext() || !l1.getNext().equals(l2)){
+		if (!l1.hasNext() || !l1.getNext().equals(l2)) {
 			return;
 		}
 
 		Line next = l2.getNext();
 		l1.linkWith(next);
-		
+
 		int l1_lenght = l1.getLenght();
-		l1.getText().addAll(l2.getText());
+		LinkedList<Character> concat = new LinkedList<>();
+		concat.addAll(l1.getChars());
+		concat.addAll(l2.getChars());
+		l1.setChars(concat);
 		document.setCurrentLine(l1);
-		if (isBackspace){
+		if (isBackspace) {
 			l1.setOffset(l1_lenght);
 		}
 	}

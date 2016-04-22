@@ -108,6 +108,11 @@ public class SyntaxTextEditor extends JPanel {
 		io.setText(text);
 		repaint();
 	}
+	
+	public void setText(byte[] text) {
+		io.setText(text);
+		repaint();
+	}
 
 	public int getRows() {
 		return rows;

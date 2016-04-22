@@ -18,7 +18,7 @@ public class CaretService {
 		int xToPaint = getXToPaint();
 
 		int i = 0;
-		for (Iterator<Character> iterator = targetLine.getText().iterator(); iterator.hasNext();) {
+		for (Iterator<Character> iterator = targetLine.getChars().iterator(); iterator.hasNext();) {
 			Character c = iterator.next();
 			xToPaint -= c.equals('\t') ? SyntaxTextEditor.TAB_INDENT : 1;
 			if (xToPaint < 0) {
@@ -33,7 +33,7 @@ public class CaretService {
 		int x = 0;
 		Line currentLine = document.getCurrentLine();
 		for (int i = 0; i < currentLine.getOffset(); i++) {
-			Character c = currentLine.getText().get(i);
+			Character c = currentLine.getChars().get(i);
 			if (c.equals('\t')) {
 				x += SyntaxTextEditor.TAB_INDENT;
 			} else {
