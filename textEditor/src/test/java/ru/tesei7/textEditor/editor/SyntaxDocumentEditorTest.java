@@ -74,9 +74,9 @@ public class SyntaxDocumentEditorTest {
 		when(cline.getOffset()).thenReturn(3);
 		when(cline.getNext()).thenReturn(l2);
 
-		doNothing().when(syntaxDocumentEditor).concatLines(any(), any(), eq(false));
+		doNothing().when(syntaxDocumentEditor).concatLines(any(), any());
 		syntaxDocumentEditor.delete();
-		verify(syntaxDocumentEditor).concatLines(cline, l2, false);
+		verify(syntaxDocumentEditor).concatLines(cline, l2);
 
 		when(cline.getOffset()).thenReturn(2);
 		syntaxDocumentEditor.delete();
@@ -89,9 +89,9 @@ public class SyntaxDocumentEditorTest {
 		when(cline.getLenght()).thenReturn(3);
 		when(cline.getPrevious()).thenReturn(l2);
 
-		doNothing().when(syntaxDocumentEditor).concatLines(any(), any(), eq(true));
+		doNothing().when(syntaxDocumentEditor).concatLines(any(), any());
 		syntaxDocumentEditor.backspace();
-		verify(syntaxDocumentEditor).concatLines(l2, cline, true);
+		verify(syntaxDocumentEditor).concatLines(l2, cline);
 
 		when(cline.getOffset()).thenReturn(2);
 		syntaxDocumentEditor.backspace();

@@ -41,7 +41,7 @@ public class SyntaxDocumentEditor {
 	public void delete() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == currentLine.getLenght()) {
-			concatLines(currentLine, currentLine.getNext(), false);
+			concatLines(currentLine, currentLine.getNext());
 		} else {
 			currentLine.delete();
 		}
@@ -50,13 +50,13 @@ public class SyntaxDocumentEditor {
 	public void backspace() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == 0) {
-			concatLines(currentLine.getPrevious(), currentLine, true);
+			concatLines(currentLine.getPrevious(), currentLine);
 		} else {
 			currentLine.backspace();
 		}
 	}
 
-	void concatLines(Line l1, Line l2, boolean isBackspace) {
+	void concatLines(Line l1, Line l2) {
 		if (l1 == null || l2 == null) {
 			return;
 		}
@@ -73,8 +73,6 @@ public class SyntaxDocumentEditor {
 		concat.addAll(l2.getChars());
 		l1.setChars(concat);
 		document.setCurrentLine(l1);
-		if (isBackspace) {
-			l1.setOffset(l1_lenght);
-		}
+		l1.setOffset(l1_lenght);
 	}
 }
