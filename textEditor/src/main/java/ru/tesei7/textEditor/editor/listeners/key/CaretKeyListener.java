@@ -3,17 +3,11 @@ package ru.tesei7.textEditor.editor.listeners.key;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import ru.tesei7.textEditor.editor.SyntaxTextEditor;
-import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 
-public class CaretKeyListener implements KeyListener {
-	private SyntaxTextEditor editor;
-	private SyntaxCaret caret;
-
-	public CaretKeyListener(SyntaxTextEditor editor) {
-		this.editor = editor;
-		caret = editor.getCaret();
-	}
+public class CaretKeyListener extends SyntaxCaretObservable implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -24,28 +18,34 @@ public class CaretKeyListener implements KeyListener {
 		int code = e.getKeyCode();
 		switch (code) {
 		case KeyEvent.VK_LEFT:
-			caret.left();
-			editor.repaint();
+			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.LEFT));
+			// caret.left();
+			// editor.repaint();
 			break;
 		case KeyEvent.VK_RIGHT:
-			caret.right();
-			editor.repaint();
+			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.RIGHT));
+			// caret.right();
+			// editor.repaint();
 			break;
 		case KeyEvent.VK_UP:
-			caret.up();
-			editor.repaint();
+			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.UP));
+			// caret.up();
+			// editor.repaint();
 			break;
 		case KeyEvent.VK_DOWN:
-			caret.down();
-			editor.repaint();
+			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
+			// caret.down();
+			// editor.repaint();
 			break;
 		case KeyEvent.VK_HOME:
-			caret.home();
-			editor.repaint();
+			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.HOME));
+			// caret.home();
+			// editor.repaint();
 			break;
 		case KeyEvent.VK_END:
-			caret.end();
-			editor.repaint();
+			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.END));
+			// caret.end();
+			// editor.repaint();
 			break;
 		}
 	}
@@ -53,4 +53,5 @@ public class CaretKeyListener implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 	}
+
 }

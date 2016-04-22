@@ -10,7 +10,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
-import ru.tesei7.textEditor.editor.document.SyntaxDocument;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaretListener;
+import ru.tesei7.textEditor.editor.document.DocumentEditEvent;
+import ru.tesei7.textEditor.editor.document.DocumentEditListener;
+import ru.tesei7.textEditor.editor.document.SyntaxDocumentEditor;
+import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.listeners.HScrollListener;
 import ru.tesei7.textEditor.editor.listeners.VScrollListener;
 import ru.tesei7.textEditor.editor.listeners.key.CaretKeyListener;
@@ -19,7 +24,7 @@ import ru.tesei7.textEditor.editor.painter.CaretPainter;
 import ru.tesei7.textEditor.editor.painter.SyntaxDocumentPainter;
 import ru.tesei7.textEditor.editor.utils.FontUtils;
 
-public class SyntaxTextEditor extends JPanel {
+public class SyntaxTextEditor extends JPanel implements SyntaxCaretListener, DocumentEditListener{
 	private static final long serialVersionUID = 1485541136343010484L;
 	public static final int TAB_INDENT = 4;
 	static final int DEFAULT_ROWS = 40;
@@ -27,8 +32,8 @@ public class SyntaxTextEditor extends JPanel {
 
 	private SyntaxDocument document;
 
-	protected CaretKeyListener caretKeyListener;
-	protected TextKeyListener textKeyListener;
+	protected CaretKeyListener caretKeyListener = new CaretKeyListener();
+	protected TextKeyListener textKeyListener = new TextKeyListener();
 	protected HScrollListener hScrollListener;
 	protected VScrollListener vScrollListener;
 	
@@ -71,8 +76,10 @@ public class SyntaxTextEditor extends JPanel {
 		this.documentPainter = new SyntaxDocumentPainter(this);
 		this.io = new SyntaxDocumentIO(document);
 
-		this.caretKeyListener = new CaretKeyListener(this);
-		this.textKeyListener = new TextKeyListener(this);
+		caretKeyListener.addListener(caret);
+		caretKeyListener.addListener(this);
+		textKeyListener.addListener(new SyntaxDocumentEditor(document));
+		textKeyListener.addListener(this);
 		addKeyListener(textKeyListener);
 		addKeyListener(caretKeyListener);
 	}
@@ -139,6 +146,16 @@ public class SyntaxTextEditor extends JPanel {
 		int height = fm.getHeight() * (rows + 1) + fm.getDescent();
 		int width = fm.charWidth('a') * cols;
 		setPreferredSize(new Dimension(width, height));
+	}
+
+	@Override
+	public void onCaretChanged(SyntaxCaretEvent e) {
+		repaint();
+	}
+	
+	@Override
+	public void onDocumentEdited(DocumentEditEvent e) {
+		repaint();
 	}
 
 }

@@ -1,9 +1,11 @@
-package ru.tesei7.textEditor.editor.document;
+package ru.tesei7.textEditor.editor.document.model;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import ru.tesei7.textEditor.editor.document.model.Line;
 
 public class LineTest {
 	private Line l = new Line();

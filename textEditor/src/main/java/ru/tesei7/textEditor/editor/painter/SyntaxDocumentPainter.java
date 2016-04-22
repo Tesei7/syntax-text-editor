@@ -5,8 +5,8 @@ import java.awt.Graphics;
 import java.util.List;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
-import ru.tesei7.textEditor.editor.document.Line;
-import ru.tesei7.textEditor.editor.document.SyntaxDocument;
+import ru.tesei7.textEditor.editor.document.model.Line;
+import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
 public class SyntaxDocumentPainter {
 

@@ -1,4 +1,4 @@
-package ru.tesei7.textEditor.editor.document;
+package ru.tesei7.textEditor.editor.document.model;
 
 import java.util.ArrayList;
 import java.util.List;

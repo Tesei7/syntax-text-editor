@@ -3,10 +3,10 @@ package ru.tesei7.textEditor.editor.caret;
 import java.util.List;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
-import ru.tesei7.textEditor.editor.document.Line;
-import ru.tesei7.textEditor.editor.document.SyntaxDocument;
+import ru.tesei7.textEditor.editor.document.model.Line;
+import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
-public class SyntaxCaret {
+public class SyntaxCaret implements SyntaxCaretListener {
 
 	private CaretType type;
 	private SyntaxDocument document;
@@ -31,7 +31,7 @@ public class SyntaxCaret {
 	public int getX() {
 		return getCurrentLine().getOffset();
 	}
-	
+
 	public int getXToPaint() {
 		return caretService.getXToPaint();
 	}
@@ -91,9 +91,45 @@ public class SyntaxCaret {
 	Line getCurrentLine() {
 		return document.getCurrentLine();
 	}
-	
-	public int getCols(){
+
+	public int getCols() {
 		return editor.getCols();
+	}
+
+	@Override
+	public void onCaretChanged(SyntaxCaretEvent e) {
+		switch (e.getType()) {
+		case LEFT:
+			left();
+			break;
+		case RIGHT:
+			right();
+			break;
+		case UP:
+			up();
+			break;
+		case DOWN:
+			down();
+			break;
+		case END:
+			end();
+			break;
+		case HOME:
+			home();
+			break;
+		case INSERT:
+			// TODO
+			break;
+		case PAGE_DOWN:
+			// TODO
+			break;
+		case PAGE_UP:
+			// TODO
+			break;
+		case MOUSE:
+			// TODO
+			break;
+		}
 	}
 
 }

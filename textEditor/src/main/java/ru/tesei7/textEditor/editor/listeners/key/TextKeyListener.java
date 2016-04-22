@@ -3,28 +3,17 @@ package ru.tesei7.textEditor.editor.listeners.key;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import ru.tesei7.textEditor.editor.SyntaxDocumentEditor;
-import ru.tesei7.textEditor.editor.SyntaxTextEditor;
-import ru.tesei7.textEditor.editor.document.SyntaxDocument;
+import ru.tesei7.textEditor.editor.document.DocumentEditEvent;
+import ru.tesei7.textEditor.editor.document.DocumentEditEventType;
+import ru.tesei7.textEditor.editor.document.DocumentEditObservable;
 
-public class TextKeyListener implements KeyListener {
-	private SyntaxDocumentEditor documentEditor;
-
-	private SyntaxTextEditor editor;
-	private SyntaxDocument document;
-
-	public TextKeyListener(SyntaxTextEditor editor) {
-		this.editor = editor;
-		this.document = editor.getDocument();
-		this.documentEditor = new SyntaxDocumentEditor(document);
-	}
+public class TextKeyListener extends DocumentEditObservable implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		char c = e.getKeyChar();
 		if (isPrintableChar(c) || c == '\n' || c == '\t') {
-			documentEditor.printChar(c);
-			editor.repaint();
+			notifyListeners(new DocumentEditEvent(DocumentEditEventType.PRINT_CHAR, c));
 		}
 	}
 
@@ -38,12 +27,10 @@ public class TextKeyListener implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_BACK_SPACE:
-			documentEditor.backspace();
-			editor.repaint();
+			notifyListeners(new DocumentEditEvent(DocumentEditEventType.BACKSPACE));
 			break;
 		case KeyEvent.VK_DELETE:
-			documentEditor.delete();
-			editor.repaint();
+			notifyListeners(new DocumentEditEvent(DocumentEditEventType.DELETE));
 			break;
 		}
 	}

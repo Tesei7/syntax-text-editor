@@ -1,4 +1,4 @@
-package ru.tesei7.textEditor.editor.document;
+package ru.tesei7.textEditor.editor.document.model;
 
 public class Token {
 

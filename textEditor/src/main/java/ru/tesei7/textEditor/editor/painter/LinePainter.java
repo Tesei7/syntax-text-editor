@@ -3,7 +3,7 @@ package ru.tesei7.textEditor.editor.painter;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import ru.tesei7.textEditor.editor.document.Line;
+import ru.tesei7.textEditor.editor.document.model.Line;
 
 public class LinePainter {
 

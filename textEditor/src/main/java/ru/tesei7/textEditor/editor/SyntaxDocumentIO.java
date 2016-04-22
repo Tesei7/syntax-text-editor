@@ -1,7 +1,7 @@
 package ru.tesei7.textEditor.editor;
 
-import ru.tesei7.textEditor.editor.document.Line;
-import ru.tesei7.textEditor.editor.document.SyntaxDocument;
+import ru.tesei7.textEditor.editor.document.model.Line;
+import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
 public class SyntaxDocumentIO {
 

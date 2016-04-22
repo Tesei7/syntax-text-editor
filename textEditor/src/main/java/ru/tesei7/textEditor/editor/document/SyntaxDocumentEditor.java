@@ -1,12 +1,12 @@
-package ru.tesei7.textEditor.editor;
+package ru.tesei7.textEditor.editor.document;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import ru.tesei7.textEditor.editor.document.Line;
-import ru.tesei7.textEditor.editor.document.SyntaxDocument;
+import ru.tesei7.textEditor.editor.document.model.Line;
+import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
-public class SyntaxDocumentEditor {
+public class SyntaxDocumentEditor implements DocumentEditListener {
 
 	private SyntaxDocument document;
 
@@ -14,7 +14,24 @@ public class SyntaxDocumentEditor {
 		this.document = document;
 	}
 
-	public void printChar(char c) {
+	@Override
+	public void onDocumentEdited(DocumentEditEvent e) {
+		switch (e.getType()) {
+		case BACKSPACE:
+			backspace();
+			break;
+		case DELETE:
+			delete();
+			break;
+		case PRINT_CHAR:
+			printChar(e.getChar());
+			break;
+		default:
+			break;
+		}
+	}
+
+	void printChar(char c) {
 		if (c == '\n') {
 			addNewLine();
 		} else {
@@ -38,7 +55,7 @@ public class SyntaxDocumentEditor {
 		newLine.setOffset(0);
 	}
 
-	public void delete() {
+	void delete() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == currentLine.getLenght()) {
 			concatLines(currentLine, currentLine.getNext());
@@ -47,7 +64,7 @@ public class SyntaxDocumentEditor {
 		}
 	}
 
-	public void backspace() {
+	void backspace() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == 0) {
 			concatLines(currentLine.getPrevious(), currentLine);
@@ -75,4 +92,5 @@ public class SyntaxDocumentEditor {
 		document.setCurrentLine(l1);
 		l1.setOffset(l1_lenght);
 	}
+
 }

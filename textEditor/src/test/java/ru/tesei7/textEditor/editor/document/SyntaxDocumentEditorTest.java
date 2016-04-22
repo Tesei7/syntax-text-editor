@@ -1,4 +1,4 @@
-package ru.tesei7.textEditor.editor;
+package ru.tesei7.textEditor.editor.document;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.allOf;
@@ -24,8 +24,9 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import ru.tesei7.textEditor.editor.document.Line;
-import ru.tesei7.textEditor.editor.document.SyntaxDocument;
+import ru.tesei7.textEditor.editor.document.SyntaxDocumentEditor;
+import ru.tesei7.textEditor.editor.document.model.Line;
+import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(SyntaxDocumentEditor.class)
