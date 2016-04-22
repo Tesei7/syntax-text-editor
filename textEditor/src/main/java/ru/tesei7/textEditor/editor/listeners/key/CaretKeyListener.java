@@ -19,33 +19,21 @@ public class CaretKeyListener extends SyntaxCaretObservable implements KeyListen
 		switch (code) {
 		case KeyEvent.VK_LEFT:
 			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.LEFT));
-			// caret.left();
-			// editor.repaint();
 			break;
 		case KeyEvent.VK_RIGHT:
 			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.RIGHT));
-			// caret.right();
-			// editor.repaint();
 			break;
 		case KeyEvent.VK_UP:
 			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.UP));
-			// caret.up();
-			// editor.repaint();
 			break;
 		case KeyEvent.VK_DOWN:
 			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
-			// caret.down();
-			// editor.repaint();
 			break;
 		case KeyEvent.VK_HOME:
 			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.HOME));
-			// caret.home();
-			// editor.repaint();
 			break;
 		case KeyEvent.VK_END:
 			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.END));
-			// caret.end();
-			// editor.repaint();
 			break;
 		}
 	}

@@ -1,11 +1,15 @@
 package ru.tesei7.textEditor.editor.caret;
 
-import java.util.List;
-
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
+/**
+ * Listens all actions with caret and perform changes in {@link SyntaxDocument}
+ * 
+ * @author Ilya
+ *
+ */
 public class SyntaxCaret implements SyntaxCaretListener {
 
 	private CaretType type;
@@ -51,15 +55,19 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		currentLine.setOffset(x);
 	}
 
-	public void setY(int y) {
-		if (y < 0 || y > editor.getRows()) {
-			return;
+	public void moveY(int y) {
+		Line targetLine = document.getCurrentLine();
+		if (y < 0) {
+			while (targetLine.hasPrevious() && y < 0) {
+				targetLine = targetLine.getPrevious();
+				y++;
+			}
+		} else if (y > 0) {
+			while (targetLine.hasNext() && y > 0) {
+				targetLine = targetLine.getNext();
+				y--;
+			}
 		}
-		List<Line> visibleLines = document.getVisibleLines();
-		if (y > visibleLines.size() - 1) {
-			return;
-		}
-		Line targetLine = visibleLines.get(y);
 		targetLine.setOffset(caretService.getTargetLineOffset(targetLine));
 		document.setCurrentLine(targetLine);
 	}
@@ -73,11 +81,11 @@ public class SyntaxCaret implements SyntaxCaretListener {
 	}
 
 	public void up() {
-		setY(getY() - 1);
+		moveY(-1);
 	}
 
 	public void down() {
-		setY(getY() + 1);
+		moveY(1);
 	}
 
 	public void home() {

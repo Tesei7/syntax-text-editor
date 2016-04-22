@@ -12,8 +12,10 @@ public class TextKeyListener extends DocumentEditObservable implements KeyListen
 	@Override
 	public void keyTyped(KeyEvent e) {
 		char c = e.getKeyChar();
-		if (isPrintableChar(c) || c == '\n' || c == '\t') {
+		if (isPrintableChar(c) || c == '\t') {
 			notifyListeners(new DocumentEditEvent(DocumentEditEventType.PRINT_CHAR, c));
+		} else if (c == '\n') {
+			notifyListeners(new DocumentEditEvent(DocumentEditEventType.NEW_LINE));
 		}
 	}
 

@@ -5,6 +5,12 @@ import java.util.List;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 
+/**
+ * Stores text data in linked list of {@link Line}s.
+ * 
+ * @author Ilya
+ *
+ */
 public class SyntaxDocument {
 
 	private Line firstLine;
