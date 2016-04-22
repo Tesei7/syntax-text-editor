@@ -29,6 +29,12 @@ public class CaretKeyListener extends SyntaxCaretObservable implements KeyListen
 		case KeyEvent.VK_DOWN:
 			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
 			break;
+		case KeyEvent.VK_PAGE_UP:
+			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.PAGE_UP));
+			break;
+		case KeyEvent.VK_PAGE_DOWN:
+			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.PAGE_DOWN));
+			break;
 		case KeyEvent.VK_HOME:
 			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.HOME));
 			break;

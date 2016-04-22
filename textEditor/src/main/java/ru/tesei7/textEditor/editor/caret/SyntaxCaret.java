@@ -72,30 +72,6 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		document.setCurrentLine(targetLine);
 	}
 
-	public void left() {
-		setX(getX() - 1);
-	}
-
-	public void right() {
-		setX(getX() + 1);
-	}
-
-	public void up() {
-		moveY(-1);
-	}
-
-	public void down() {
-		moveY(1);
-	}
-
-	public void home() {
-		setX(0);
-	}
-
-	public void end() {
-		setX(getCurrentLine().getLenght());
-	}
-
 	Line getCurrentLine() {
 		return document.getCurrentLine();
 	}
@@ -108,30 +84,30 @@ public class SyntaxCaret implements SyntaxCaretListener {
 	public void onCaretChanged(SyntaxCaretEvent e) {
 		switch (e.getType()) {
 		case LEFT:
-			left();
+			setX(getX() - 1);
 			break;
 		case RIGHT:
-			right();
+			setX(getX() + 1);
 			break;
 		case UP:
-			up();
+			moveY(-1);
 			break;
 		case DOWN:
-			down();
-			break;
-		case END:
-			end();
-			break;
-		case HOME:
-			home();
-			break;
-		case INSERT:
-			// TODO
-			break;
-		case PAGE_DOWN:
-			// TODO
+			moveY(1);
 			break;
 		case PAGE_UP:
+			moveY(-1*editor.getRows());
+			break;
+		case PAGE_DOWN:
+			moveY(editor.getRows());
+			break;
+		case HOME:
+			setX(0);
+			break;
+		case END:
+			setX(getCurrentLine().getLenght());
+			break;
+		case INSERT:
 			// TODO
 			break;
 		case MOUSE:
