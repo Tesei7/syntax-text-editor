@@ -7,15 +7,21 @@ import ru.tesei7.textEditor.editor.document.DocumentEditEvent;
 import ru.tesei7.textEditor.editor.document.DocumentEditEventType;
 import ru.tesei7.textEditor.editor.document.DocumentEditObservable;
 
-public class TextKeyListener extends DocumentEditObservable implements KeyListener {
+public class TextKeyListener implements KeyListener {
+
+	private DocumentEditObservable observable;
+
+	public TextKeyListener(DocumentEditObservable documentEditObservable) {
+		this.observable = documentEditObservable;
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		char c = e.getKeyChar();
 		if (isPrintableChar(c) || c == '\t') {
-			notifyListeners(new DocumentEditEvent(DocumentEditEventType.PRINT_CHAR, c));
+			observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.PRINT_CHAR, c));
 		} else if (c == '\n') {
-			notifyListeners(new DocumentEditEvent(DocumentEditEventType.NEW_LINE));
+			observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.NEW_LINE));
 		}
 	}
 
@@ -29,10 +35,10 @@ public class TextKeyListener extends DocumentEditObservable implements KeyListen
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_BACK_SPACE:
-			notifyListeners(new DocumentEditEvent(DocumentEditEventType.BACKSPACE));
+			observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.BACKSPACE));
 			break;
 		case KeyEvent.VK_DELETE:
-			notifyListeners(new DocumentEditEvent(DocumentEditEventType.DELETE));
+			observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.DELETE));
 			break;
 		}
 	}

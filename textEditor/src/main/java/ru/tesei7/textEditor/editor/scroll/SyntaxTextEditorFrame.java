@@ -9,12 +9,12 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretListener;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
-public class SyntaxTextEditorScroller implements SyntaxCaretListener, SyntaxScrollListener {
+public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollListener {
 
 	private SyntaxTextEditor editor;
 	SyntaxDocument document;
 
-	public SyntaxTextEditorScroller(SyntaxTextEditor editor) {
+	public SyntaxTextEditorFrame(SyntaxTextEditor editor) {
 		this.editor = editor;
 		this.document = this.editor.getDocument();
 	}
@@ -78,7 +78,7 @@ public class SyntaxTextEditorScroller implements SyntaxCaretListener, SyntaxScro
 	}
 
 	void scrollHorizontal(int adjustmentType, int value) {
-
+		// TODO
 	}
 
 	@Override

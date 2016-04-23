@@ -12,8 +12,10 @@ import javax.swing.JScrollBar;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretListener;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.DocumentEditEvent;
 import ru.tesei7.textEditor.editor.document.DocumentEditListener;
+import ru.tesei7.textEditor.editor.document.DocumentEditObservable;
 import ru.tesei7.textEditor.editor.document.SyntaxDocumentEditor;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.listeners.ScrollBarListener;
@@ -24,9 +26,15 @@ import ru.tesei7.textEditor.editor.painter.SyntaxDocumentPainter;
 import ru.tesei7.textEditor.editor.scroll.ScrollDirection;
 import ru.tesei7.textEditor.editor.scroll.SyntaxScrollEvent;
 import ru.tesei7.textEditor.editor.scroll.SyntaxScrollListener;
-import ru.tesei7.textEditor.editor.scroll.SyntaxTextEditorScroller;
+import ru.tesei7.textEditor.editor.scroll.SyntaxTextEditorFrame;
 import ru.tesei7.textEditor.editor.utils.FontUtils;
 
+/**
+ * Editor with syntax highlighting.
+ * 
+ * @author Ilya
+ *
+ */
 public class SyntaxTextEditor extends JPanel
 		implements SyntaxCaretListener, DocumentEditListener, SyntaxScrollListener {
 	private static final long serialVersionUID = 1485541136343010484L;
@@ -34,17 +42,23 @@ public class SyntaxTextEditor extends JPanel
 	static final int DEFAULT_ROWS = 40;
 	static final int DEFAULT_COLS = 80;
 
+	/**
+	 * Data model to store text information
+	 */
 	private SyntaxDocument document;
 
-	protected CaretKeyListener caretKeyListener = new CaretKeyListener();
-	protected TextKeyListener textKeyListener = new TextKeyListener();
+	private SyntaxCaretObservable syntaxCaretObservable = new SyntaxCaretObservable();
+	private DocumentEditObservable documentEditObservable = new DocumentEditObservable();
+
+	protected CaretKeyListener caretKeyListener = new CaretKeyListener(syntaxCaretObservable);
+	protected TextKeyListener textKeyListener = new TextKeyListener(documentEditObservable);
 	protected ScrollBarListener hScrollListener = new ScrollBarListener(ScrollDirection.HORIZONTAL);
 	protected ScrollBarListener vScrollListener = new ScrollBarListener(ScrollDirection.VERTICAL);
 
 	private SyntaxDocumentEditor syntaxDocumentEditor;
 	private SyntaxCaret caret;
 	private SyntaxDocumentIO io;
-	private SyntaxTextEditorScroller scroller;
+	private SyntaxTextEditorFrame frame;
 
 	private SyntaxDocumentPainter documentPainter;
 	private CaretPainter caretPainter;
@@ -56,6 +70,27 @@ public class SyntaxTextEditor extends JPanel
 
 	public SyntaxTextEditor() {
 		super();
+		createComponent();
+
+		this.document = new SyntaxDocument(this);
+		this.syntaxDocumentEditor = new SyntaxDocumentEditor(document, syntaxCaretObservable);
+		this.caret = new SyntaxCaret(this);
+		this.frame = new SyntaxTextEditorFrame(this);
+		this.caretPainter = new CaretPainter(caret);
+		this.documentPainter = new SyntaxDocumentPainter(this);
+		this.io = new SyntaxDocumentIO(document);
+
+		syntaxCaretObservable.addListener(caret);
+		syntaxCaretObservable.addListener(frame);
+		syntaxCaretObservable.addListener(this);
+
+		documentEditObservable.addListener(syntaxDocumentEditor);
+		documentEditObservable.addListener(this);
+
+		initUIListeners();
+	}
+
+	private void createComponent() {
 		rows = SyntaxTextEditor.DEFAULT_ROWS;
 		cols = SyntaxTextEditor.DEFAULT_COLS;
 		recalcSize();
@@ -72,26 +107,12 @@ public class SyntaxTextEditor extends JPanel
 		add(vbar, BorderLayout.EAST);
 		hbar.addAdjustmentListener(hScrollListener);
 		vbar.addAdjustmentListener(vScrollListener);
+	}
 
-		this.document = new SyntaxDocument(this);
-		this.syntaxDocumentEditor = new SyntaxDocumentEditor(document);
-		this.caret = new SyntaxCaret(this);
-		this.scroller = new SyntaxTextEditorScroller(this);
-		this.caretPainter = new CaretPainter(caret);
-		this.documentPainter = new SyntaxDocumentPainter(this);
-		this.io = new SyntaxDocumentIO(document);
-
-		caretKeyListener.addListener(caret);
-		caretKeyListener.addListener(scroller);
-		caretKeyListener.addListener(this);
-
-		textKeyListener.addListener(syntaxDocumentEditor);
-		syntaxDocumentEditor.addListener(scroller);
-		textKeyListener.addListener(this);
-
-		hScrollListener.addListener(scroller);
+	private void initUIListeners() {
+		hScrollListener.addListener(frame);
 		hScrollListener.addListener(this);
-		vScrollListener.addListener(scroller);
+		vScrollListener.addListener(frame);
 		vScrollListener.addListener(this);
 
 		addKeyListener(textKeyListener);
@@ -110,8 +131,8 @@ public class SyntaxTextEditor extends JPanel
 		return caret;
 	}
 
-	public SyntaxTextEditorScroller getScroller() {
-		return scroller;
+	public SyntaxTextEditorFrame getScroller() {
+		return frame;
 	}
 
 	@Override

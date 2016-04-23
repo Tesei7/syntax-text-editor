@@ -7,7 +7,13 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 
-public class CaretKeyListener extends SyntaxCaretObservable implements KeyListener {
+public class CaretKeyListener implements KeyListener {
+
+	private SyntaxCaretObservable observable;
+
+	public CaretKeyListener(SyntaxCaretObservable syntaxCaretObservable) {
+		this.observable = syntaxCaretObservable;
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -18,28 +24,28 @@ public class CaretKeyListener extends SyntaxCaretObservable implements KeyListen
 		int code = e.getKeyCode();
 		switch (code) {
 		case KeyEvent.VK_LEFT:
-			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.LEFT));
+			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.LEFT));
 			break;
 		case KeyEvent.VK_RIGHT:
-			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.RIGHT));
+			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.RIGHT));
 			break;
 		case KeyEvent.VK_UP:
-			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.UP));
+			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.UP));
 			break;
 		case KeyEvent.VK_DOWN:
-			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
+			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
 			break;
 		case KeyEvent.VK_PAGE_UP:
-			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.PAGE_UP));
+			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.PAGE_UP));
 			break;
 		case KeyEvent.VK_PAGE_DOWN:
-			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.PAGE_DOWN));
+			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.PAGE_DOWN));
 			break;
 		case KeyEvent.VK_HOME:
-			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.HOME));
+			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.HOME));
 			break;
 		case KeyEvent.VK_END:
-			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.END));
+			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.END));
 			break;
 		}
 	}

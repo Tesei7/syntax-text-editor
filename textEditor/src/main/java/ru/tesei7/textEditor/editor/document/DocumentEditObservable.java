@@ -3,7 +3,7 @@ package ru.tesei7.textEditor.editor.document;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class DocumentEditObservable {
+public class DocumentEditObservable {
 	private List<DocumentEditListener> listeners = new ArrayList<>();
 
 	public void addListener(DocumentEditListener listener) {

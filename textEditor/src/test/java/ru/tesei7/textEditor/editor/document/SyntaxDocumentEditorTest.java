@@ -1,20 +1,12 @@
 package ru.tesei7.textEditor.editor.document;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasProperty;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import ru.tesei7.textEditor.editor.document.SyntaxDocumentEditor;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
@@ -36,20 +28,18 @@ public class SyntaxDocumentEditorTest {
 	private SyntaxDocument document;
 	@Mock
 	private Line cline;
+	@Mock
+	private SyntaxCaretObservable syntaxCaretObservable;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		syntaxDocumentEditor = spy(new SyntaxDocumentEditor(document));
+		syntaxDocumentEditor = spy(new SyntaxDocumentEditor(document, syntaxCaretObservable));
 		when(document.getCurrentLine()).thenReturn(cline);
 	}
 
 	@Test
 	public final void testPrintChar() throws Exception {
-		doNothing().when(syntaxDocumentEditor).addNewLine();
-		syntaxDocumentEditor.printChar('\n');
-		verify(syntaxDocumentEditor).addNewLine();
-
 		syntaxDocumentEditor.printChar('a');
 		verify(cline).printChar('a');
 	}
@@ -75,9 +65,9 @@ public class SyntaxDocumentEditorTest {
 		when(cline.getOffset()).thenReturn(3);
 		when(cline.getNext()).thenReturn(l2);
 
-		doNothing().when(syntaxDocumentEditor).concatLines(any(), any());
+		doNothing().when(syntaxDocumentEditor).concatLines(any(), any(), eq(false));
 		syntaxDocumentEditor.delete();
-		verify(syntaxDocumentEditor).concatLines(cline, l2);
+		verify(syntaxDocumentEditor).concatLines(cline, l2, false);
 
 		when(cline.getOffset()).thenReturn(2);
 		syntaxDocumentEditor.delete();
@@ -90,9 +80,9 @@ public class SyntaxDocumentEditorTest {
 		when(cline.getLenght()).thenReturn(3);
 		when(cline.getPrevious()).thenReturn(l2);
 
-		doNothing().when(syntaxDocumentEditor).concatLines(any(), any());
+		doNothing().when(syntaxDocumentEditor).concatLines(any(), any(), eq(true));
 		syntaxDocumentEditor.backspace();
-		verify(syntaxDocumentEditor).concatLines(l2, cline);
+		verify(syntaxDocumentEditor).concatLines(l2, cline, true);
 
 		when(cline.getOffset()).thenReturn(2);
 		syntaxDocumentEditor.backspace();

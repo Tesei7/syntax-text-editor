@@ -22,10 +22,10 @@ import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SyntaxTextEditorScrollerTest {
+public class SyntaxTextEditorFrameTest {
 	@InjectMocks
 	@Spy
-	private SyntaxTextEditorScroller syntaxTextEditorScroller;
+	private SyntaxTextEditorFrame syntaxTextEditorScroller;
 	@Mock
 	private SyntaxDocument document;
 	@Mock

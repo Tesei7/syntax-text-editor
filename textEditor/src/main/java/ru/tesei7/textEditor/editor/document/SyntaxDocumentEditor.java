@@ -9,12 +9,14 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
-public class SyntaxDocumentEditor extends SyntaxCaretObservable implements DocumentEditListener {
+public class SyntaxDocumentEditor implements DocumentEditListener {
 
 	private SyntaxDocument document;
+	SyntaxCaretObservable caretObservable;
 
-	public SyntaxDocumentEditor(SyntaxDocument document) {
+	public SyntaxDocumentEditor(SyntaxDocument document, SyntaxCaretObservable syntaxCaretObservable) {
 		this.document = document;
+		this.caretObservable = syntaxCaretObservable;
 	}
 
 	@Override
@@ -53,16 +55,16 @@ public class SyntaxDocumentEditor extends SyntaxCaretObservable implements Docum
 		List<Character> curLineText = currentLine.getChars();
 		newLine.setChars(curLineText.subList(offset, curLineText.size()));
 		currentLine.setChars(curLineText.subList(0, offset));
-		document.setCurrentLine(newLine);
+
+		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
+
 		newLine.setOffset(0);
-		
-		notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
 	}
 
 	void delete() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == currentLine.getLenght()) {
-			concatLines(currentLine, currentLine.getNext());
+			concatLines(currentLine, currentLine.getNext(), false);
 		} else {
 			currentLine.delete();
 		}
@@ -71,14 +73,13 @@ public class SyntaxDocumentEditor extends SyntaxCaretObservable implements Docum
 	void backspace() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == 0) {
-			concatLines(currentLine.getPrevious(), currentLine);
-			notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.UP));
+			concatLines(currentLine.getPrevious(), currentLine, true);
 		} else {
 			currentLine.backspace();
 		}
 	}
 
-	void concatLines(Line l1, Line l2) {
+	void concatLines(Line l1, Line l2, boolean moveCaretUp) {
 		if (l1 == null || l2 == null) {
 			return;
 		}
@@ -94,7 +95,10 @@ public class SyntaxDocumentEditor extends SyntaxCaretObservable implements Docum
 		concat.addAll(l1.getChars());
 		concat.addAll(l2.getChars());
 		l1.setChars(concat);
-		document.setCurrentLine(l1);
+
+		if (moveCaretUp) {
+			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.UP));
+		}
 		l1.setOffset(l1_lenght);
 	}
 

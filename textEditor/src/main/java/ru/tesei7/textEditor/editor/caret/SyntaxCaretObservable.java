@@ -3,7 +3,7 @@ package ru.tesei7.textEditor.editor.caret;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SyntaxCaretObservable {
+public class SyntaxCaretObservable {
 
 	private List<SyntaxCaretListener> listeners = new ArrayList<>();
 
