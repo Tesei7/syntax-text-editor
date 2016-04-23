@@ -12,7 +12,7 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 public class SyntaxTextEditorScroller implements SyntaxCaretListener, SyntaxScrollListener {
 
 	private SyntaxTextEditor editor;
-	private SyntaxDocument document;
+	SyntaxDocument document;
 
 	public SyntaxTextEditorScroller(SyntaxTextEditor editor) {
 		this.editor = editor;

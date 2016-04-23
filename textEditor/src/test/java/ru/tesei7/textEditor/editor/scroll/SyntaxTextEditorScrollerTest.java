@@ -37,7 +37,7 @@ public class SyntaxTextEditorScrollerTest {
 
 	@Before
 	public void setUp() {
-		when(editor.getDocument()).thenReturn(document);
+		syntaxTextEditorScroller.document = document;
 		when(document.getFirstVisibleLine()).thenReturn(fline);
 	}
 
@@ -59,7 +59,6 @@ public class SyntaxTextEditorScrollerTest {
 	}
 
 	@Test
-	@Ignore
 	public void scrollVericalReletiveTest() throws Exception {
 		Line l1 = mock(Line.class);
 		Line l2 = mock(Line.class);
@@ -71,7 +70,9 @@ public class SyntaxTextEditorScrollerTest {
 		verify(document, never()).setFirstVisibleLine(l2);
 
 		when(fline.getNext()).thenReturn(l1);
+		when(fline.hasNext()).thenReturn(true);
 		when(fline.getPrevious()).thenReturn(l2);
+		when(fline.hasPrevious()).thenReturn(true);
 
 		syntaxTextEditorScroller.scrollVericalReletive(1);
 		verify(document).setFirstVisibleLine(l1);

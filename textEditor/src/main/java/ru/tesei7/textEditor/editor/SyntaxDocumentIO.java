@@ -42,20 +42,14 @@ public class SyntaxDocumentIO {
 				l = new Line();
 				prev.linkWith(l);
 			}
-//			List<Character> list = split[i].chars().mapToObj(c -> (char) c).collect(toList());
-//			l.setText(list);
 			l.setText(split[i].toCharArray());
 			prev = l;
 			l.setOffset(0);
 		}
-		
+		document.setCurrentLine(document.getFirstLine());
+		document.setFirstVisibleLine(document.getFirstLine());
 		long t3 = System.currentTimeMillis();
 		System.out.println("fill doc:" + (t3 - t2) + "ms");
 	}
 
-	public void setText(byte[] text) {
-		Line prev = null;
-		for (int i = 0; i < text.length; i++) {
-		}
-	}
 }
