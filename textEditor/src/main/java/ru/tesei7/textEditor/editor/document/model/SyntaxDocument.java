@@ -18,9 +18,9 @@ public class SyntaxDocument {
 
 	private int rows = DEFAULT_ROWS;
 	private int cols = DEFAULT_COLS;
-	private Line firstLine;
-	private Line firstVisibleLine;
-	private Line currentLine;
+	Line firstLine;
+	Line firstVisibleLine;
+	Line currentLine;
 	private FrameObserverable frameObserverable;
 
 	public SyntaxDocument(FrameObserverable frameObserverable) {
@@ -63,7 +63,6 @@ public class SyntaxDocument {
 				line = line.getNext();
 				i--;
 			}
-
 		} while (i > 0);
 		return lines;
 	}

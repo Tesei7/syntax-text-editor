@@ -1,7 +1,10 @@
 package ru.tesei7.textEditor.editor.document.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -17,7 +20,7 @@ public class LineTest {
 		l.printChar('b');
 		l.linkWith(null);
 		assertFalse(l.hasNext());
-		
+
 		l2.printChar('c');
 		l.linkWith(l2);
 		assertTrue(l.equals(l2.getPrevious()));
@@ -39,9 +42,9 @@ public class LineTest {
 		assertTrue(l.getChars().get(0).equals('a'));
 		assertTrue(l.getLenght() == 1);
 		assertTrue(l.getOffset() == 1);
-		
+
 		l.setOffset(0);
-		l.delete();		
+		l.delete();
 		assertTrue(l.getLenght() == 0);
 		assertTrue(l.getOffset() == 0);
 	}
@@ -52,10 +55,42 @@ public class LineTest {
 		l.backspace();
 		assertTrue(l.getLenght() == 0);
 		assertTrue(l.getOffset() == 0);
-		
+
 		l.backspace();
 		assertTrue(l.getLenght() == 0);
 		assertTrue(l.getOffset() == 0);
+	}
+
+	@Test
+	public void testSetOffset() throws Exception {
+		l.setOffset(1);
+		assertTrue(l.getOffset() == 0);
+
+		l.printChar('a');
+		l.setOffset(1);
+		assertTrue(l.getOffset() == 1);
+
+		l.setOffset(-1);
+		assertTrue(l.getOffset() == 0);
+	}
+
+	@Test
+	public void testGetCharsToShow() throws Exception {
+		assertTrue(Arrays.equals(new char[0], l.getCharsToShow()));
+
+		l.printChar('a');
+		assertTrue(Arrays.equals(new char[] { 'a' }, l.getCharsToShow()));
+
+		l.printChar('\t');
+		assertTrue(Arrays.equals(new char[] { 'a', ' ', ' ', ' ', ' ' }, l.getCharsToShow()));
+	}
+
+	@Test
+	public void testSetChars() throws Exception {
+		l.setChars(Arrays.asList('a', 'b', 'c'));
+
+		assertThat(l.getChars()).containsExactly('a', 'b', 'c');
+		assertTrue(l.getOffset() == 3);
 	}
 
 }
