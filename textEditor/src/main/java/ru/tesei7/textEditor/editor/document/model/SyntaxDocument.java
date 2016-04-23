@@ -2,6 +2,7 @@ package ru.tesei7.textEditor.editor.document.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 
 import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
@@ -14,13 +15,14 @@ import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
  */
 public class SyntaxDocument {
 	static final int DEFAULT_ROWS = 40;
-	static final int DEFAULT_COLS = 180;
+	static final int DEFAULT_COLS = 80;
 
 	private int rows = DEFAULT_ROWS;
 	private int cols = DEFAULT_COLS;
 	Line firstLine;
 	Line firstVisibleLine;
 	Line currentLine;
+	int firstVisibleCol = 0;
 	private FrameObserverable frameObserverable;
 
 	public SyntaxDocument(FrameObserverable frameObserverable) {
@@ -34,6 +36,14 @@ public class SyntaxDocument {
 		return firstLine;
 	}
 
+	public Line getCurrentLine() {
+		return currentLine;
+	}
+
+	public void setCurrentLine(Line currentLine) {
+		this.currentLine = currentLine;
+	}
+
 	public Line getFirstVisibleLine() {
 		return firstVisibleLine;
 	}
@@ -43,12 +53,13 @@ public class SyntaxDocument {
 		frameObserverable.notifyListeners(new FrameEvent(firstVisibleLine));
 	}
 
-	public Line getCurrentLine() {
-		return currentLine;
+	public int getFirstVisibleCol() {
+		return firstVisibleCol;
 	}
 
-	public void setCurrentLine(Line currentLine) {
-		this.currentLine = currentLine;
+	public void setFirstVisibleCol(int firstVisibleCol) {
+		this.firstVisibleCol = firstVisibleCol;
+		frameObserverable.notifyListeners(new FrameEvent(firstVisibleCol));
 	}
 
 	public List<Line> getVisibleLines() {
@@ -115,5 +126,10 @@ public class SyntaxDocument {
 			index++;
 		}
 		return index;
+	}
+
+	public int getMaxCols() {
+		OptionalInt max = getVisibleLines().stream().mapToInt(l -> l.getLenght()).max();
+		return max.isPresent() ? max.getAsInt() : cols;
 	}
 }

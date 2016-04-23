@@ -6,14 +6,18 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
@@ -21,6 +25,7 @@ import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
 @RunWith(MockitoJUnitRunner.class)
 public class SyntaxDocumentTest {
 	@InjectMocks
+	@Spy
 	private SyntaxDocument syntaxDocument;
 	@Mock
 	private Line currentLine;
@@ -89,6 +94,21 @@ public class SyntaxDocumentTest {
 		when(firstVisibleLine.hasNext()).thenReturn(true);
 		when(firstVisibleLine.getNext()).thenReturn(firstVisibleLine);
 		assertThat(syntaxDocument.getVisibleLines(), contains(firstVisibleLine, firstVisibleLine));
+	}
+
+	@Test
+	public void testSetFirstVisibleCol() throws Exception {
+		syntaxDocument.setFirstVisibleCol(12);
+		verify(frameObserverable).notifyListeners(argThat(hasProperty("firstVisibleCol", is(12))));
+	}
+
+	@Test
+	public void testGetMaxCols() throws Exception {
+		doReturn(Arrays.asList(firstLine, firstVisibleLine, currentLine)).when(syntaxDocument).getVisibleLines();
+		when(firstLine.getLenght()).thenReturn(42);
+		when(firstVisibleLine.getLenght()).thenReturn(43);
+		when(firstVisibleLine.getLenght()).thenReturn(44);
+		assertThat(syntaxDocument.getMaxCols(), is(44));
 	}
 
 }

@@ -4,10 +4,10 @@ import ru.tesei7.textEditor.editor.document.model.Line;
 
 public class FrameEvent {
 	private Line firstVisibleLine;
-	private int xOffset;
+	private Integer firstVisibleCol;
 
-	public FrameEvent(int xOffset) {
-		this.xOffset = xOffset;
+	public FrameEvent(Integer firstVisibleCol) {
+		this.firstVisibleCol = firstVisibleCol;
 	}
 
 	public FrameEvent(Line firstVisibleLine) {
@@ -18,8 +18,8 @@ public class FrameEvent {
 		return firstVisibleLine;
 	}
 
-	public int getxOffset() {
-		return xOffset;
+	public Integer getFirstVisibleCol() {
+		return firstVisibleCol;
 	}
 
 }

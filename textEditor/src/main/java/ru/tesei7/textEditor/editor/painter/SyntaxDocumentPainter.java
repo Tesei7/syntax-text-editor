@@ -32,7 +32,9 @@ public class SyntaxDocumentPainter {
 
 		List<Line> lines = document.getVisibleLines();
 		for (int i = 0; i < lines.size(); i++) {
-			linePainter.paint(g, lines.get(i), rowHeight * (i + 1) - descent);
+			int height = rowHeight * (i + 1) - descent;
+			int firstVisibleCol = document.getFirstVisibleCol();
+			linePainter.paint(g, lines.get(i), height, firstVisibleCol);
 		}
 	}
 

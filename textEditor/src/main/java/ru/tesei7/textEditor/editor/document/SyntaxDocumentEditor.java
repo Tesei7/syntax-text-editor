@@ -8,6 +8,7 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
+import ru.tesei7.textEditor.editor.scroll.bar.DimensionType;
 import ru.tesei7.textEditor.editor.scroll.bar.DimensionsEvent;
 import ru.tesei7.textEditor.editor.scroll.bar.DimensionsObservable;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
@@ -48,6 +49,8 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 
 	void printChar(char c) {
 		document.getCurrentLine().printChar(c);
+		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_RIGHT));
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 	}
 
 	void addNewLine() {
@@ -66,8 +69,8 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
 
 		newLine.setOffset(0);
-		
-		dimensionsObservable.notifyListeners(new DimensionsEvent(-1));
+
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 	}
 
 	void delete() {
@@ -76,6 +79,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			concatLines(currentLine, currentLine.getNext(), false);
 		} else {
 			currentLine.delete();
+			dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 		}
 	}
 
@@ -85,6 +89,8 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			concatLines(currentLine.getPrevious(), currentLine, true);
 		} else {
 			currentLine.backspace();
+			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_LEFT));
+			dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 		}
 	}
 
@@ -109,8 +115,8 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.UP));
 		}
 		l1.setOffset(l1_lenght);
-		
-		dimensionsObservable.notifyListeners(new DimensionsEvent(-1));
+
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 	}
 
 }

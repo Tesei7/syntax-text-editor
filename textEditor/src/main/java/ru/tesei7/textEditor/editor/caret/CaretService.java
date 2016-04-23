@@ -28,7 +28,7 @@ public class CaretService {
 		}
 		return i;
 	}
-	
+
 	public int getXToPaint() {
 		int x = 0;
 		Line currentLine = document.getCurrentLine();
@@ -40,6 +40,6 @@ public class CaretService {
 				x += 1;
 			}
 		}
-		return x;
+		return x - document.getFirstVisibleCol();
 	}
 }

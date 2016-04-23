@@ -78,15 +78,29 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 	}
 
 	void scrollHorizontal(int adjustmentType, int value) {
-		// TODO
+		document.setFirstVisibleCol(value);
 	}
 
 	@Override
 	public void onCaretChanged(SyntaxCaretEvent e) {
-		// if caret not visible now
-		if (document.getCurrentLineY() < 0) {
-			SyntaxCaretEventType type = e.getType();
+		// if caret not visible now, make it visible
+		SyntaxCaretEventType type = e.getType();
+		makeCaretVisibleY(type);
+		makeCaretVisibleX(type);
+	}
 
+	private void makeCaretVisibleX(SyntaxCaretEventType type) {
+		int offset = document.getCurrentLine().getOffset();
+		if (offset < document.getFirstVisibleCol()) {
+			document.setFirstVisibleCol(offset);
+		} else if (offset > document.getFirstVisibleCol() + document.getCols()) {
+			int col = Math.max(0, offset - document.getCols());
+			document.setFirstVisibleCol(col);
+		}
+	}
+
+	private void makeCaretVisibleY(SyntaxCaretEventType type) {
+		if (document.getCurrentLineY() < 0) {
 			if (type == SyntaxCaretEventType.PAGE_DOWN || type == SyntaxCaretEventType.DOWN) {
 				document.setFirstVisibleLine(getFvToShowCurrentAtBootom());
 			} else {

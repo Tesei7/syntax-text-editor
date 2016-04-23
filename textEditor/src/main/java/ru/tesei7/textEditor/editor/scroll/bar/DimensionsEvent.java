@@ -1,15 +1,14 @@
 package ru.tesei7.textEditor.editor.scroll.bar;
 
 public class DimensionsEvent {
-	private int value;
+	private DimensionType type;
 
-	public DimensionsEvent(int value) {
-		super();
-		this.value = value;
+	public DimensionsEvent(DimensionType type) {
+		this.type = type;
 	}
 
-	public int getValue() {
-		return value;
+	public DimensionType getType() {
+		return type;
 	}
 
 }
