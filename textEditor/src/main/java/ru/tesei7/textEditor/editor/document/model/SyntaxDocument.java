@@ -1,8 +1,10 @@
 package ru.tesei7.textEditor.editor.document.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
 
@@ -149,4 +151,20 @@ public class SyntaxDocument {
 		}
 		return max;
 	}
+	
+	public int getTargetLineOffset(Line targetLine) {
+		int xToPaint = currentLine.getXToPaint();
+
+		int i = 0;
+		for (Iterator<Character> iterator = targetLine.getChars().iterator(); iterator.hasNext();) {
+			Character c = iterator.next();
+			xToPaint -= c.equals('\t') ? SyntaxTextEditor.TAB_INDENT : 1;
+			if (xToPaint < 0) {
+				break;
+			}
+			i++;
+		}
+		return i;
+	}
+
 }

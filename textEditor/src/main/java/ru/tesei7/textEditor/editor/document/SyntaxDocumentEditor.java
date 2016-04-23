@@ -69,8 +69,9 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
-		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
+		document.setCurrentLine(newLine);
 		newLine.setOffset(0);
+		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_DOWN));
 	}
 
 	void delete() {
@@ -114,10 +115,12 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
-		if (moveCaretUp) {
-			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.UP));
-		}
 		l1.setOffset(l1_lenght);
+		if (moveCaretUp) {
+			document.setCurrentLine(l1);
+			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_UP));
+		}
+		
 	}
 
 }

@@ -96,7 +96,7 @@ public class SyntaxTextEditor extends JPanel
 
 		this.syntaxDocumentEditor = new SyntaxDocumentEditor(document, caretObservable, dimensionsObservable);
 		this.caret = new SyntaxCaret(document);
-		this.frame = new SyntaxTextEditorFrame(this);
+		this.frame = new SyntaxTextEditorFrame(document);
 		this.scrollBarsManager = new ScrollBarsManager(document, hbar, vbar);
 		this.caretPainter = new CaretPainter(caret);
 		this.documentPainter = new SyntaxDocumentPainter(this);

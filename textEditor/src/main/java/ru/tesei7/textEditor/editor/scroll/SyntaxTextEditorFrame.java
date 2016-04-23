@@ -11,12 +11,10 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
 public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollListener {
 
-	private SyntaxTextEditor editor;
-	SyntaxDocument document;
+	private SyntaxDocument document;
 
-	public SyntaxTextEditorFrame(SyntaxTextEditor editor) {
-		this.editor = editor;
-		this.document = this.editor.getDocument();
+	public SyntaxTextEditorFrame(SyntaxDocument document) {
+		this.document = document;
 	}
 
 	@Override
@@ -29,7 +27,7 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 	}
 
 	void scrollVerical(int adjustmentType, int value) {
-		int rows = editor.getRows();
+		int rows = document.getRows();
 		switch (adjustmentType) {
 		case AdjustmentEvent.UNIT_INCREMENT:
 			scrollVericalReletive(1);
@@ -90,18 +88,18 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 	}
 
 	private void makeCaretVisibleX(SyntaxCaretEventType type) {
-		int offset = document.getCurrentLine().getOffset();
-		if (offset < document.getFirstVisibleCol()) {
-			document.setFirstVisibleCol(offset);
-		} else if (offset > document.getFirstVisibleCol() + document.getCols()) {
-			int col = Math.max(0, offset - document.getCols());
+		int offsetToPaint = document.getCurrentLine().getXToPaint();
+		if (offsetToPaint < document.getFirstVisibleCol()) {
+			document.setFirstVisibleCol(offsetToPaint);
+		} else if (offsetToPaint > document.getFirstVisibleCol() + document.getCols()) {
+			int col = Math.max(0, offsetToPaint - document.getCols());
 			document.setFirstVisibleCol(col);
 		}
 	}
 
 	private void makeCaretVisibleY(SyntaxCaretEventType type) {
 		if (document.getCurrentLineY() < 0) {
-			if (type == SyntaxCaretEventType.PAGE_DOWN || type == SyntaxCaretEventType.DOWN) {
+			if (type == SyntaxCaretEventType.PAGE_DOWN || type == SyntaxCaretEventType.MOVED_DOWN) {
 				document.setFirstVisibleLine(getFvToShowCurrentAtBootom());
 			} else {
 				document.setFirstVisibleLine(document.getCurrentLine());
@@ -116,7 +114,7 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 	private Line getFvToShowCurrentAtBootom() {
 		Line line = document.getCurrentLine();
 		// rows steps up to show cur line at bottom
-		int i = editor.getRows() - 2;
+		int i = document.getRows() - 2;
 		while (line.hasPrevious() && i >= 0) {
 			line = line.getPrevious();
 			i--;

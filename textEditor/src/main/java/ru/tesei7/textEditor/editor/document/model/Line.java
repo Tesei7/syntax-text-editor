@@ -93,6 +93,18 @@ public class Line {
 		return l;
 	}
 
+	public int getXToPaint() {
+		int x = 0;
+		for (int i = 0; i < offset; i++) {
+			if (text[i] == '\t') {
+				x += SyntaxTextEditor.TAB_INDENT;
+			} else {
+				x++;
+			}
+		}
+		return x;
+	}
+
 	public char[] getCharsToShow() {
 		ArrayList<Character> out = new ArrayList<>();
 		for (int i = 0; i < text.length; i++) {

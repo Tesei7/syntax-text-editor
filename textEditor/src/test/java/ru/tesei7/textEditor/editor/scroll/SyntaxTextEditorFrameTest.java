@@ -29,15 +29,12 @@ public class SyntaxTextEditorFrameTest {
 	@Mock
 	private SyntaxDocument document;
 	@Mock
-	private SyntaxTextEditor editor;
-	@Mock
 	private SyntaxScrollEvent scrollEvent;
 	@Mock
 	private Line fline;
 
 	@Before
 	public void setUp() {
-		syntaxTextEditorScroller.document = document;
 		when(document.getFirstVisibleLine()).thenReturn(fline);
 	}
 
@@ -53,7 +50,7 @@ public class SyntaxTextEditorFrameTest {
 		syntaxTextEditorScroller.scrollVerical(AdjustmentEvent.UNIT_INCREMENT, 122);
 		verify(syntaxTextEditorScroller).scrollVericalReletive(1);
 
-		when(editor.getRows()).thenReturn(40);
+		when(document.getRows()).thenReturn(40);
 		syntaxTextEditorScroller.scrollVerical(AdjustmentEvent.BLOCK_DECREMENT, 122);
 		verify(syntaxTextEditorScroller).scrollVericalReletive(-40);
 	}

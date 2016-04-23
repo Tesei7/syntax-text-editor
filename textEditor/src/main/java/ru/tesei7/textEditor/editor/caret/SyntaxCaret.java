@@ -13,12 +13,10 @@ public class SyntaxCaret implements SyntaxCaretListener {
 
 	private CaretType type;
 	private SyntaxDocument document;
-	private CaretService caretService;
 
 	public SyntaxCaret(SyntaxDocument document) {
 		type = CaretType.NORMAL;
 		this.document = document;
-		this.caretService = new CaretService(document);
 	}
 
 	public CaretType getType() {
@@ -34,7 +32,9 @@ public class SyntaxCaret implements SyntaxCaretListener {
 	}
 
 	public int getXToPaint() {
-		return caretService.getXToPaint();
+		int xToPaint = document.getCurrentLine().getXToPaint();
+		int firstVisibleCol = document.getFirstVisibleCol();
+		return xToPaint - firstVisibleCol;
 	}
 
 	public int getY() {
@@ -65,7 +65,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 				y--;
 			}
 		}
-		targetLine.setOffset(caretService.getTargetLineOffset(targetLine));
+		targetLine.setOffset(document.getTargetLineOffset(targetLine));
 		document.setCurrentLine(targetLine);
 	}
 
