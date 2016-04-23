@@ -1,6 +1,5 @@
 package ru.tesei7.textEditor.editor.caret;
 
-import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
@@ -14,13 +13,11 @@ public class SyntaxCaret implements SyntaxCaretListener {
 
 	private CaretType type;
 	private SyntaxDocument document;
-	private SyntaxTextEditor editor;
 	private CaretService caretService;
 
-	public SyntaxCaret(SyntaxTextEditor editor) {
+	public SyntaxCaret(SyntaxDocument document) {
 		type = CaretType.NORMAL;
-		this.editor = editor;
-		this.document = editor.getDocument();
+		this.document = document;
 		this.caretService = new CaretService(document);
 	}
 
@@ -77,7 +74,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 	}
 
 	public int getCols() {
-		return editor.getCols();
+		return document.getCols();
 	}
 
 	@Override
@@ -96,10 +93,10 @@ public class SyntaxCaret implements SyntaxCaretListener {
 			moveY(1);
 			break;
 		case PAGE_UP:
-			moveY(-1*editor.getRows());
+			moveY(-1*document.getRows());
 			break;
 		case PAGE_DOWN:
-			moveY(editor.getRows());
+			moveY(document.getRows());
 			break;
 		case HOME:
 			setX(0);

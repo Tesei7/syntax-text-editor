@@ -23,10 +23,14 @@ import ru.tesei7.textEditor.editor.listeners.key.CaretKeyListener;
 import ru.tesei7.textEditor.editor.listeners.key.TextKeyListener;
 import ru.tesei7.textEditor.editor.painter.CaretPainter;
 import ru.tesei7.textEditor.editor.painter.SyntaxDocumentPainter;
-import ru.tesei7.textEditor.editor.scroll.ScrollDirection;
+import ru.tesei7.textEditor.editor.scroll.Direction;
 import ru.tesei7.textEditor.editor.scroll.SyntaxScrollEvent;
 import ru.tesei7.textEditor.editor.scroll.SyntaxScrollListener;
+import ru.tesei7.textEditor.editor.scroll.SyntaxScrollObserverable;
 import ru.tesei7.textEditor.editor.scroll.SyntaxTextEditorFrame;
+import ru.tesei7.textEditor.editor.scroll.bar.DimensionsObservable;
+import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.bar.ScrollBarsManager;
 import ru.tesei7.textEditor.editor.utils.FontUtils;
 
 /**
@@ -39,60 +43,82 @@ public class SyntaxTextEditor extends JPanel
 		implements SyntaxCaretListener, DocumentEditListener, SyntaxScrollListener {
 	private static final long serialVersionUID = 1485541136343010484L;
 	public static final int TAB_INDENT = 4;
-	static final int DEFAULT_ROWS = 40;
-	static final int DEFAULT_COLS = 80;
 
 	/**
-	 * Data model to store text information
+	 * Data model to store text and representation information
 	 */
 	private SyntaxDocument document;
 
-	private SyntaxCaretObservable syntaxCaretObservable = new SyntaxCaretObservable();
+	/**
+	 * Notify caret changes
+	 */
+	private SyntaxCaretObservable caretObservable = new SyntaxCaretObservable();
+	/**
+	 * Notify document changes
+	 */
 	private DocumentEditObservable documentEditObservable = new DocumentEditObservable();
+	/**
+	 * Notify scroll changes
+	 */
+	private SyntaxScrollObserverable scrollObserverable = new SyntaxScrollObserverable();
+	/**
+	 * Notify max height and width changes
+	 */
+	private DimensionsObservable dimensionsObservable = new DimensionsObservable();
+	/**
+	 * Notify first visible line and xOffset changes
+	 */
+	private FrameObserverable frameObserverable = new FrameObserverable();
 
-	protected CaretKeyListener caretKeyListener = new CaretKeyListener(syntaxCaretObservable);
+	protected CaretKeyListener caretKeyListener = new CaretKeyListener(caretObservable);
 	protected TextKeyListener textKeyListener = new TextKeyListener(documentEditObservable);
-	protected ScrollBarListener hScrollListener = new ScrollBarListener(ScrollDirection.HORIZONTAL);
-	protected ScrollBarListener vScrollListener = new ScrollBarListener(ScrollDirection.VERTICAL);
+	protected ScrollBarListener hScrollListener = new ScrollBarListener(scrollObserverable, Direction.HORIZONTAL);
+	protected ScrollBarListener vScrollListener = new ScrollBarListener(scrollObserverable, Direction.VERTICAL);
 
 	private SyntaxDocumentEditor syntaxDocumentEditor;
 	private SyntaxCaret caret;
 	private SyntaxDocumentIO io;
 	private SyntaxTextEditorFrame frame;
+	private ScrollBarsManager scrollBarsManager;
 
 	private SyntaxDocumentPainter documentPainter;
 	private CaretPainter caretPainter;
 
-	int rows;
-	int cols;
 	JScrollBar hbar;
 	JScrollBar vbar;
 
 	public SyntaxTextEditor() {
 		super();
+
+		this.document = new SyntaxDocument(frameObserverable);
+
 		createComponent();
 
-		this.document = new SyntaxDocument(this);
-		this.syntaxDocumentEditor = new SyntaxDocumentEditor(document, syntaxCaretObservable);
-		this.caret = new SyntaxCaret(this);
+		this.syntaxDocumentEditor = new SyntaxDocumentEditor(document, caretObservable, dimensionsObservable);
+		this.caret = new SyntaxCaret(document);
 		this.frame = new SyntaxTextEditorFrame(this);
+		this.scrollBarsManager = new ScrollBarsManager(document, hbar, vbar);
 		this.caretPainter = new CaretPainter(caret);
 		this.documentPainter = new SyntaxDocumentPainter(this);
 		this.io = new SyntaxDocumentIO(document);
 
-		syntaxCaretObservable.addListener(caret);
-		syntaxCaretObservable.addListener(frame);
-		syntaxCaretObservable.addListener(this);
+		caretObservable.addListener(caret);
+		caretObservable.addListener(frame);
+		caretObservable.addListener(this);
 
 		documentEditObservable.addListener(syntaxDocumentEditor);
 		documentEditObservable.addListener(this);
+
+		scrollObserverable.addListener(frame);
+		scrollObserverable.addListener(this);
+
+		dimensionsObservable.addListener(scrollBarsManager);
+		frameObserverable.addListener(scrollBarsManager);
 
 		initUIListeners();
 	}
 
 	private void createComponent() {
-		rows = SyntaxTextEditor.DEFAULT_ROWS;
-		cols = SyntaxTextEditor.DEFAULT_COLS;
 		recalcSize();
 
 		setFocusable(true);
@@ -101,22 +127,17 @@ public class SyntaxTextEditor extends JPanel
 		setFont(FontUtils.DEFAULT);
 
 		setLayout(new BorderLayout());
-		hbar = new JScrollBar(JScrollBar.HORIZONTAL, 0, cols, 0, cols);
-		vbar = new JScrollBar(JScrollBar.VERTICAL, 0, rows, 0, rows + 200);
+		hbar = new JScrollBar(JScrollBar.HORIZONTAL, 0, getCols(), 0, getCols());
+		vbar = new JScrollBar(JScrollBar.VERTICAL, 0, getRows(), 0, getRows());
 		add(hbar, BorderLayout.SOUTH);
 		add(vbar, BorderLayout.EAST);
-		hbar.addAdjustmentListener(hScrollListener);
-		vbar.addAdjustmentListener(vScrollListener);
 	}
 
 	private void initUIListeners() {
-		hScrollListener.addListener(frame);
-		hScrollListener.addListener(this);
-		vScrollListener.addListener(frame);
-		vScrollListener.addListener(this);
-
 		addKeyListener(textKeyListener);
 		addKeyListener(caretKeyListener);
+		hbar.addAdjustmentListener(hScrollListener);
+		vbar.addAdjustmentListener(vScrollListener);
 	}
 
 	public SyntaxDocument getDocument() {
@@ -152,29 +173,29 @@ public class SyntaxTextEditor extends JPanel
 	}
 
 	public int getRows() {
-		return rows;
+		return document.getRows();
 	}
 
 	public void setRows(int rows) {
-		this.rows = rows;
+		document.setRows(rows);
 		recalcSize();
 		repaint();
 	}
 
 	public int getCols() {
-		return cols;
+		return document.getCols();
 	}
 
 	public void setCols(int cols) {
-		this.cols = cols;
+		document.setCols(cols);
 		recalcSize();
 		repaint();
 	}
 
 	void recalcSize() {
 		FontMetrics fm = getFontMetrics(getFont());
-		int height = fm.getHeight() * (rows + 1) + fm.getDescent();
-		int width = fm.charWidth('a') * cols;
+		int height = fm.getHeight() * (getRows() + 1) + fm.getDescent();
+		int width = fm.charWidth('a') * getCols();
 		setPreferredSize(new Dimension(width + 100, height + 160));
 	}
 

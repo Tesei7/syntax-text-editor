@@ -152,4 +152,13 @@ public class Line {
 		offset--;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < text.length; i++) {
+			sb.append(text[i]);
+		}
+		return sb.toString();
+	}
+
 }

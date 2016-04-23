@@ -21,7 +21,7 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 
 	@Override
 	public void onScrollChanged(SyntaxScrollEvent e) {
-		if (e.getDirection() == ScrollDirection.VERTICAL) {
+		if (e.getDirection() == Direction.VERTICAL) {
 			scrollVerical(e.getAdjustmentType(), e.getAbsolut());
 		} else {
 			scrollHorizontal(e.getAdjustmentType(), e.getAbsolut());

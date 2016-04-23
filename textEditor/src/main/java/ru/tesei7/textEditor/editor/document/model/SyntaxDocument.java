@@ -3,7 +3,8 @@ package ru.tesei7.textEditor.editor.document.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.tesei7.textEditor.editor.SyntaxTextEditor;
+import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
+import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
 
 /**
  * Stores text data in linked list of {@link Line}s.
@@ -12,14 +13,18 @@ import ru.tesei7.textEditor.editor.SyntaxTextEditor;
  *
  */
 public class SyntaxDocument {
+	static final int DEFAULT_ROWS = 40;
+	static final int DEFAULT_COLS = 180;
 
+	private int rows = DEFAULT_ROWS;
+	private int cols = DEFAULT_COLS;
 	private Line firstLine;
 	private Line firstVisibleLine;
 	private Line currentLine;
-	private SyntaxTextEditor editor;
+	private FrameObserverable frameObserverable;
 
-	public SyntaxDocument(SyntaxTextEditor editor) {
-		this.editor = editor;
+	public SyntaxDocument(FrameObserverable frameObserverable) {
+		this.frameObserverable = frameObserverable;
 		firstLine = new Line();
 		firstVisibleLine = firstLine;
 		currentLine = firstVisibleLine;
@@ -35,6 +40,7 @@ public class SyntaxDocument {
 
 	public void setFirstVisibleLine(Line firstVisibleLine) {
 		this.firstVisibleLine = firstVisibleLine;
+		frameObserverable.notifyListeners(new FrameEvent(firstVisibleLine));
 	}
 
 	public Line getCurrentLine() {
@@ -47,7 +53,7 @@ public class SyntaxDocument {
 
 	public List<Line> getVisibleLines() {
 		List<Line> lines = new ArrayList<>();
-		int rows = editor.getRows();
+		Integer i = new Integer(rows);
 		Line line = firstVisibleLine;
 		do {
 			lines.add(line);
@@ -55,16 +61,16 @@ public class SyntaxDocument {
 				break;
 			} else {
 				line = line.getNext();
-				rows--;
+				i--;
 			}
 
-		} while (rows > 0);
+		} while (i > 0);
 		return lines;
 	}
 
 	public int getCurrentLineY() {
 		Line tmp = firstVisibleLine;
-		for (int i = 0; i < editor.getRows(); i++) {
+		for (int i = 0; i < rows; i++) {
 			if (tmp.equals(currentLine)) {
 				return i;
 			}
@@ -76,4 +82,39 @@ public class SyntaxDocument {
 		return -1;
 	}
 
+	public int getRows() {
+		return rows;
+	}
+
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public int getCols() {
+		return cols;
+	}
+
+	public void setCols(int cols) {
+		this.cols = cols;
+	}
+
+	public int getSize() {
+		int size = 1;
+		Line l = firstLine;
+		while (l.hasNext()) {
+			l = l.getNext();
+			size++;
+		}
+		return size;
+	}
+
+	public int getLineIndex(Line line) {
+		int index = 0;
+		Line l = firstLine;
+		while (l.hasNext() && !l.equals(line)) {
+			l = l.getNext();
+			index++;
+		}
+		return index;
+	}
 }

@@ -19,6 +19,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
+import ru.tesei7.textEditor.editor.scroll.bar.DimensionsObservable;
+import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(SyntaxDocumentEditor.class)
@@ -30,11 +32,15 @@ public class SyntaxDocumentEditorTest {
 	private Line cline;
 	@Mock
 	private SyntaxCaretObservable syntaxCaretObservable;
+	@Mock
+	private DimensionsObservable dimentionsObservable;
+	@Mock
+	private FrameObserverable frameObserverable;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		syntaxDocumentEditor = spy(new SyntaxDocumentEditor(document, syntaxCaretObservable));
+		syntaxDocumentEditor = spy(new SyntaxDocumentEditor(document, syntaxCaretObservable, dimentionsObservable));
 		when(document.getCurrentLine()).thenReturn(cline);
 	}
 

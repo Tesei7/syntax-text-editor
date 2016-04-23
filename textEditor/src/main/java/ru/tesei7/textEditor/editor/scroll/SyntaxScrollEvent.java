@@ -1,17 +1,17 @@
 package ru.tesei7.textEditor.editor.scroll;
 
 public class SyntaxScrollEvent {
-	private ScrollDirection direction;
+	private Direction direction;
 	private int adjustmentType;
 	private Integer absolut;
 
-	public SyntaxScrollEvent(ScrollDirection direction, int adjasmentType, Integer absolute) {
+	public SyntaxScrollEvent(Direction direction, int adjasmentType, Integer absolute) {
 		this.direction = direction;
 		this.adjustmentType = adjasmentType;
 		this.absolut = absolute;
 	}
 
-	public ScrollDirection getDirection() {
+	public Direction getDirection() {
 		return direction;
 	}
 

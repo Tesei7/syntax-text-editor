@@ -98,13 +98,13 @@ public class SyntaxTextEditorFrameTest {
 		doNothing().when(syntaxTextEditorScroller).scrollVerical(AdjustmentEvent.UNIT_INCREMENT, 12);
 		doNothing().when(syntaxTextEditorScroller).scrollHorizontal(AdjustmentEvent.BLOCK_DECREMENT, 12);
 
-		when(scrollEvent.getDirection()).thenReturn(ScrollDirection.VERTICAL);
+		when(scrollEvent.getDirection()).thenReturn(Direction.VERTICAL);
 		when(scrollEvent.getAbsolut()).thenReturn(12);
 		when(scrollEvent.getAdjustmentType()).thenReturn(AdjustmentEvent.UNIT_INCREMENT);
 		syntaxTextEditorScroller.onScrollChanged(scrollEvent);
 		verify(syntaxTextEditorScroller).scrollVerical(AdjustmentEvent.UNIT_INCREMENT, 12);
 
-		when(scrollEvent.getDirection()).thenReturn(ScrollDirection.HORIZONTAL);
+		when(scrollEvent.getDirection()).thenReturn(Direction.HORIZONTAL);
 		when(scrollEvent.getAdjustmentType()).thenReturn(AdjustmentEvent.BLOCK_DECREMENT);
 		syntaxTextEditorScroller.onScrollChanged(scrollEvent);
 		verify(syntaxTextEditorScroller).scrollHorizontal(AdjustmentEvent.BLOCK_DECREMENT, 12);

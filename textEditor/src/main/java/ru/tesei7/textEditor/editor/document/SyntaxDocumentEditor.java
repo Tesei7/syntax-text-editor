@@ -8,15 +8,22 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
+import ru.tesei7.textEditor.editor.scroll.bar.DimensionsEvent;
+import ru.tesei7.textEditor.editor.scroll.bar.DimensionsObservable;
+import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
 
 public class SyntaxDocumentEditor implements DocumentEditListener {
 
 	private SyntaxDocument document;
 	SyntaxCaretObservable caretObservable;
+	DimensionsObservable dimensionsObservable;
+	FrameObserverable frameObserverable;
 
-	public SyntaxDocumentEditor(SyntaxDocument document, SyntaxCaretObservable syntaxCaretObservable) {
+	public SyntaxDocumentEditor(SyntaxDocument document, SyntaxCaretObservable syntaxCaretObservable,
+			DimensionsObservable dimensionsObservable) {
 		this.document = document;
 		this.caretObservable = syntaxCaretObservable;
+		this.dimensionsObservable = dimensionsObservable;
 	}
 
 	@Override
@@ -59,6 +66,8 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
 
 		newLine.setOffset(0);
+		
+		dimensionsObservable.notifyListeners(new DimensionsEvent(-1));
 	}
 
 	void delete() {
@@ -100,6 +109,8 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.UP));
 		}
 		l1.setOffset(l1_lenght);
+		
+		dimensionsObservable.notifyListeners(new DimensionsEvent(-1));
 	}
 
 }
