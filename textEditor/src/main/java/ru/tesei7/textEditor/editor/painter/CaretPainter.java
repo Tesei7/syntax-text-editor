@@ -15,14 +15,16 @@ public class CaretPainter {
 		this.caret = caret;
 	}
 
-	public void paint(Graphics g) {
+	public void paint(Graphics g, boolean caretVisible) {
 		int caretRow = caret.getY();
 		if (caretRow < 0) {
 			return;
 		}
 
 		paintBackground(g, caretRow);
-		paintCaret(g, caretRow);
+		if (caretVisible) {
+			paintCaret(g, caretRow);
+		}
 	}
 
 	private void paintCaret(Graphics g, int caretRow) {

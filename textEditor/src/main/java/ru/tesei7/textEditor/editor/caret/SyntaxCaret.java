@@ -108,7 +108,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 			setX(getCurrentLine().getLength());
 			break;
 		case INSERT:
-			// TODO
+			type = type != CaretType.INSERT ? CaretType.INSERT : CaretType.NORMAL;
 			break;
 		case MOUSE:
 			// TODO

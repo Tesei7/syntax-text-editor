@@ -47,6 +47,9 @@ public class CaretKeyListener implements KeyListener {
 		case KeyEvent.VK_END:
 			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.END));
 			break;
+		case KeyEvent.VK_INSERT:
+			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.INSERT));
+			break;
 		}
 	}
 

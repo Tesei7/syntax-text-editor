@@ -5,9 +5,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
+import javax.swing.Timer;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
@@ -88,6 +91,15 @@ public class SyntaxTextEditor extends JPanel
 	JScrollBar hbar;
 	JScrollBar vbar;
 
+	/**
+	 * Flag of caret visibility for blinking caret
+	 */
+	volatile private boolean caretVisible = true;
+	/**
+	 * Do not blink caret if edited
+	 */
+	volatile private boolean skipNextBlink = false;
+
 	public SyntaxTextEditor() {
 		super();
 
@@ -115,7 +127,23 @@ public class SyntaxTextEditor extends JPanel
 		dimensionsObservable.addListener(scrollBarsManager);
 		frameObserverable.addListener(scrollBarsManager);
 
+		Timer timer = new Timer(500, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!skipNextBlink) {
+					toggleCaretVisible();
+				}
+				SyntaxTextEditor.this.repaint();
+				skipNextBlink = false;
+			}
+		});
+		timer.start();
+
 		initUIListeners();
+	}
+
+	void toggleCaretVisible() {
+		this.caretVisible = !caretVisible;
 	}
 
 	private void createComponent() {
@@ -143,7 +171,7 @@ public class SyntaxTextEditor extends JPanel
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		caretPainter.paint(g);
+		caretPainter.paint(g, caretVisible);
 		documentPainter.paint(g);
 	}
 
@@ -184,18 +212,26 @@ public class SyntaxTextEditor extends JPanel
 		setPreferredSize(new Dimension(width + 100, height + 160));
 	}
 
+	private void caretFreze() {
+		caretVisible = true;
+		skipNextBlink = true;
+	}
+
 	@Override
 	public void onCaretChanged(SyntaxCaretEvent e) {
+		caretFreze();
 		repaint();
 	}
 
 	@Override
 	public void onDocumentEdited(DocumentEditEvent e) {
+		caretFreze();
 		repaint();
 	}
 
 	@Override
 	public void onScrollChanged(SyntaxScrollEvent e) {
+		caretFreze();
 		repaint();
 	}
 
