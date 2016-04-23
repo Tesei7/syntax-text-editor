@@ -31,7 +31,7 @@ public class LineTest {
 	public final void testPrintChar() throws Exception {
 		l.printChar('a');
 		assertTrue(l.getChars().get(0).equals('a'));
-		assertTrue(l.getLenght() == 1);
+		assertTrue(l.getLength() == 1);
 		assertTrue(l.getOffset() == 1);
 	}
 
@@ -40,12 +40,12 @@ public class LineTest {
 		l.printChar('a');
 		l.delete();
 		assertTrue(l.getChars().get(0).equals('a'));
-		assertTrue(l.getLenght() == 1);
+		assertTrue(l.getLength() == 1);
 		assertTrue(l.getOffset() == 1);
 
 		l.setOffset(0);
 		l.delete();
-		assertTrue(l.getLenght() == 0);
+		assertTrue(l.getLength() == 0);
 		assertTrue(l.getOffset() == 0);
 	}
 
@@ -53,11 +53,11 @@ public class LineTest {
 	public final void testBackspace() throws Exception {
 		l.printChar('a');
 		l.backspace();
-		assertTrue(l.getLenght() == 0);
+		assertTrue(l.getLength() == 0);
 		assertTrue(l.getOffset() == 0);
 
 		l.backspace();
-		assertTrue(l.getLenght() == 0);
+		assertTrue(l.getLength() == 0);
 		assertTrue(l.getOffset() == 0);
 	}
 

@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import ru.tesei7.textEditor.editor.SyntaxTextEditor;
+
 /**
  * Line of text document. Contains characters and calculated list of tokens.
  * 
@@ -75,8 +77,20 @@ public class Line {
 		offset = text.length;
 	}
 
-	public int getLenght() {
+	public int getLength() {
 		return text.length;
+	}
+
+	public int getLengthToPaint() {
+		int l = 0;
+		for (int i = 0; i < text.length; i++) {
+			if (text[i] == '\t') {
+				l += SyntaxTextEditor.TAB_INDENT;
+			} else {
+				l++;
+			}
+		}
+		return l;
 	}
 
 	public char[] getCharsToShow() {
@@ -134,7 +148,7 @@ public class Line {
 	}
 
 	public void delete() {
-		if (offset >= getLenght()) {
+		if (offset >= getLength()) {
 			return;
 		}
 		LinkedList<Character> list = toList();

@@ -105,9 +105,9 @@ public class SyntaxDocumentTest {
 	@Test
 	public void testGetMaxCols() throws Exception {
 		doReturn(Arrays.asList(firstLine, firstVisibleLine, currentLine)).when(syntaxDocument).getVisibleLines();
-		when(firstLine.getLenght()).thenReturn(42);
-		when(firstVisibleLine.getLenght()).thenReturn(43);
-		when(firstVisibleLine.getLenght()).thenReturn(44);
+		when(firstLine.getLength()).thenReturn(42);
+		when(firstVisibleLine.getLength()).thenReturn(43);
+		when(firstVisibleLine.getLength()).thenReturn(44);
 		assertThat(syntaxDocument.getMaxCols(), is(44));
 	}
 

@@ -67,7 +67,7 @@ public class SyntaxDocumentEditorTest {
 	@Test
 	public final void testDelete() throws Exception {
 		Line l2 = mock(Line.class);
-		when(cline.getLenght()).thenReturn(3);
+		when(cline.getLength()).thenReturn(3);
 		when(cline.getOffset()).thenReturn(3);
 		when(cline.getNext()).thenReturn(l2);
 
@@ -83,7 +83,7 @@ public class SyntaxDocumentEditorTest {
 	@Test
 	public final void testBackspace() throws Exception {
 		Line l2 = mock(Line.class);
-		when(cline.getLenght()).thenReturn(3);
+		when(cline.getLength()).thenReturn(3);
 		when(cline.getPrevious()).thenReturn(l2);
 
 		doNothing().when(syntaxDocumentEditor).concatLines(any(), any(), eq(true));

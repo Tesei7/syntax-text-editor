@@ -2,7 +2,6 @@ package ru.tesei7.textEditor.editor.document.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
 
 import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
@@ -108,6 +107,10 @@ public class SyntaxDocument {
 		this.cols = cols;
 	}
 
+	/**
+	 * Calculate total number of lines. O(n) operation.
+	 * @return size of document
+	 */
 	public int getSize() {
 		int size = 1;
 		Line l = firstLine;
@@ -118,6 +121,11 @@ public class SyntaxDocument {
 		return size;
 	}
 
+	/**
+	 * Get number of line in document. O(n) operation.
+	 * @param line line of document
+	 * @return line number
+	 */
 	public int getLineIndex(Line line) {
 		int index = 0;
 		Line l = firstLine;
@@ -128,8 +136,17 @@ public class SyntaxDocument {
 		return index;
 	}
 
+	/**
+	 * Calculate max width of document. O(n) operation.
+	 * @return length of the longest line in document 
+	 */
 	public int getMaxCols() {
-		OptionalInt max = getVisibleLines().stream().mapToInt(l -> l.getLenght()).max();
-		return max.isPresent() ? max.getAsInt() : cols;
+		int max = cols;
+		Line l = firstLine;
+		while (l.hasNext()) {
+			max = Math.max(l.getLengthToPaint(), max);
+			l = l.getNext();
+		}
+		return max;
 	}
 }

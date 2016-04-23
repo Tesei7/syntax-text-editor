@@ -46,8 +46,8 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		if (x < 0) {
 			x = 0;
 		}
-		if (x > currentLine.getLenght()) {
-			x = currentLine.getLenght();
+		if (x > currentLine.getLength()) {
+			x = currentLine.getLength();
 		}
 		currentLine.setOffset(x);
 	}
@@ -102,7 +102,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 			setX(0);
 			break;
 		case END:
-			setX(getCurrentLine().getLenght());
+			setX(getCurrentLine().getLength());
 			break;
 		case INSERT:
 			// TODO

@@ -75,7 +75,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 
 	void delete() {
 		Line currentLine = document.getCurrentLine();
-		if (currentLine.getOffset() == currentLine.getLenght()) {
+		if (currentLine.getOffset() == currentLine.getLength()) {
 			concatLines(currentLine, currentLine.getNext(), false);
 		} else {
 			currentLine.delete();
@@ -106,7 +106,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		Line next = l2.getNext();
 		l1.linkWith(next);
 
-		int l1_lenght = l1.getLenght();
+		int l1_lenght = l1.getLength();
 		LinkedList<Character> concat = new LinkedList<>();
 		concat.addAll(l1.getChars());
 		concat.addAll(l2.getChars());
