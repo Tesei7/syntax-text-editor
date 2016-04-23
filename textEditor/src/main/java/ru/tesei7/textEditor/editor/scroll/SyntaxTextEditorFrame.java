@@ -2,7 +2,6 @@ package ru.tesei7.textEditor.editor.scroll;
 
 import java.awt.event.AdjustmentEvent;
 
-import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretListener;
@@ -89,21 +88,31 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 
 	private void makeCaretVisibleX(SyntaxCaretEventType type) {
 		int offsetToPaint = document.getCurrentLine().getXToPaint();
-		if (offsetToPaint < document.getFirstVisibleCol()) {
+		boolean beforeFrame = offsetToPaint < document.getFirstVisibleCol();
+		boolean afterFrame = offsetToPaint > document.getFirstVisibleCol() + document.getCols();
+		boolean atEndOfLine = document.getCurrentLine().atEndOfLine();
+		
+		if (beforeFrame) {
 			document.setFirstVisibleCol(offsetToPaint);
-		} else if (offsetToPaint > document.getFirstVisibleCol() + document.getCols()) {
+		} else if (afterFrame || atEndOfLine) {
 			int col = Math.max(0, offsetToPaint - document.getCols());
 			document.setFirstVisibleCol(col);
 		}
 	}
 
 	private void makeCaretVisibleY(SyntaxCaretEventType type) {
-		if (document.getCurrentLineY() < 0) {
-			if (type == SyntaxCaretEventType.PAGE_DOWN || type == SyntaxCaretEventType.MOVED_DOWN) {
-				document.setFirstVisibleLine(getFvToShowCurrentAtBootom());
-			} else {
-				document.setFirstVisibleLine(document.getCurrentLine());
-			}
+		int firstVisibleIndex = document.getLineIndex(document.getFirstVisibleLine());
+		int currentIndex = document.getLineIndex(document.getCurrentLine());
+		boolean beforeFrame = currentIndex < firstVisibleIndex;
+		boolean afterFrame = currentIndex >= firstVisibleIndex + document.getRows();
+		
+		if (beforeFrame) {
+			document.setFirstVisibleLine(document.getCurrentLine());
+		}else if (afterFrame) {
+			document.setFirstVisibleLine(getFvToShowCurrentAtBootom());
+		} else if (!document.getCurrentLine().hasNext()) {
+			// is last line
+			document.setFirstVisibleLine(getFvToShowCurrentAtBootom());
 		}
 	}
 

@@ -25,6 +25,10 @@ public class Line {
 		offset = 0;
 	}
 
+	char[] getText() {
+		return text;
+	}
+
 	// Prev/Next
 
 	public Line getPrevious() {
@@ -148,6 +152,10 @@ public class Line {
 		} else {
 			this.offset = offset;
 		}
+	}
+
+	public boolean atEndOfLine() {
+		return offset == getLength();
 	}
 
 	// Edit

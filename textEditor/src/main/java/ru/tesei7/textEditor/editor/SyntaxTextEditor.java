@@ -79,7 +79,6 @@ public class SyntaxTextEditor extends JPanel
 
 	private SyntaxDocumentEditor syntaxDocumentEditor;
 	private SyntaxCaret caret;
-	private SyntaxDocumentIO io;
 	private SyntaxTextEditorFrame frame;
 	private ScrollBarsManager scrollBarsManager;
 
@@ -102,7 +101,6 @@ public class SyntaxTextEditor extends JPanel
 		this.scrollBarsManager = new ScrollBarsManager(document, hbar, vbar);
 		this.caretPainter = new CaretPainter(caret);
 		this.documentPainter = new SyntaxDocumentPainter(document);
-		this.io = new SyntaxDocumentIO(document);
 
 		caretObservable.addListener(caret);
 		caretObservable.addListener(frame);
@@ -150,11 +148,11 @@ public class SyntaxTextEditor extends JPanel
 	}
 
 	public String getText() {
-		return io.getText();
+		return document.getText();
 	}
 
 	public void setText(String text) {
-		io.setText(text);
+		document.setText(text);
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		repaint();
 	}
