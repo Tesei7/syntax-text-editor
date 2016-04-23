@@ -49,8 +49,9 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 
 	void printChar(char c) {
 		document.getCurrentLine().printChar(c);
-		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_RIGHT));
+		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
+		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_RIGHT));
 	}
 
 	void addNewLine() {
@@ -66,11 +67,10 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		newLine.setChars(curLineText.subList(offset, curLineText.size()));
 		currentLine.setChars(curLineText.subList(0, offset));
 
-		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
-
-		newLine.setOffset(0);
-
+		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
+		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.DOWN));
+		newLine.setOffset(0);
 	}
 
 	void delete() {
@@ -89,8 +89,9 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			concatLines(currentLine.getPrevious(), currentLine, true);
 		} else {
 			currentLine.backspace();
-			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_LEFT));
+			// dimensions should be changed first
 			dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
+			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_LEFT));
 		}
 	}
 
@@ -111,12 +112,12 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		concat.addAll(l2.getChars());
 		l1.setChars(concat);
 
+		// dimensions should be changed first
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		if (moveCaretUp) {
 			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.UP));
 		}
 		l1.setOffset(l1_lenght);
-
-		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 	}
 
 }

@@ -36,14 +36,7 @@ public class ScrollBarsManager implements DocumentDimensionsListener, FrameListe
 	void recalcMaxCols() {
 		int cols = document.getMaxCols();
 		int max = Math.max(cols, document.getCols());
-		int value = hbar.getValue();
-
 		setBarMaximum(hbar, max);
-		System.out.println(hbar.getValue() + " of " + hbar.getMaximum());
-//		setBarValue(hbar, value);
-//		System.out.println(hbar.getValue() + " of " + hbar.getMaximum());
-//		setBarValue(hbar, value);
-//		System.out.println(hbar.getValue() + " of " + hbar.getMaximum());
 	}
 
 	@Override
@@ -92,7 +85,13 @@ public class ScrollBarsManager implements DocumentDimensionsListener, FrameListe
 		for (int i = 0; i < listeners.length; i++) {
 			bar.removeAdjustmentListener(listeners[i]);
 		}
+
+//		System.out.println("max = " + bar.getMaximum());
+//		System.out.println("set " + value);
 		bar.setValue(value);
+//		bar.repaint();
+//		System.out.println("get " + bar.getValue());
+
 		for (AdjustmentListener l : listeners) {
 			bar.addAdjustmentListener(l);
 		}
