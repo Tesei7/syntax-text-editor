@@ -26,13 +26,9 @@ public class SyntaxDocumentIO {
 
 	public void setText(String text) {
 		long t1 = System.currentTimeMillis();
-		System.out.println("start craete Doc");
+		System.out.println("Start loading file");
 		
 		String[] split = text.split("\n");
-		
-		long t2 = System.currentTimeMillis();
-		System.out.println("splited string:" + (t2 - t1) + "ms");
-		
 		Line prev = null;
 		for (int i = 0; i < split.length; i++) {
 			Line l = null;
@@ -48,8 +44,10 @@ public class SyntaxDocumentIO {
 		}
 		document.setCurrentLine(document.getFirstLine());
 		document.setFirstVisibleLine(document.getFirstLine());
+		document.setFirstVisibleCol(0);
+
 		long t3 = System.currentTimeMillis();
-		System.out.println("fill doc:" + (t3 - t2) + "ms");
+		System.out.println("File loaded: " + (t3 - t1) + "ms");
 	}
 
 }

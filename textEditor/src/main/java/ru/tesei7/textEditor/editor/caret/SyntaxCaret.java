@@ -13,10 +13,12 @@ public class SyntaxCaret implements SyntaxCaretListener {
 
 	private CaretType type;
 	private SyntaxDocument document;
+	private SyntaxCaretObservable caretObservable;
 
-	public SyntaxCaret(SyntaxDocument document) {
+	public SyntaxCaret(SyntaxDocument document, SyntaxCaretObservable caretObservable) {
 		type = CaretType.NORMAL;
 		this.document = document;
+		this.caretObservable = caretObservable;
 	}
 
 	public CaretType getType() {
@@ -91,9 +93,10 @@ public class SyntaxCaret implements SyntaxCaretListener {
 			break;
 		case DOWN:
 			moveY(1);
+			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_DOWN));
 			break;
 		case PAGE_UP:
-			moveY(-1*document.getRows());
+			moveY(-1 * document.getRows());
 			break;
 		case PAGE_DOWN:
 			moveY(document.getRows());

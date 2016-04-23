@@ -28,6 +28,8 @@ import ru.tesei7.textEditor.editor.scroll.SyntaxScrollEvent;
 import ru.tesei7.textEditor.editor.scroll.SyntaxScrollListener;
 import ru.tesei7.textEditor.editor.scroll.SyntaxScrollObserverable;
 import ru.tesei7.textEditor.editor.scroll.SyntaxTextEditorFrame;
+import ru.tesei7.textEditor.editor.scroll.bar.DimensionType;
+import ru.tesei7.textEditor.editor.scroll.bar.DimensionsEvent;
 import ru.tesei7.textEditor.editor.scroll.bar.DimensionsObservable;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
 import ru.tesei7.textEditor.editor.scroll.bar.ScrollBarsManager;
@@ -95,11 +97,11 @@ public class SyntaxTextEditor extends JPanel
 		createComponent();
 
 		this.syntaxDocumentEditor = new SyntaxDocumentEditor(document, caretObservable, dimensionsObservable);
-		this.caret = new SyntaxCaret(document);
+		this.caret = new SyntaxCaret(document, caretObservable);
 		this.frame = new SyntaxTextEditorFrame(document);
 		this.scrollBarsManager = new ScrollBarsManager(document, hbar, vbar);
 		this.caretPainter = new CaretPainter(caret);
-		this.documentPainter = new SyntaxDocumentPainter(this);
+		this.documentPainter = new SyntaxDocumentPainter(document);
 		this.io = new SyntaxDocumentIO(document);
 
 		caretObservable.addListener(caret);
@@ -140,22 +142,6 @@ public class SyntaxTextEditor extends JPanel
 		vbar.addAdjustmentListener(vScrollListener);
 	}
 
-	public SyntaxDocument getDocument() {
-		return document;
-	}
-
-	public SyntaxDocumentPainter getPainter() {
-		return documentPainter;
-	}
-
-	public SyntaxCaret getCaret() {
-		return caret;
-	}
-
-	public SyntaxTextEditorFrame getScroller() {
-		return frame;
-	}
-
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -169,6 +155,7 @@ public class SyntaxTextEditor extends JPanel
 
 	public void setText(String text) {
 		io.setText(text);
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		repaint();
 	}
 

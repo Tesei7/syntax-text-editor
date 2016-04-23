@@ -4,7 +4,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.List;
 
-import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
@@ -12,12 +11,10 @@ public class SyntaxDocumentPainter {
 
 	private LinePainter linePainter;
 
-	private SyntaxTextEditor editor;
 	private SyntaxDocument document;
 
-	public SyntaxDocumentPainter(SyntaxTextEditor syntaxTextEditor) {
-		this.editor = syntaxTextEditor;
-		this.document = editor.getDocument();
+	public SyntaxDocumentPainter(SyntaxDocument document) {
+		this.document = document;
 		this.linePainter = new LinePainter();
 	}
 
