@@ -21,9 +21,10 @@ import ru.tesei7.textEditor.editor.document.DocumentEditListener;
 import ru.tesei7.textEditor.editor.document.DocumentEditObservable;
 import ru.tesei7.textEditor.editor.document.SyntaxDocumentEditor;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
+import ru.tesei7.textEditor.editor.listeners.CaretKeyListener;
 import ru.tesei7.textEditor.editor.listeners.ScrollBarListener;
-import ru.tesei7.textEditor.editor.listeners.key.CaretKeyListener;
-import ru.tesei7.textEditor.editor.listeners.key.TextKeyListener;
+import ru.tesei7.textEditor.editor.listeners.SyntaxMouseListener;
+import ru.tesei7.textEditor.editor.listeners.TextKeyListener;
 import ru.tesei7.textEditor.editor.painter.CaretPainter;
 import ru.tesei7.textEditor.editor.painter.SyntaxDocumentPainter;
 import ru.tesei7.textEditor.editor.scroll.Direction;
@@ -34,6 +35,8 @@ import ru.tesei7.textEditor.editor.scroll.SyntaxTextEditorFrame;
 import ru.tesei7.textEditor.editor.scroll.bar.DimensionType;
 import ru.tesei7.textEditor.editor.scroll.bar.DimensionsEvent;
 import ru.tesei7.textEditor.editor.scroll.bar.DimensionsObservable;
+import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
+import ru.tesei7.textEditor.editor.scroll.bar.FrameListener;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
 import ru.tesei7.textEditor.editor.scroll.bar.ScrollBarsManager;
 import ru.tesei7.textEditor.editor.utils.FontUtils;
@@ -45,7 +48,7 @@ import ru.tesei7.textEditor.editor.utils.FontUtils;
  *
  */
 public class SyntaxTextEditor extends JPanel
-		implements SyntaxCaretListener, DocumentEditListener, SyntaxScrollListener {
+		implements SyntaxCaretListener, DocumentEditListener, SyntaxScrollListener, FrameListener {
 	private static final long serialVersionUID = 1485541136343010484L;
 	/**
 	 * Number of spaces of '\t' character representation
@@ -59,6 +62,10 @@ public class SyntaxTextEditor extends JPanel
 	 * Default caret width in pixels
 	 */
 	public static final int CARET_WIDTH = 2;
+	/**
+	 * Number of lines to scroll with mouse wheel turn
+	 */
+	public static final int MOUSE_WHEEL_SCROLL_LINES = 3;
 
 	/**
 	 * Data model to store text and representation information
@@ -86,10 +93,11 @@ public class SyntaxTextEditor extends JPanel
 	 */
 	private FrameObserverable frameObserverable = new FrameObserverable();
 
-	protected CaretKeyListener caretKeyListener = new CaretKeyListener(caretObservable);
-	protected TextKeyListener textKeyListener = new TextKeyListener(documentEditObservable);
-	protected ScrollBarListener hScrollListener = new ScrollBarListener(scrollObserverable, Direction.HORIZONTAL);
-	protected ScrollBarListener vScrollListener = new ScrollBarListener(scrollObserverable, Direction.VERTICAL);
+	private CaretKeyListener caretKeyListener = new CaretKeyListener(caretObservable);
+	private TextKeyListener textKeyListener = new TextKeyListener(documentEditObservable);
+	private SyntaxMouseListener mouseListener;
+	private ScrollBarListener hScrollListener = new ScrollBarListener(scrollObserverable, Direction.HORIZONTAL);
+	private ScrollBarListener vScrollListener = new ScrollBarListener(scrollObserverable, Direction.VERTICAL);
 
 	private SyntaxDocumentEditor syntaxDocumentEditor;
 	private SyntaxCaret caret;
@@ -124,6 +132,7 @@ public class SyntaxTextEditor extends JPanel
 		this.scrollBarsManager = new ScrollBarsManager(document, hbar, vbar);
 		this.caretPainter = new CaretPainter(document);
 		this.documentPainter = new SyntaxDocumentPainter(document);
+		this.mouseListener = new SyntaxMouseListener(document, caretObservable);
 
 		caretObservable.addListener(caret);
 		caretObservable.addListener(frame);
@@ -137,6 +146,7 @@ public class SyntaxTextEditor extends JPanel
 
 		dimensionsObservable.addListener(scrollBarsManager);
 		frameObserverable.addListener(scrollBarsManager);
+		frameObserverable.addListener(this);
 
 		initCaretBlinker();
 		initUIListeners();
@@ -189,15 +199,22 @@ public class SyntaxTextEditor extends JPanel
 	private void initUIListeners() {
 		addKeyListener(textKeyListener);
 		addKeyListener(caretKeyListener);
+		addMouseListener(mouseListener);
+		addMouseWheelListener(mouseListener);
 		hbar.addAdjustmentListener(hScrollListener);
 		vbar.addAdjustmentListener(vScrollListener);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
+		long t1 = System.currentTimeMillis();
+
 		super.paintComponent(g);
 		caretPainter.paint(g, caretVisible);
 		documentPainter.paint(g);
+
+		long t2 = System.currentTimeMillis();
+//		System.out.println("PAINT: " + (t2 - t1) + " ms");
 	}
 
 	public String getText() {
@@ -251,6 +268,12 @@ public class SyntaxTextEditor extends JPanel
 
 	@Override
 	public void onScrollChanged(SyntaxScrollEvent e) {
+		freezeCaret();
+		repaint();
+	}
+
+	@Override
+	public void onFrameChanged(FrameEvent e) {
 		freezeCaret();
 		repaint();
 	}

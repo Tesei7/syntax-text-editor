@@ -1,4 +1,4 @@
-package ru.tesei7.textEditor.editor.listeners.key;
+package ru.tesei7.textEditor.editor.listeners;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

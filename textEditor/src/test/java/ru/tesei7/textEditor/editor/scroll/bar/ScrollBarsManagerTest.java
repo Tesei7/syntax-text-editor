@@ -1,10 +1,8 @@
 package ru.tesei7.textEditor.editor.scroll.bar;
 
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
 
 import javax.swing.JScrollBar;
@@ -19,6 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
+import ru.tesei7.textEditor.editor.scroll.Direction;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ScrollBarsManagerTest {
@@ -49,32 +48,16 @@ public class ScrollBarsManagerTest {
 	}
 
 	@Test
-	public void testOnFrameChanged() throws Exception {
-		doNothing().when(scrollBarsManager).setVScrollValue(l);
-		doNothing().when(scrollBarsManager).setVScrollValue(null);
-		doNothing().when(scrollBarsManager).setHScrollValue(42);
-		doNothing().when(scrollBarsManager).setHScrollValue(null);
-
-		scrollBarsManager.onFrameChanged(new FrameEvent(42));
-		verify(scrollBarsManager).setVScrollValue(null);
-		verify(scrollBarsManager).setHScrollValue(42);
-
-		scrollBarsManager.onFrameChanged(new FrameEvent(l));
-		verify(scrollBarsManager).setVScrollValue(null);
-		verify(scrollBarsManager).setHScrollValue(null);
-	}
-
-	@Test
 	@Ignore
-	public void testSetVScrollValue() throws Exception {
+	public void testOnFrameChanged() throws Exception {
 		doNothing().when(scrollBarsManager).setBarValue(vbar, 42);
-		scrollBarsManager.setVScrollValue(null);
-		verify(scrollBarsManager, never()).setBarValue(vbar, 42);
+		doNothing().when(scrollBarsManager).setBarValue(hbar, 43);
 
-		doNothing().when(scrollBarsManager).setBarValue(vbar, 42);
-		when(document.getLineIndex(l)).thenReturn(42);
-		scrollBarsManager.setVScrollValue(l);
+		scrollBarsManager.onFrameChanged(new FrameEvent(FrameEventType.VERTICAL, 42));
 		verify(scrollBarsManager).setBarValue(vbar, 42);
+		
+		scrollBarsManager.onFrameChanged(new FrameEvent(FrameEventType.HORIZONTAL, 43));
+		verify(scrollBarsManager).setBarValue(hbar, 43);
 	}
 
 }

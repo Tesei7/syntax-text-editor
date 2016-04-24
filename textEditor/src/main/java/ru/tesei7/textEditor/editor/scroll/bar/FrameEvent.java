@@ -1,25 +1,20 @@
 package ru.tesei7.textEditor.editor.scroll.bar;
 
-import ru.tesei7.textEditor.editor.document.model.Line;
-
 public class FrameEvent {
-	private Line firstVisibleLine;
-	private Integer firstVisibleCol;
+	private FrameEventType type;
+	private Integer value;
 
-	public FrameEvent(Integer firstVisibleCol) {
-		this.firstVisibleCol = firstVisibleCol;
+	public FrameEvent(FrameEventType type, Integer value) {
+		this.type = type;
+		this.value = value;
 	}
 
-	public FrameEvent(Line firstVisibleLine) {
-		this.firstVisibleLine = firstVisibleLine;
+	public FrameEventType getType() {
+		return type;
 	}
 
-	public Line getFirstVisibleLine() {
-		return firstVisibleLine;
-	}
-
-	public Integer getFirstVisibleCol() {
-		return firstVisibleCol;
+	public Integer getValue() {
+		return value;
 	}
 
 }

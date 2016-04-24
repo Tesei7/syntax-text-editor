@@ -6,7 +6,9 @@ import java.util.List;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.caret.CaretType;
+import ru.tesei7.textEditor.editor.scroll.Direction;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
+import ru.tesei7.textEditor.editor.scroll.bar.FrameEventType;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
 
 /**
@@ -37,11 +39,11 @@ public class SyntaxDocument {
 		firstVisibleLine = firstLine;
 		currentLine = firstVisibleLine;
 	}
-	
+
 	public CaretType getCaretType() {
 		return caretType;
 	}
-	
+
 	public void setCaretType(CaretType caretType) {
 		this.caretType = caretType;
 	}
@@ -64,7 +66,7 @@ public class SyntaxDocument {
 
 	public void setFirstVisibleLine(Line firstVisibleLine) {
 		this.firstVisibleLine = firstVisibleLine;
-		frameObserverable.notifyListeners(new FrameEvent(firstVisibleLine));
+		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, getLineIndex(firstVisibleLine)));
 	}
 
 	public int getFirstVisibleCol() {
@@ -73,7 +75,7 @@ public class SyntaxDocument {
 
 	public void setFirstVisibleCol(int firstVisibleCol) {
 		this.firstVisibleCol = firstVisibleCol;
-		frameObserverable.notifyListeners(new FrameEvent(firstVisibleCol));
+		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.HORIZONTAL, firstVisibleCol));
 	}
 
 	public List<Line> getVisibleLines() {
@@ -183,7 +185,7 @@ public class SyntaxDocument {
 		}
 		return i;
 	}
-	
+
 	/**
 	 * 
 	 * @return caret position considering {@link firstVisibleCol}

@@ -4,7 +4,6 @@ import java.awt.event.AdjustmentListener;
 
 import javax.swing.JScrollBar;
 
-import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
 public class ScrollBarsManager implements DocumentDimensionsListener, FrameListener {
@@ -41,20 +40,14 @@ public class ScrollBarsManager implements DocumentDimensionsListener, FrameListe
 
 	@Override
 	public void onFrameChanged(FrameEvent e) {
-		setVScrollValue(e.getFirstVisibleLine());
-		setHScrollValue(e.getFirstVisibleCol());
-	}
-
-	void setVScrollValue(Line firstVisibleLine) {
-		if (firstVisibleLine != null) {
-			int value = document.getLineIndex(firstVisibleLine);
+		Integer value = e.getValue();
+		switch (e.getType()) {
+		case HORIZONTAL:
+			setBarValue(hbar, value);
+			break;
+		case VERTICAL:
 			setBarValue(vbar, value);
-		}
-	}
-
-	void setHScrollValue(Integer firstVisibleCol) {
-		if (firstVisibleCol != null) {
-			setBarValue(hbar, firstVisibleCol);
+			break;
 		}
 	}
 
@@ -85,13 +78,7 @@ public class ScrollBarsManager implements DocumentDimensionsListener, FrameListe
 		for (int i = 0; i < listeners.length; i++) {
 			bar.removeAdjustmentListener(listeners[i]);
 		}
-
-//		System.out.println("max = " + bar.getMaximum());
-//		System.out.println("set " + value);
 		bar.setValue(value);
-//		bar.repaint();
-//		System.out.println("get " + bar.getValue());
-
 		for (AdjustmentListener l : listeners) {
 			bar.addAdjustmentListener(l);
 		}
