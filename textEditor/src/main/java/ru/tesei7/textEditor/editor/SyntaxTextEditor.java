@@ -38,8 +38,7 @@ import ru.tesei7.textEditor.editor.utils.FontUtils;
  * @author Ilya
  *
  */
-public class SyntaxTextEditor extends JPanel
-		 {
+public class SyntaxTextEditor extends JPanel {
 	private static final long serialVersionUID = 1485541136343010484L;
 	/**
 	 * Number of spaces of '\t' character representation
@@ -95,6 +94,7 @@ public class SyntaxTextEditor extends JPanel
 	private SyntaxTextEditorFrame frame;
 	private ScrollBarsManager scrollBarsManager;
 
+	private FontProperties fontProperties;
 	private SyntaxDocumentPainter documentPainter;
 	private CaretPainter caretPainter;
 
@@ -120,7 +120,7 @@ public class SyntaxTextEditor extends JPanel
 		createComponent();
 
 		this.syntaxDocumentEditor = new SyntaxDocumentEditor(document, caretObservable, dimensionsObservable);
-		this.caret = new SyntaxCaret(document, caretObservable);
+		this.caret = new SyntaxCaret(document, fontProperties);
 		this.frame = new SyntaxTextEditorFrame(document);
 		this.scrollBarsManager = new ScrollBarsManager(document, hbar, vbar);
 		this.caretPainter = new CaretPainter(document);
@@ -150,10 +150,6 @@ public class SyntaxTextEditor extends JPanel
 		setLayout(layout);
 
 		textPanel = new SyntaxTextPanel(this);
-		textPanel.setBackground(Color.WHITE);
-		textPanel.setFocusable(true);
-		textPanel.setFocusTraversalKeysEnabled(false);
-		textPanel.setFont(FontUtils.DEFAULT);
 		GridBagConstraints textPanelConstraints = new GridBagConstraints();
 		textPanelConstraints.gridx = 0;
 		textPanelConstraints.gridy = 0;
@@ -245,8 +241,9 @@ public class SyntaxTextEditor extends JPanel
 
 	protected void recalcSize() {
 		FontMetrics fm = textPanel.getFontMetrics(textPanel.getFont());
-		int height = fm.getHeight() * getRows();
-		int width = fm.charWidth('a') * getCols() + CARET_WIDTH;
+		fontProperties = new FontProperties(fm.charWidth('a'), fm.getHeight());
+		int height = fontProperties.getLineHeight() * getRows();
+		int width = fontProperties.getCharWidth() * getCols() + CARET_WIDTH;
 		layout.columnWidths = new int[] { width, 15 };
 		layout.rowHeights = new int[] { height, 15 };
 	}
@@ -254,13 +251,13 @@ public class SyntaxTextEditor extends JPanel
 	CaretPainter getCaretPainter() {
 		return caretPainter;
 	}
-	
+
 	SyntaxDocumentPainter getDocumentPainter() {
 		return documentPainter;
 	}
-	
+
 	boolean isCaretVisible() {
 		return caretVisible;
 	}
-	
+
 }

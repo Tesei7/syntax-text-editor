@@ -7,6 +7,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
@@ -31,7 +33,8 @@ public class SyntaxMouseListener extends MouseAdapter {
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mousePressed(MouseEvent e) {
+		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOUSE, e.getX(), e.getY()));
 	}
 
 }

@@ -1,5 +1,6 @@
 package ru.tesei7.textEditor.editor.caret;
 
+import ru.tesei7.textEditor.editor.FontProperties;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
@@ -12,11 +13,11 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 public class SyntaxCaret implements SyntaxCaretListener {
 
 	private SyntaxDocument document;
-	private SyntaxCaretObservable caretObservable;
+	private FontProperties fontProperties;
 
-	public SyntaxCaret(SyntaxDocument document, SyntaxCaretObservable caretObservable) {
+	public SyntaxCaret(SyntaxDocument document, FontProperties fontProperties) {
 		this.document = document;
-		this.caretObservable = caretObservable;
+		this.fontProperties = fontProperties;
 	}
 
 	@Override
@@ -33,7 +34,6 @@ public class SyntaxCaret implements SyntaxCaretListener {
 			break;
 		case DOWN:
 			moveY(1);
-			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_DOWN));
 			break;
 		case PAGE_UP:
 			moveY(-1 * document.getRows());
@@ -52,7 +52,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 			document.setCaretType(caretType != CaretType.INSERT ? CaretType.INSERT : CaretType.NORMAL);
 			break;
 		case MOUSE:
-			// TODO
+			setCaret(e.getX(), e.getY());
 			break;
 		default:
 			break;
@@ -93,6 +93,13 @@ public class SyntaxCaret implements SyntaxCaretListener {
 
 	Line getCurrentLine() {
 		return document.getCurrentLine();
+	}
+
+	private void setCaret(int x, int y) {
+		int lineIndex = y / fontProperties.getLineHeight() + document.getFirstVisibleRow();
+		document.setCurrentLine(lineIndex);
+		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
+		document.getCurrentLine().setOffestToPaint(offsetToPaint);
 	}
 
 }

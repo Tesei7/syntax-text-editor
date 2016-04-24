@@ -1,5 +1,7 @@
 package ru.tesei7.textEditor.editor;
 
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
@@ -12,6 +14,7 @@ import ru.tesei7.textEditor.editor.frame.SyntaxScrollEvent;
 import ru.tesei7.textEditor.editor.frame.SyntaxScrollListener;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameListener;
+import ru.tesei7.textEditor.editor.utils.FontUtils;
 
 /**
  * Text editor component
@@ -27,6 +30,12 @@ public class SyntaxTextPanel extends JPanel
 
 	public SyntaxTextPanel(SyntaxTextEditor editor) {
 		this.editor = editor;
+
+		setBackground(Color.WHITE);
+		setFocusable(true);
+		setFocusTraversalKeysEnabled(false);
+		setFont(FontUtils.DEFAULT);
+		setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 	}
 
 	@Override

@@ -101,22 +101,6 @@ public class Line {
 		return l;
 	}
 
-	/**
-	 * 
-	 * @return offset considering tab indents
-	 */
-	public int getOffsetToPaint() {
-		int x = 0;
-		for (int i = 0; i < offset; i++) {
-			if (text[i] == '\t') {
-				x += SyntaxTextEditor.TAB_INDENT;
-			} else {
-				x++;
-			}
-		}
-		return x;
-	}
-
 	public char[] getCharsToShow() {
 		ArrayList<Character> out = new ArrayList<>();
 		for (int i = 0; i < text.length; i++) {
@@ -162,6 +146,33 @@ public class Line {
 		}
 	}
 
+	/**
+	 * 
+	 * @return offset considering tab indents
+	 */
+	public int getOffsetToPaint() {
+		int x = 0;
+		for (int i = 0; i < offset; i++) {
+			if (text[i] == '\t') {
+				x += SyntaxTextEditor.TAB_INDENT;
+			} else {
+				x++;
+			}
+		}
+		return x;
+	}
+
+	public void setOffestToPaint(int offsetToPaint) {
+		int i = 0;
+		while (offsetToPaint > 0 && i < text.length) {
+			offsetToPaint -= text[i] == '\t' ? SyntaxTextEditor.TAB_INDENT : 1;
+			if (offsetToPaint >= 0) {
+				i++;
+			}
+		}
+		offset = i;
+	}
+
 	public boolean atEndOfLine() {
 		return offset == getLength();
 	}
@@ -174,14 +185,14 @@ public class Line {
 		text = toArray(list);
 		offset++;
 	}
-	
+
 	public void insertChar(char c) {
-		if (atEndOfLine()){
+		if (atEndOfLine()) {
 			printChar(c);
 		} else {
 			text[offset] = c;
 			offset++;
-		}		
+		}
 	}
 
 	public void delete() {
@@ -202,6 +213,8 @@ public class Line {
 		text = toArray(list);
 		offset--;
 	}
+
+	// Other
 
 	@Override
 	public String toString() {

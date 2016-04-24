@@ -60,6 +60,10 @@ public class SyntaxDocument {
 	public void setCurrentLine(Line currentLine) {
 		this.currentLine = currentLine;
 	}
+	
+	public void setCurrentLine(int index) {
+		this.currentLine = getLineByIndex(index);
+	}
 
 	public Line getFirstVisibleLine() {
 		return getLineByIndex(firstVisibleRow);
