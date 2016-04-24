@@ -85,6 +85,10 @@ public class Line {
 		return text.length;
 	}
 
+	/**
+	 * 
+	 * @return line length considering tab indents
+	 */
 	public int getLengthToPaint() {
 		int l = 0;
 		for (int i = 0; i < text.length; i++) {
@@ -97,7 +101,11 @@ public class Line {
 		return l;
 	}
 
-	public int getXToPaint() {
+	/**
+	 * 
+	 * @return offset considering tab indents
+	 */
+	public int getOffsetToPaint() {
 		int x = 0;
 		for (int i = 0; i < offset; i++) {
 			if (text[i] == '\t') {
@@ -165,6 +173,15 @@ public class Line {
 		list.add(offset, c);
 		text = toArray(list);
 		offset++;
+	}
+	
+	public void insertChar(char c) {
+		if (atEndOfLine()){
+			printChar(c);
+		} else {
+			text[offset] = c;
+			offset++;
+		}		
 	}
 
 	public void delete() {

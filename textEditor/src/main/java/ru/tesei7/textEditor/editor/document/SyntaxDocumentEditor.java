@@ -48,7 +48,17 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 	}
 
 	void printChar(char c) {
-		document.getCurrentLine().printChar(c);
+		switch (document.getCaretType()) {
+		case NORMAL:
+			document.getCurrentLine().printChar(c);
+			break;
+		case INSERT:
+			document.getCurrentLine().insertChar(c);
+			break;
+		default:
+			break;
+		}
+		
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_RIGHT));
@@ -120,7 +130,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			document.setCurrentLine(l1);
 			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_UP));
 		}
-		
+
 	}
 
 }

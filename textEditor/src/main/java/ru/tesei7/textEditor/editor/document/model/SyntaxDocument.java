@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
+import ru.tesei7.textEditor.editor.caret.CaretType;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
 
@@ -20,9 +21,13 @@ public class SyntaxDocument {
 
 	private int rows = DEFAULT_ROWS;
 	private int cols = DEFAULT_COLS;
+	private CaretType caretType = CaretType.NORMAL;
 	Line firstLine;
 	Line firstVisibleLine;
 	Line currentLine;
+	/**
+	 * Horizontal offset of visible frame
+	 */
 	int firstVisibleCol = 0;
 	private FrameObserverable frameObserverable;
 
@@ -31,6 +36,14 @@ public class SyntaxDocument {
 		firstLine = new Line();
 		firstVisibleLine = firstLine;
 		currentLine = firstVisibleLine;
+	}
+	
+	public CaretType getCaretType() {
+		return caretType;
+	}
+	
+	public void setCaretType(CaretType caretType) {
+		this.caretType = caretType;
 	}
 
 	public Line getFirstLine() {
@@ -157,7 +170,7 @@ public class SyntaxDocument {
 	}
 
 	public int getTargetLineOffset(Line targetLine) {
-		int xToPaint = currentLine.getXToPaint();
+		int xToPaint = currentLine.getOffsetToPaint();
 
 		int i = 0;
 		for (Iterator<Character> iterator = targetLine.getChars().iterator(); iterator.hasNext();) {
@@ -169,6 +182,15 @@ public class SyntaxDocument {
 			i++;
 		}
 		return i;
+	}
+	
+	/**
+	 * 
+	 * @return caret position considering {@link firstVisibleCol}
+	 */
+	public int getXToPaint() {
+		int xToPaint = currentLine.getOffsetToPaint();
+		return xToPaint - firstVisibleCol;
 	}
 
 	public void setText(String text) {

@@ -93,4 +93,18 @@ public class LineTest {
 		assertTrue(l.getOffset() == 3);
 	}
 
+	@Test
+	public void testInsertChar() throws Exception {
+		l.setText(new char[] { 'a', 'b', 'c' });
+		l.setOffset(1);
+		l.insertChar('1');
+
+		assertTrue(Arrays.equals(new char[] { 'a', '1', 'c' }, l.getText()));
+		
+		l.setOffset(3);
+		l.insertChar('2');
+		
+		assertTrue(Arrays.equals(new char[] { 'a', '1', 'c', '2' }, l.getText()));
+	}
+
 }

@@ -55,6 +55,10 @@ public class SyntaxTextEditor extends JPanel
 	 * Frequency of caret blinking in ms
 	 */
 	public static final int CARET_BLINK_PERIOD = 500;
+	/**
+	 * Default caret width in pixels
+	 */
+	public static final int CARET_WIDTH = 2;
 
 	/**
 	 * Data model to store text and representation information
@@ -118,7 +122,7 @@ public class SyntaxTextEditor extends JPanel
 		this.caret = new SyntaxCaret(document, caretObservable);
 		this.frame = new SyntaxTextEditorFrame(document);
 		this.scrollBarsManager = new ScrollBarsManager(document, hbar, vbar);
-		this.caretPainter = new CaretPainter(caret);
+		this.caretPainter = new CaretPainter(document);
 		this.documentPainter = new SyntaxDocumentPainter(document);
 
 		caretObservable.addListener(caret);
@@ -162,7 +166,7 @@ public class SyntaxTextEditor extends JPanel
 	/**
 	 * Prevent caret from blinking while text editing
 	 */
-	void caretFreze() {
+	void freezeCaret() {
 		caretVisible = true;
 		skipNextBlink = true;
 	}
@@ -235,19 +239,19 @@ public class SyntaxTextEditor extends JPanel
 
 	@Override
 	public void onCaretChanged(SyntaxCaretEvent e) {
-		caretFreze();
+		freezeCaret();
 		repaint();
 	}
 
 	@Override
 	public void onDocumentEdited(DocumentEditEvent e) {
-		caretFreze();
+		freezeCaret();
 		repaint();
 	}
 
 	@Override
 	public void onScrollChanged(SyntaxScrollEvent e) {
-		caretFreze();
+		freezeCaret();
 		repaint();
 	}
 

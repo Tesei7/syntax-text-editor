@@ -4,19 +4,21 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
-import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
+import ru.tesei7.textEditor.editor.SyntaxTextEditor;
+import ru.tesei7.textEditor.editor.caret.CaretType;
+import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.utils.Colors;
 
 public class CaretPainter {
 
-	private SyntaxCaret caret;
+	private SyntaxDocument document;
 
-	public CaretPainter(SyntaxCaret caret) {
-		this.caret = caret;
+	public CaretPainter(SyntaxDocument document) {
+		this.document = document;
 	}
 
 	public void paint(Graphics g, boolean caretVisible) {
-		int caretRow = caret.getY();
+		int caretRow = document.getCurrentLineY();
 		if (caretRow < 0) {
 			return;
 		}
@@ -33,9 +35,9 @@ public class CaretPainter {
 		int height = fontMetrics.getHeight();
 		int y = caretRow * height;
 		int width = fontMetrics.stringWidth("a");
-		int x = caret.getXToPaint() * width;
-
-		g.fillRect(x, y, 2, height);
+		int x = document.getXToPaint() * width;
+		int caretWidth = document.getCaretType() == CaretType.INSERT ? width : SyntaxTextEditor.CARET_WIDTH;
+		g.fillRect(x, y, caretWidth, height);
 	}
 
 	private void paintBackground(Graphics g, int caretRow) {
@@ -43,7 +45,7 @@ public class CaretPainter {
 		FontMetrics fontMetrics = g.getFontMetrics();
 		int height = fontMetrics.getHeight();
 		int y = caretRow * height;
-		int width = fontMetrics.stringWidth("a") * caret.getCols();
+		int width = fontMetrics.stringWidth("a") * document.getCols();
 
 		g.fillRect(0, y, width, height);
 	}

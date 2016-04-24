@@ -48,7 +48,7 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 	}
 
 	private void makeCaretVisibleX(SyntaxCaretEventType type) {
-		int offsetToPaint = document.getCurrentLine().getXToPaint();
+		int offsetToPaint = document.getCurrentLine().getOffsetToPaint();
 		boolean beforeFrame = offsetToPaint < document.getFirstVisibleCol();
 		boolean afterFrame = offsetToPaint > document.getFirstVisibleCol() + document.getCols();
 		boolean atEndOfLine = document.getCurrentLine().atEndOfLine();

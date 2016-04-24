@@ -11,32 +11,56 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
  */
 public class SyntaxCaret implements SyntaxCaretListener {
 
-	private CaretType type;
 	private SyntaxDocument document;
 	private SyntaxCaretObservable caretObservable;
 
 	public SyntaxCaret(SyntaxDocument document, SyntaxCaretObservable caretObservable) {
-		type = CaretType.NORMAL;
 		this.document = document;
 		this.caretObservable = caretObservable;
 	}
 
-	public CaretType getType() {
-		return type;
-	}
-
-	public void setType(CaretType type) {
-		this.type = type;
+	@Override
+	public void onCaretChanged(SyntaxCaretEvent e) {
+		switch (e.getType()) {
+		case LEFT:
+			setX(getX() - 1);
+			break;
+		case RIGHT:
+			setX(getX() + 1);
+			break;
+		case UP:
+			moveY(-1);
+			break;
+		case DOWN:
+			moveY(1);
+			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_DOWN));
+			break;
+		case PAGE_UP:
+			moveY(-1 * document.getRows());
+			break;
+		case PAGE_DOWN:
+			moveY(document.getRows());
+			break;
+		case HOME:
+			setX(0);
+			break;
+		case END:
+			setX(getCurrentLine().getLength());
+			break;
+		case INSERT:
+			CaretType caretType = document.getCaretType();
+			document.setCaretType(caretType != CaretType.INSERT ? CaretType.INSERT : CaretType.NORMAL);
+			break;
+		case MOUSE:
+			// TODO
+			break;
+		default:
+			break;
+		}
 	}
 
 	public int getX() {
 		return getCurrentLine().getOffset();
-	}
-
-	public int getXToPaint() {
-		int xToPaint = document.getCurrentLine().getXToPaint();
-		int firstVisibleCol = document.getFirstVisibleCol();
-		return xToPaint - firstVisibleCol;
 	}
 
 	public int getY() {
@@ -73,47 +97,6 @@ public class SyntaxCaret implements SyntaxCaretListener {
 
 	Line getCurrentLine() {
 		return document.getCurrentLine();
-	}
-
-	public int getCols() {
-		return document.getCols();
-	}
-
-	@Override
-	public void onCaretChanged(SyntaxCaretEvent e) {
-		switch (e.getType()) {
-		case LEFT:
-			setX(getX() - 1);
-			break;
-		case RIGHT:
-			setX(getX() + 1);
-			break;
-		case UP:
-			moveY(-1);
-			break;
-		case DOWN:
-			moveY(1);
-			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_DOWN));
-			break;
-		case PAGE_UP:
-			moveY(-1 * document.getRows());
-			break;
-		case PAGE_DOWN:
-			moveY(document.getRows());
-			break;
-		case HOME:
-			setX(0);
-			break;
-		case END:
-			setX(getCurrentLine().getLength());
-			break;
-		case INSERT:
-			type = type != CaretType.INSERT ? CaretType.INSERT : CaretType.NORMAL;
-			break;
-		case MOUSE:
-			// TODO
-			break;
-		}
 	}
 
 }
