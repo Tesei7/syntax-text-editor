@@ -63,10 +63,6 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		return getCurrentLine().getOffset();
 	}
 
-	public int getY() {
-		return document.getCurrentLineY();
-	}
-
 	public void setX(int x) {
 		Line currentLine = document.getCurrentLine();
 		if (x < 0) {

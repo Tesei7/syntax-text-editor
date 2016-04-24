@@ -6,7 +6,6 @@ import java.util.List;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.caret.CaretType;
-import ru.tesei7.textEditor.editor.scroll.Direction;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameEventType;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
@@ -25,8 +24,11 @@ public class SyntaxDocument {
 	private int cols = DEFAULT_COLS;
 	private CaretType caretType = CaretType.NORMAL;
 	Line firstLine;
-	Line firstVisibleLine;
 	Line currentLine;
+	/**
+	 * Vertical offset of visible frame
+	 */
+	int firstVisibleRow = 0;
 	/**
 	 * Horizontal offset of visible frame
 	 */
@@ -36,8 +38,7 @@ public class SyntaxDocument {
 	public SyntaxDocument(FrameObserverable frameObserverable) {
 		this.frameObserverable = frameObserverable;
 		firstLine = new Line();
-		firstVisibleLine = firstLine;
-		currentLine = firstVisibleLine;
+		currentLine = firstLine;
 	}
 
 	public CaretType getCaretType() {
@@ -61,12 +62,23 @@ public class SyntaxDocument {
 	}
 
 	public Line getFirstVisibleLine() {
-		return firstVisibleLine;
+		return getLineByIndex(firstVisibleRow);
 	}
 
-	public void setFirstVisibleLine(Line firstVisibleLine) {
-		this.firstVisibleLine = firstVisibleLine;
-		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, getLineIndex(firstVisibleLine)));
+	public int getFirstVisibleRow() {
+		return firstVisibleRow;
+	}
+
+	public void setFirstVisibleRow(int firstVisibleRow) {
+		if (firstVisibleRow < 0) {
+			firstVisibleRow = 0;
+		}
+		int size = getSize();
+		if (size - firstVisibleRow < rows) {
+			firstVisibleRow = Math.max(0, size - rows);
+		}
+		this.firstVisibleRow = firstVisibleRow;
+		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, firstVisibleRow));
 	}
 
 	public int getFirstVisibleCol() {
@@ -81,7 +93,7 @@ public class SyntaxDocument {
 	public List<Line> getVisibleLines() {
 		List<Line> lines = new ArrayList<>();
 		Integer i = new Integer(rows);
-		Line line = firstVisibleLine;
+		Line line = getFirstVisibleLine();
 		do {
 			lines.add(line);
 			if (!line.hasNext()) {
@@ -95,17 +107,14 @@ public class SyntaxDocument {
 	}
 
 	public int getCurrentLineY() {
-		Line tmp = firstVisibleLine;
-		for (int i = 0; i < rows; i++) {
-			if (tmp.equals(currentLine)) {
-				return i;
-			}
-			if (!tmp.hasNext()) {
-				break;
-			}
-			tmp = tmp.getNext();
+		int curLineIndex = getLineIndex(currentLine);
+		if (curLineIndex < firstVisibleRow) {
+			return -1;
+		} else if (curLineIndex >= firstVisibleRow + rows) {
+			return -2;
+		} else {
+			return curLineIndex - firstVisibleRow;
 		}
-		return -1;
 	}
 
 	public int getRows() {
@@ -137,6 +146,22 @@ public class SyntaxDocument {
 			size++;
 		}
 		return size;
+	}
+
+	/**
+	 * Returns line by index. O(n) operation.
+	 * 
+	 * @param index
+	 *            number of line
+	 * @return line
+	 */
+	private Line getLineByIndex(int index) {
+		Line l = firstLine;
+		while (l.hasNext() && index > 0) {
+			l = l.getNext();
+			index--;
+		}
+		return l;
 	}
 
 	/**
@@ -214,7 +239,7 @@ public class SyntaxDocument {
 			l.setOffset(0);
 		}
 		currentLine = firstLine;
-		firstVisibleLine = firstLine;
+		firstVisibleRow = 0;
 		firstVisibleCol = 0;
 
 		long t3 = System.currentTimeMillis();

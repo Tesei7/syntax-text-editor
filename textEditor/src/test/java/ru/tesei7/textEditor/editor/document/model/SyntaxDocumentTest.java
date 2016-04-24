@@ -1,6 +1,7 @@
 package ru.tesei7.textEditor.editor.document.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
@@ -17,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import ru.tesei7.textEditor.editor.scroll.bar.FrameEventType;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,15 +31,12 @@ public class SyntaxDocumentTest {
 	@Mock
 	private Line firstLine;
 	@Mock
-	private Line firstVisibleLine;
-	@Mock
 	private FrameObserverable frameObserverable;
 
 	@Before
 	public void setUp() {
 		syntaxDocument.firstLine = firstLine;
 		syntaxDocument.currentLine = currentLine;
-		syntaxDocument.firstVisibleLine = firstVisibleLine;
 	}
 
 	@Test
@@ -59,54 +58,22 @@ public class SyntaxDocumentTest {
 	}
 
 	@Test
-	public void testSetFirstVisibleLine() throws Exception {
-		syntaxDocument.setFirstVisibleLine(firstLine);
-		verify(frameObserverable).notifyListeners(argThat(hasProperty("firstVisibleLine", equalTo(firstLine))));
-	}
-
-	@Test
-	public void testGetCurrentLineY() throws Exception {
-		syntaxDocument.firstVisibleLine = currentLine;
-		assertThat(syntaxDocument.getCurrentLineY(), is(0));
-
-		syntaxDocument.firstVisibleLine = firstVisibleLine;
-		when(firstVisibleLine.hasNext()).thenReturn(true, true);
-		when(firstVisibleLine.getNext()).thenReturn(firstVisibleLine, currentLine);
-		assertThat(syntaxDocument.getCurrentLineY(), is(2));
-
-		when(firstVisibleLine.hasNext()).thenReturn(true, false);
-		when(firstVisibleLine.getNext()).thenReturn(firstVisibleLine);
-		assertThat(syntaxDocument.getCurrentLineY(), is(-1));
-	}
-
-	@Test
-	public void testGetVisibleLines() throws Exception {
-		assertThat(syntaxDocument.getVisibleLines(), contains(firstVisibleLine));
-
-		when(firstVisibleLine.hasNext()).thenReturn(true, true, false);
-		when(firstVisibleLine.getNext()).thenReturn(firstVisibleLine);
-		assertThat(syntaxDocument.getVisibleLines(), contains(firstVisibleLine, firstVisibleLine, firstVisibleLine));
-
-		syntaxDocument.setRows(2);
-		when(firstVisibleLine.hasNext()).thenReturn(true);
-		when(firstVisibleLine.getNext()).thenReturn(firstVisibleLine);
-		assertThat(syntaxDocument.getVisibleLines(), contains(firstVisibleLine, firstVisibleLine));
-	}
-
-	@Test
 	public void testSetFirstVisibleCol() throws Exception {
 		syntaxDocument.setFirstVisibleCol(12);
-		verify(frameObserverable).notifyListeners(argThat(hasProperty("firstVisibleCol", is(12))));
+		verify(frameObserverable).notifyListeners(argThat(allOf(
+//				hasProperty("type", equalTo(FrameEventType.VERTICAL)), 
+				hasProperty("value", is(12)))
+				));
 	}
 
 	@Test
 	public void testGetMaxCols() throws Exception {
 		syntaxDocument.setCols(80);
 		when(firstLine.getNext()).thenReturn(firstLine, firstLine, null);
-		
+
 		when(firstLine.getLengthToPaint()).thenReturn(42, 44, 43);
 		assertThat(syntaxDocument.getMaxCols(), is(80));
-		
+
 		syntaxDocument.setCols(40);
 		when(firstLine.getLengthToPaint()).thenReturn(42, 44, 43);
 		when(firstLine.getNext()).thenReturn(firstLine, firstLine, null);

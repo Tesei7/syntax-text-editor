@@ -251,7 +251,7 @@ public class SyntaxTextEditor extends JPanel
 		FontMetrics fm = getFontMetrics(getFont());
 		int height = fm.getHeight() * (getRows() + 1) + fm.getDescent();
 		int width = fm.charWidth('a') * getCols();
-		setPreferredSize(new Dimension(width + 100, height + 160));
+		setPreferredSize(new Dimension(width + 100, height + 140));
 	}
 
 	@Override

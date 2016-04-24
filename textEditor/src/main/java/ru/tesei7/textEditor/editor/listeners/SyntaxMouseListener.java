@@ -27,19 +27,7 @@ public class SyntaxMouseListener extends MouseAdapter {
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		int value = e.getWheelRotation() * SyntaxTextEditor.MOUSE_WHEEL_SCROLL_LINES;
-		Line l = document.getFirstVisibleLine();
-		if (value > 0) {
-			while (l.hasNext() && value > 0) {
-				l = l.getNext();
-				value--;
-			}
-		} else if (value < 0) {
-			while (l.hasPrevious() && value < 0) {
-				l = l.getPrevious();
-				value++;
-			}
-		}
-		document.setFirstVisibleLine(l);
+		document.setFirstVisibleRow(document.getFirstVisibleRow() + value);
 	}
 
 	@Override

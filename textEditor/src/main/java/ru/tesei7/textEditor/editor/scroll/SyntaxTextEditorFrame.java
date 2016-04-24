@@ -24,15 +24,7 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 	}
 
 	void scrollVerical(int value) {
-		Line line = document.getFirstLine();
-		for (int i = 0; i < value; i++) {
-			if (line.hasNext()) {
-				line = line.getNext();
-			} else {
-				break;
-			}
-		}
-		document.setFirstVisibleLine(line);
+		document.setFirstVisibleRow(value);
 	}
 
 	void scrollHorizontal(int value) {
@@ -62,34 +54,16 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 	}
 
 	private void makeCaretVisibleY(SyntaxCaretEventType type) {
-		int firstVisibleIndex = document.getLineIndex(document.getFirstVisibleLine());
+		int curLineY = document.getCurrentLineY();
 		int currentIndex = document.getLineIndex(document.getCurrentLine());
-		boolean beforeFrame = currentIndex < firstVisibleIndex;
-		boolean afterFrame = currentIndex >= firstVisibleIndex + document.getRows();
+		boolean beforeFrame = curLineY == -1;
+		boolean afterFrame = curLineY == -2;
 
 		if (beforeFrame) {
-			document.setFirstVisibleLine(document.getCurrentLine());
+			document.setFirstVisibleRow(currentIndex);
 		} else if (afterFrame) {
-			document.setFirstVisibleLine(getFvToShowCurrentAtBootom());
-		} else if (!document.getCurrentLine().hasNext()) {
-			// is last line
-			document.setFirstVisibleLine(getFvToShowCurrentAtBootom());
+			document.setFirstVisibleRow(currentIndex - (document.getRows() - 1));
 		}
-	}
-
-	/**
-	 * 
-	 * @return first visible line to current line be last visible
-	 */
-	private Line getFvToShowCurrentAtBootom() {
-		Line line = document.getCurrentLine();
-		// rows steps up to show cur line at bottom
-		int i = document.getRows() - 2;
-		while (line.hasPrevious() && i >= 0) {
-			line = line.getPrevious();
-			i--;
-		}
-		return line;
 	}
 
 }
