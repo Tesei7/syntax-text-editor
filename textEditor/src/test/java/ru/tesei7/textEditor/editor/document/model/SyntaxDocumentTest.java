@@ -6,11 +6,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -104,10 +101,15 @@ public class SyntaxDocumentTest {
 
 	@Test
 	public void testGetMaxCols() throws Exception {
-		doReturn(Arrays.asList(firstLine, firstVisibleLine, currentLine)).when(syntaxDocument).getVisibleLines();
-		when(firstLine.getLength()).thenReturn(42);
-		when(firstVisibleLine.getLength()).thenReturn(43);
-		when(firstVisibleLine.getLength()).thenReturn(44);
+		syntaxDocument.setCols(80);
+		when(firstLine.getNext()).thenReturn(firstLine, firstLine, null);
+		
+		when(firstLine.getLengthToPaint()).thenReturn(42, 44, 43);
+		assertThat(syntaxDocument.getMaxCols(), is(80));
+		
+		syntaxDocument.setCols(40);
+		when(firstLine.getLengthToPaint()).thenReturn(42, 44, 43);
+		when(firstLine.getNext()).thenReturn(firstLine, firstLine, null);
 		assertThat(syntaxDocument.getMaxCols(), is(44));
 	}
 

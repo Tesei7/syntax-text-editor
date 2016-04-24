@@ -149,10 +149,10 @@ public class SyntaxDocument {
 	public int getMaxCols() {
 		int max = cols;
 		Line l = firstLine;
-		while (l.hasNext()) {
+		do {
 			max = Math.max(l.getLengthToPaint(), max);
 			l = l.getNext();
-		}
+		} while (l != null);
 		return max;
 	}
 

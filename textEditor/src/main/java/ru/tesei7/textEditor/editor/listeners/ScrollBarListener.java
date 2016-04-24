@@ -19,7 +19,7 @@ public class ScrollBarListener extends SyntaxScrollObserverable implements Adjus
 
 	@Override
 	public void adjustmentValueChanged(AdjustmentEvent e) {
-		scrollObserverable.notifyListeners(new SyntaxScrollEvent(direction, e.getAdjustmentType(), e.getValue()));
+		scrollObserverable.notifyListeners(new SyntaxScrollEvent(direction, e.getValue()));
 	}
 
 }

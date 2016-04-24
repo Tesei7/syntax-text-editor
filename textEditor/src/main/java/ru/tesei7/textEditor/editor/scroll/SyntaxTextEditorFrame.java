@@ -1,7 +1,5 @@
 package ru.tesei7.textEditor.editor.scroll;
 
-import java.awt.event.AdjustmentEvent;
-
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretListener;
@@ -19,50 +17,13 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 	@Override
 	public void onScrollChanged(SyntaxScrollEvent e) {
 		if (e.getDirection() == Direction.VERTICAL) {
-			scrollVerical(e.getAdjustmentType(), e.getAbsolut());
+			scrollVerical(e.getValue());
 		} else {
-			scrollHorizontal(e.getAdjustmentType(), e.getAbsolut());
+			scrollHorizontal(e.getValue());
 		}
 	}
 
-	void scrollVerical(int adjustmentType, int value) {
-		int rows = document.getRows();
-		switch (adjustmentType) {
-		case AdjustmentEvent.UNIT_INCREMENT:
-			scrollVericalReletive(1);
-			break;
-		case AdjustmentEvent.UNIT_DECREMENT:
-			scrollVericalReletive(-1);
-			break;
-		case AdjustmentEvent.BLOCK_INCREMENT:
-			scrollVericalReletive(rows);
-			break;
-		case AdjustmentEvent.BLOCK_DECREMENT:
-			scrollVericalReletive(-1 * rows);
-			break;
-		case AdjustmentEvent.TRACK:
-			scrollVericalAbsolut(value);
-			break;
-		}
-	}
-
-	void scrollVericalReletive(int i) {
-		Line line = document.getFirstVisibleLine();
-		if (i > 0) {
-			while (i > 0 && line.hasNext()) {
-				line = line.getNext();
-				i--;
-			}
-		} else {
-			while (i < 0 && line.hasPrevious()) {
-				line = line.getPrevious();
-				i++;
-			}
-		}
-		document.setFirstVisibleLine(line);
-	}
-
-	void scrollVericalAbsolut(int value) {
+	void scrollVerical(int value) {
 		Line line = document.getFirstLine();
 		for (int i = 0; i < value; i++) {
 			if (line.hasNext()) {
@@ -74,7 +35,7 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 		document.setFirstVisibleLine(line);
 	}
 
-	void scrollHorizontal(int adjustmentType, int value) {
+	void scrollHorizontal(int value) {
 		document.setFirstVisibleCol(value);
 	}
 
@@ -91,7 +52,7 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 		boolean beforeFrame = offsetToPaint < document.getFirstVisibleCol();
 		boolean afterFrame = offsetToPaint > document.getFirstVisibleCol() + document.getCols();
 		boolean atEndOfLine = document.getCurrentLine().atEndOfLine();
-		
+
 		if (beforeFrame) {
 			document.setFirstVisibleCol(offsetToPaint);
 		} else if (afterFrame || atEndOfLine) {
@@ -105,10 +66,10 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 		int currentIndex = document.getLineIndex(document.getCurrentLine());
 		boolean beforeFrame = currentIndex < firstVisibleIndex;
 		boolean afterFrame = currentIndex >= firstVisibleIndex + document.getRows();
-		
+
 		if (beforeFrame) {
 			document.setFirstVisibleLine(document.getCurrentLine());
-		}else if (afterFrame) {
+		} else if (afterFrame) {
 			document.setFirstVisibleLine(getFvToShowCurrentAtBootom());
 		} else if (!document.getCurrentLine().hasNext()) {
 			// is last line

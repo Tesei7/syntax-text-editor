@@ -47,7 +47,14 @@ import ru.tesei7.textEditor.editor.utils.FontUtils;
 public class SyntaxTextEditor extends JPanel
 		implements SyntaxCaretListener, DocumentEditListener, SyntaxScrollListener {
 	private static final long serialVersionUID = 1485541136343010484L;
+	/**
+	 * Number of spaces of '\t' character representation
+	 */
 	public static final int TAB_INDENT = 4;
+	/**
+	 * Frequency of caret blinking in ms
+	 */
+	public static final int CARET_BLINK_PERIOD = 500;
 
 	/**
 	 * Data model to store text and representation information
@@ -127,7 +134,12 @@ public class SyntaxTextEditor extends JPanel
 		dimensionsObservable.addListener(scrollBarsManager);
 		frameObserverable.addListener(scrollBarsManager);
 
-		Timer timer = new Timer(500, new ActionListener() {
+		initCaretBlinker();
+		initUIListeners();
+	}
+
+	private void initCaretBlinker() {
+		Timer timer = new Timer(CARET_BLINK_PERIOD, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!skipNextBlink) {
@@ -138,12 +150,21 @@ public class SyntaxTextEditor extends JPanel
 			}
 		});
 		timer.start();
-
-		initUIListeners();
 	}
 
+	/**
+	 * Blink caret
+	 */
 	void toggleCaretVisible() {
 		this.caretVisible = !caretVisible;
+	}
+
+	/**
+	 * Prevent caret from blinking while text editing
+	 */
+	void caretFreze() {
+		caretVisible = true;
+		skipNextBlink = true;
 	}
 
 	private void createComponent() {
@@ -210,11 +231,6 @@ public class SyntaxTextEditor extends JPanel
 		int height = fm.getHeight() * (getRows() + 1) + fm.getDescent();
 		int width = fm.charWidth('a') * getCols();
 		setPreferredSize(new Dimension(width + 100, height + 160));
-	}
-
-	private void caretFreze() {
-		caretVisible = true;
-		skipNextBlink = true;
 	}
 
 	@Override
