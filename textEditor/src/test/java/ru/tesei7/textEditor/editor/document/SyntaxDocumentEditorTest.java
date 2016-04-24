@@ -16,11 +16,12 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import ru.tesei7.textEditor.editor.caret.CaretType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
-import ru.tesei7.textEditor.editor.scroll.bar.DimensionsObservable;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.DimensionsObservable;
+import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(SyntaxDocumentEditor.class)
@@ -46,8 +47,13 @@ public class SyntaxDocumentEditorTest {
 
 	@Test
 	public final void testPrintChar() throws Exception {
+		when(document.getCaretType()).thenReturn(CaretType.NORMAL);
 		syntaxDocumentEditor.printChar('a');
 		verify(cline).printChar('a');
+		
+		when(document.getCaretType()).thenReturn(CaretType.INSERT);
+		syntaxDocumentEditor.printChar('a');
+		verify(cline).insertChar('a');
 	}
 
 	@Test

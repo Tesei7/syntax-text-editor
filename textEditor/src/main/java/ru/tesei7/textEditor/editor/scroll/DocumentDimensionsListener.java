@@ -1,4 +1,4 @@
-package ru.tesei7.textEditor.editor.scroll.bar;
+package ru.tesei7.textEditor.editor.scroll;
 
 /**
  * Listen document height or width changes

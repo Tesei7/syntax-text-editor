@@ -8,10 +8,10 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
-import ru.tesei7.textEditor.editor.scroll.bar.DimensionType;
-import ru.tesei7.textEditor.editor.scroll.bar.DimensionsEvent;
-import ru.tesei7.textEditor.editor.scroll.bar.DimensionsObservable;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.DimensionType;
+import ru.tesei7.textEditor.editor.scroll.DimensionsEvent;
+import ru.tesei7.textEditor.editor.scroll.DimensionsObservable;
+import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
 
 public class SyntaxDocumentEditor implements DocumentEditListener {
 

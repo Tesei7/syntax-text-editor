@@ -1,9 +1,8 @@
-package ru.tesei7.textEditor.editor.scroll;
+package ru.tesei7.textEditor.editor.frame;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretListener;
-import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
 public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollListener {
@@ -16,19 +15,12 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 
 	@Override
 	public void onScrollChanged(SyntaxScrollEvent e) {
+		Integer value = e.getValue();
 		if (e.getDirection() == Direction.VERTICAL) {
-			scrollVerical(e.getValue());
+			document.setFirstVisibleRow(value);
 		} else {
-			scrollHorizontal(e.getValue());
+			document.setFirstVisibleCol(value);
 		}
-	}
-
-	void scrollVerical(int value) {
-		document.setFirstVisibleRow(value);
-	}
-
-	void scrollHorizontal(int value) {
-		document.setFirstVisibleCol(value);
 	}
 
 	@Override
@@ -43,13 +35,14 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 		int offsetToPaint = document.getCurrentLine().getOffsetToPaint();
 		boolean beforeFrame = offsetToPaint < document.getFirstVisibleCol();
 		boolean afterFrame = offsetToPaint > document.getFirstVisibleCol() + document.getCols();
-		boolean atEndOfLine = document.getCurrentLine().atEndOfLine();
 
 		if (beforeFrame) {
 			document.setFirstVisibleCol(offsetToPaint);
-		} else if (afterFrame || atEndOfLine) {
+		} else if (afterFrame) {
 			int col = Math.max(0, offsetToPaint - document.getCols());
 			document.setFirstVisibleCol(col);
+		} else {
+			document.checkLastColNotEmpty();
 		}
 	}
 
@@ -63,6 +56,8 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 			document.setFirstVisibleRow(currentIndex);
 		} else if (afterFrame) {
 			document.setFirstVisibleRow(currentIndex - (document.getRows() - 1));
+		} else {
+			document.checkLastLinesNotEmpty();
 		}
 	}
 

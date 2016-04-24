@@ -8,10 +8,10 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretListener;
 import ru.tesei7.textEditor.editor.document.DocumentEditEvent;
 import ru.tesei7.textEditor.editor.document.DocumentEditListener;
-import ru.tesei7.textEditor.editor.scroll.SyntaxScrollEvent;
-import ru.tesei7.textEditor.editor.scroll.SyntaxScrollListener;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameListener;
+import ru.tesei7.textEditor.editor.frame.SyntaxScrollEvent;
+import ru.tesei7.textEditor.editor.frame.SyntaxScrollListener;
+import ru.tesei7.textEditor.editor.scroll.FrameEvent;
+import ru.tesei7.textEditor.editor.scroll.FrameListener;
 
 /**
  * Text editor component

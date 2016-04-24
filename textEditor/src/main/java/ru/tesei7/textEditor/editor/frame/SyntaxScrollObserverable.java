@@ -1,4 +1,4 @@
-package ru.tesei7.textEditor.editor.scroll;
+package ru.tesei7.textEditor.editor.frame;
 
 import java.util.ArrayList;
 import java.util.List;

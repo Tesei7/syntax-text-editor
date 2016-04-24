@@ -1,5 +1,5 @@
 package ru.tesei7.textEditor.editor.scroll;
 
-public enum Direction {
-	VERTICAL, HORIZONTAL
+public enum DimensionType {
+	ONLY_X, X_AND_Y
 }

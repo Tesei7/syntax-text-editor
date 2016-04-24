@@ -18,8 +18,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import ru.tesei7.textEditor.editor.scroll.bar.FrameEventType;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.FrameEventType;
+import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntaxDocumentTest {

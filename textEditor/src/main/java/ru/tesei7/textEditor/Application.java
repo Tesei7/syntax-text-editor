@@ -10,7 +10,7 @@ public class Application {
 
 	public void createAndShowGUI() {
 		// Create and set up the window.
-		JFrame frame = new JFrame("Text Editor");
+		JFrame frame = new JFrame("Syntax Text Editor");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new FlowLayout());
 

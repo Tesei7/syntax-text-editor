@@ -1,4 +1,4 @@
-package ru.tesei7.textEditor.editor.scroll.bar;
+package ru.tesei7.textEditor.editor.scroll;
 
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -17,7 +17,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
-import ru.tesei7.textEditor.editor.scroll.Direction;
+import ru.tesei7.textEditor.editor.frame.Direction;
+import ru.tesei7.textEditor.editor.scroll.DimensionType;
+import ru.tesei7.textEditor.editor.scroll.DimensionsEvent;
+import ru.tesei7.textEditor.editor.scroll.FrameEvent;
+import ru.tesei7.textEditor.editor.scroll.FrameEventType;
+import ru.tesei7.textEditor.editor.scroll.ScrollBarsManager;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ScrollBarsManagerTest {

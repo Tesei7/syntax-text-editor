@@ -16,20 +16,20 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.DocumentEditObservable;
 import ru.tesei7.textEditor.editor.document.SyntaxDocumentEditor;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
+import ru.tesei7.textEditor.editor.frame.Direction;
+import ru.tesei7.textEditor.editor.frame.SyntaxScrollObserverable;
+import ru.tesei7.textEditor.editor.frame.SyntaxTextEditorFrame;
 import ru.tesei7.textEditor.editor.listeners.CaretKeyListener;
 import ru.tesei7.textEditor.editor.listeners.ScrollBarListener;
 import ru.tesei7.textEditor.editor.listeners.SyntaxMouseListener;
 import ru.tesei7.textEditor.editor.listeners.TextKeyListener;
 import ru.tesei7.textEditor.editor.painter.CaretPainter;
 import ru.tesei7.textEditor.editor.painter.SyntaxDocumentPainter;
-import ru.tesei7.textEditor.editor.scroll.Direction;
-import ru.tesei7.textEditor.editor.scroll.SyntaxScrollObserverable;
-import ru.tesei7.textEditor.editor.scroll.SyntaxTextEditorFrame;
-import ru.tesei7.textEditor.editor.scroll.bar.DimensionType;
-import ru.tesei7.textEditor.editor.scroll.bar.DimensionsEvent;
-import ru.tesei7.textEditor.editor.scroll.bar.DimensionsObservable;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
-import ru.tesei7.textEditor.editor.scroll.bar.ScrollBarsManager;
+import ru.tesei7.textEditor.editor.scroll.DimensionType;
+import ru.tesei7.textEditor.editor.scroll.DimensionsEvent;
+import ru.tesei7.textEditor.editor.scroll.DimensionsObservable;
+import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.ScrollBarsManager;
 import ru.tesei7.textEditor.editor.utils.FontUtils;
 
 /**

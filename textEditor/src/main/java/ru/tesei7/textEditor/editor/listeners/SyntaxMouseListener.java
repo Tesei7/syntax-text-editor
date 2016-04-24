@@ -10,9 +10,9 @@ import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameEventType;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.FrameEvent;
+import ru.tesei7.textEditor.editor.scroll.FrameEventType;
+import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
 
 public class SyntaxMouseListener extends MouseAdapter {
 

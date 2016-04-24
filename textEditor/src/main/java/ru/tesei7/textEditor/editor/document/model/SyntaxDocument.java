@@ -6,9 +6,9 @@ import java.util.List;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.caret.CaretType;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameEventType;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.FrameEvent;
+import ru.tesei7.textEditor.editor.scroll.FrameEventType;
+import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
 
 /**
  * Stores text data in linked list of {@link Line}s.
@@ -73,12 +73,16 @@ public class SyntaxDocument {
 		if (firstVisibleRow < 0) {
 			firstVisibleRow = 0;
 		}
+		this.firstVisibleRow = firstVisibleRow;
+		checkLastLinesNotEmpty();		
+		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, firstVisibleRow));
+	}
+	
+	public void checkLastLinesNotEmpty() {
 		int size = getSize();
 		if (size - firstVisibleRow < rows) {
 			firstVisibleRow = Math.max(0, size - rows);
 		}
-		this.firstVisibleRow = firstVisibleRow;
-		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, firstVisibleRow));
 	}
 
 	public int getFirstVisibleCol() {
@@ -86,8 +90,19 @@ public class SyntaxDocument {
 	}
 
 	public void setFirstVisibleCol(int firstVisibleCol) {
+		if (firstVisibleCol < 0) {
+			firstVisibleCol = 0;
+		}
 		this.firstVisibleCol = firstVisibleCol;
+		checkLastColNotEmpty();
 		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.HORIZONTAL, firstVisibleCol));
+	}
+	
+	public void checkLastColNotEmpty() {
+		int size = getMaxCols();
+		if (size - firstVisibleCol < cols) {
+			firstVisibleCol = Math.max(0, size - cols);
+		}
 	}
 
 	public List<Line> getVisibleLines() {

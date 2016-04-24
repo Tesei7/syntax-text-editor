@@ -1,10 +1,10 @@
-package ru.tesei7.textEditor.editor.scroll;
+package ru.tesei7.textEditor.editor.frame;
 
 public class SyntaxScrollEvent {
 	private Direction direction;
-	private Integer value;
+	private int value;
 
-	public SyntaxScrollEvent(Direction direction, Integer value) {
+	public SyntaxScrollEvent(Direction direction, int value) {
 		this.direction = direction;
 		this.value = value;
 	}
@@ -13,7 +13,7 @@ public class SyntaxScrollEvent {
 		return direction;
 	}
 
-	public Integer getValue() {
+	public int getValue() {
 		return value;
 	}
 
