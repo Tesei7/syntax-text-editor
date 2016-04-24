@@ -4,17 +4,27 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Arrays;
 
-import ru.tesei7.textEditor.editor.document.model.Line;
+import ru.tesei7.textEditor.editor.FontProperties;
+import ru.tesei7.textEditor.editor.utils.Colors;
 
 public class LinePainter {
 
-	public void paint(Graphics g, Line line, int height, int offset) {
+	public void paintSelection(Graphics g, char[] chars, int from, int to, int backgroundY, int textY, FontProperties fp) {
+		char[] toShow = Arrays.copyOfRange(chars, from, to);
+
+		g.setColor(Colors.SELECTED_BACKGROUND);
+		int x = fp.getCharWidth() * from;
+		int width = fp.getCharWidth() * toShow.length;
+		int height = fp.getLineHeight();
+		g.fillRect(x, backgroundY, width, height);
+
+		g.setColor(Color.WHITE);
+		g.drawChars(toShow, 0, toShow.length, x, textY);
+	}
+
+	public void paint(Graphics g, char[] chars, int y) {
 		g.setColor(Color.BLACK);
-		char[] chars = line.getCharsToShow();
-		if (chars.length > offset) {
-			char[] toShow = Arrays.copyOfRange(chars, offset, chars.length);
-			g.drawChars(toShow, 0, toShow.length, 0, height);
-		}
+		g.drawChars(chars, 0, chars.length, 0, y);
 	}
 
 }

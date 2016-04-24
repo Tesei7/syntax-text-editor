@@ -74,17 +74,6 @@ public class LineTest {
 	}
 
 	@Test
-	public void testGetCharsToShow() throws Exception {
-		assertTrue(Arrays.equals(new char[0], l.getCharsToShow()));
-
-		l.printChar('a');
-		assertTrue(Arrays.equals(new char[] { 'a' }, l.getCharsToShow()));
-
-		l.printChar('\t');
-		assertTrue(Arrays.equals(new char[] { 'a', ' ', ' ', ' ', ' ' }, l.getCharsToShow()));
-	}
-
-	@Test
 	public void testSetChars() throws Exception {
 		l.setChars(Arrays.asList('a', 'b', 'c'));
 
@@ -107,23 +96,15 @@ public class LineTest {
 	}
 
 	@Test
-	public void testSetOffestToPaint() throws Exception {
+	public void testGetOffestByOffsetToPaint() throws Exception {
 		l.setText(new char[] { 'a', 'b', 'c' });
-		l.setOffestToPaint(2);
-		assertTrue(l.getOffset() == 2);
+		assertTrue(l.getOffestByOffsetToPaint(2) == 2);
 
 		l.setText(new char[] { 'a', '\t', 'c' });
-		l.setOffestToPaint(4);
-		assertTrue(l.getOffset() == 1);
-
-		l.setOffestToPaint(5);
-		assertTrue(l.getOffset() == 2);
-
-		l.setOffestToPaint(-1);
-		assertTrue(l.getOffset() == 0);
-
-		l.setOffestToPaint(567);
-		assertTrue(l.getOffset() == 3);
+		assertTrue(l.getOffestByOffsetToPaint(4) == 1);
+		assertTrue(l.getOffestByOffsetToPaint(5) == 2);
+		assertTrue(l.getOffestByOffsetToPaint(-1) == 0);
+		assertTrue(l.getOffestByOffsetToPaint(567) == 3);
 	}
 
 	@Test
@@ -131,7 +112,7 @@ public class LineTest {
 		l.setText(new char[] { 'a', 'b', 'c' });
 		l.setOffset(2);
 		assertTrue(l.getOffsetToPaint() == 2);
-		
+
 		l.setText(new char[] { 'a', '\t', 'c' });
 		l.setOffset(2);
 		assertTrue(l.getOffsetToPaint() == 5);
@@ -141,7 +122,7 @@ public class LineTest {
 	public void testToString() throws Exception {
 		l.setText(new char[] { 'a', 'b', 'c' });
 		assertEquals("abc", l.toString());
-		
+
 		l.setText(new char[] { 'a', '\t', 'c' });
 		assertEquals("a	c", l.toString());
 	}
@@ -150,7 +131,7 @@ public class LineTest {
 	public void testGetLengthToPaint() throws Exception {
 		l.setText(new char[] { 'a', 'b', 'c' });
 		assertTrue(l.getLengthToPaint() == 3);
-		
+
 		l.setText(new char[] { 'a', '\t', 'c' });
 		assertTrue(l.getLengthToPaint() == 6);
 	}

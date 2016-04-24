@@ -1,6 +1,5 @@
 package ru.tesei7.textEditor.editor.frame;
 
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,9 +14,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
-import ru.tesei7.textEditor.editor.frame.Direction;
-import ru.tesei7.textEditor.editor.frame.SyntaxScrollEvent;
-import ru.tesei7.textEditor.editor.frame.SyntaxTextEditorFrame;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntaxTextEditorFrameTest {

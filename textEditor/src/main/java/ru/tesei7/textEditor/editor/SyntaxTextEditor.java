@@ -1,6 +1,5 @@
 package ru.tesei7.textEditor.editor;
 
-import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -30,7 +29,6 @@ import ru.tesei7.textEditor.editor.scroll.DimensionsEvent;
 import ru.tesei7.textEditor.editor.scroll.DimensionsObservable;
 import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
 import ru.tesei7.textEditor.editor.scroll.ScrollBarsManager;
-import ru.tesei7.textEditor.editor.utils.FontUtils;
 
 /**
  * Editor with syntax highlighting.
@@ -124,7 +122,7 @@ public class SyntaxTextEditor extends JPanel {
 		this.frame = new SyntaxTextEditorFrame(document);
 		this.scrollBarsManager = new ScrollBarsManager(document, hbar, vbar);
 		this.caretPainter = new CaretPainter(document);
-		this.documentPainter = new SyntaxDocumentPainter(document);
+		this.documentPainter = new SyntaxDocumentPainter(document, fontProperties);
 		this.mouseListener = new SyntaxMouseListener(document, caretObservable);
 
 		caretObservable.addListener(caret);
@@ -176,6 +174,8 @@ public class SyntaxTextEditor extends JPanel {
 		textPanel.addKeyListener(caretKeyListener);
 		textPanel.addMouseListener(mouseListener);
 		textPanel.addMouseWheelListener(mouseListener);
+		textPanel.addMouseMotionListener(mouseListener);
+
 		hbar.addAdjustmentListener(hScrollListener);
 		vbar.addAdjustmentListener(vScrollListener);
 	}
@@ -241,7 +241,7 @@ public class SyntaxTextEditor extends JPanel {
 
 	protected void recalcSize() {
 		FontMetrics fm = textPanel.getFontMetrics(textPanel.getFont());
-		fontProperties = new FontProperties(fm.charWidth('a'), fm.getHeight());
+		fontProperties = new FontProperties(fm.charWidth('a'), fm.getHeight(), fm.getDescent());
 		int height = fontProperties.getLineHeight() * getRows();
 		int width = fontProperties.getCharWidth() * getCols() + CARET_WIDTH;
 		layout.columnWidths = new int[] { width, 15 };

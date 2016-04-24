@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.caret.CaretType;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
@@ -20,10 +22,25 @@ public class SyntaxDocument {
 	static final int DEFAULT_ROWS = 40;
 	static final int DEFAULT_COLS = 80;
 
+	/**
+	 * Number of visible rows
+	 */
 	private int rows = DEFAULT_ROWS;
+	/**
+	 * Number of visible columns
+	 */
 	private int cols = DEFAULT_COLS;
+	/**
+	 * Type of care
+	 */
 	private CaretType caretType = CaretType.NORMAL;
+	/**
+	 * First line. Should never be replaced by another line.
+	 */
 	Line firstLine;
+	/**
+	 * Line, cursor stays on
+	 */
 	Line currentLine;
 	/**
 	 * Vertical offset of visible frame
@@ -33,12 +50,38 @@ public class SyntaxDocument {
 	 * Horizontal offset of visible frame
 	 */
 	int firstVisibleCol = 0;
+	/**
+	 * Stores coordinates of selected text
+	 */
+	TextSelection selection;
+	/**
+	 * Broadcaster for frame movements
+	 */
 	private FrameObserverable frameObserverable;
 
 	public SyntaxDocument(FrameObserverable frameObserverable) {
 		this.frameObserverable = frameObserverable;
 		firstLine = new Line();
+		selection = new TextSelection(this);
 		currentLine = firstLine;
+	}
+
+	// GETTERS & SETTERS
+
+	public int getRows() {
+		return rows;
+	}
+
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public int getCols() {
+		return cols;
+	}
+
+	public void setCols(int cols) {
+		this.cols = cols;
 	}
 
 	public CaretType getCaretType() {
@@ -47,6 +90,10 @@ public class SyntaxDocument {
 
 	public void setCaretType(CaretType caretType) {
 		this.caretType = caretType;
+	}
+
+	public TextSelection getSelection() {
+		return selection;
 	}
 
 	public Line getFirstLine() {
@@ -60,7 +107,7 @@ public class SyntaxDocument {
 	public void setCurrentLine(Line currentLine) {
 		this.currentLine = currentLine;
 	}
-	
+
 	public void setCurrentLine(int index) {
 		this.currentLine = getLineByIndex(index);
 	}
@@ -78,10 +125,10 @@ public class SyntaxDocument {
 			firstVisibleRow = 0;
 		}
 		this.firstVisibleRow = firstVisibleRow;
-		checkLastLinesNotEmpty();		
+		checkLastLinesNotEmpty();
 		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, firstVisibleRow));
 	}
-	
+
 	public void checkLastLinesNotEmpty() {
 		int size = getSize();
 		if (size - firstVisibleRow < rows) {
@@ -101,13 +148,15 @@ public class SyntaxDocument {
 		checkLastColNotEmpty();
 		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.HORIZONTAL, firstVisibleCol));
 	}
-	
+
 	public void checkLastColNotEmpty() {
 		int size = getMaxCols();
 		if (size - firstVisibleCol < cols) {
 			firstVisibleCol = Math.max(0, size - cols);
 		}
 	}
+
+	// Lines
 
 	public List<Line> getVisibleLines() {
 		List<Line> lines = new ArrayList<>();
@@ -136,21 +185,46 @@ public class SyntaxDocument {
 		}
 	}
 
-	public int getRows() {
-		return rows;
+	public char[] getLineCharsToShow(Line line) {
+		return getCharsToShow(line.getText());
 	}
 
-	public void setRows(int rows) {
-		this.rows = rows;
+	char[] getCharsToShow(char[] chars) {
+		ArrayList<Character> out = new ArrayList<>();
+		for (int i = firstVisibleCol; i < chars.length; i++) {
+			char c = chars[i];
+			if (c == '\t') {
+				out.add(' ');
+				out.add(' ');
+				out.add(' ');
+				out.add(' ');
+			} else if (c == '\r' ) {
+				out.add(' ');
+			} else {
+				out.add(c);
+			}
+		}
+		Character[] array = out.toArray(new Character[0]);
+		return ArrayUtils.toPrimitive(array);
 	}
 
-	public int getCols() {
-		return cols;
+	// Selection
+
+	public void startSelection(int lineIndex, int offset) {
+		selection.startLine = lineIndex;
+		selection.startOffset = offset;
 	}
 
-	public void setCols(int cols) {
-		this.cols = cols;
+	public void selectTo(int lineIndex, int offset) {
+		selection.endLine = lineIndex;
+		selection.endOffset = offset;
 	}
+
+	public void clearSelection() {
+		selection.clear();
+	}
+
+	// O(n)
 
 	/**
 	 * Calculate total number of lines. O(n) operation.
@@ -215,6 +289,8 @@ public class SyntaxDocument {
 		return max;
 	}
 
+	// For cursor
+
 	public int getTargetLineOffset(Line targetLine) {
 		int xToPaint = currentLine.getOffsetToPaint();
 
@@ -239,6 +315,13 @@ public class SyntaxDocument {
 		return xToPaint - firstVisibleCol;
 	}
 
+	public int getXToPaint(int offset) {
+		int xToPaint = currentLine.getOffsetToPaint(offset);
+		return xToPaint - firstVisibleCol;
+	}
+
+	// Save / Load
+
 	public void setText(String text) {
 		long t1 = System.currentTimeMillis();
 		System.out.println("Start loading file");
@@ -260,6 +343,7 @@ public class SyntaxDocument {
 		currentLine = firstLine;
 		firstVisibleRow = 0;
 		firstVisibleCol = 0;
+		selection.clear();
 
 		long t3 = System.currentTimeMillis();
 		System.out.println("File loaded: " + (t3 - t1) + "ms");

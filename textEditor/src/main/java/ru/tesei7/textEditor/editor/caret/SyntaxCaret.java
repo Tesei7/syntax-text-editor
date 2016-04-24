@@ -54,6 +54,9 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		case MOUSE:
 			setCaret(e.getX(), e.getY());
 			break;
+		case MOUSE_SELECTION:
+			setSelection(e.getX(), e.getY());
+			break;
 		default:
 			break;
 		}
@@ -99,7 +102,18 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		int lineIndex = y / fontProperties.getLineHeight() + document.getFirstVisibleRow();
 		document.setCurrentLine(lineIndex);
 		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
-		document.getCurrentLine().setOffestToPaint(offsetToPaint);
+		int offset = document.getCurrentLine().getOffestByOffsetToPaint(offsetToPaint);
+		document.getCurrentLine().setOffset(offset);
+		
+		document.clearSelection();
+		document.startSelection(lineIndex, offset);
+	}
+
+	private void setSelection(int x, int y) {
+		int lineIndex = y / fontProperties.getLineHeight() + document.getFirstVisibleRow();
+		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
+		int offset = document.getCurrentLine().getOffestByOffsetToPaint(offsetToPaint);
+		document.selectTo(lineIndex, offset);
 	}
 
 }

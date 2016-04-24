@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import com.sun.xml.internal.txw2.Document;
+
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 
 /**
@@ -101,23 +103,7 @@ public class Line {
 		return l;
 	}
 
-	public char[] getCharsToShow() {
-		ArrayList<Character> out = new ArrayList<>();
-		for (int i = 0; i < text.length; i++) {
-			Character character = text[i];
-			if (character.equals('\t')) {
-				out.add(' ');
-				out.add(' ');
-				out.add(' ');
-				out.add(' ');
-			} else {
-				out.add(character);
-			}
-		}
-		return toArray(out);
-	}
-
-	private char[] toArray(List<Character> list) {
+	char[] toArray(List<Character> list) {
 		Character[] array = list.toArray(new Character[0]);
 		return ArrayUtils.toPrimitive(array);
 	}
@@ -151,6 +137,10 @@ public class Line {
 	 * @return offset considering tab indents
 	 */
 	public int getOffsetToPaint() {
+		return getOffsetToPaint(offset);
+	}
+	
+	public int getOffsetToPaint(int offset) {
 		int x = 0;
 		for (int i = 0; i < offset; i++) {
 			if (text[i] == '\t') {
@@ -162,7 +152,7 @@ public class Line {
 		return x;
 	}
 
-	public void setOffestToPaint(int offsetToPaint) {
+	public int getOffestByOffsetToPaint(int offsetToPaint) {
 		int i = 0;
 		while (offsetToPaint > 0 && i < text.length) {
 			offsetToPaint -= text[i] == '\t' ? SyntaxTextEditor.TAB_INDENT : 1;
@@ -170,7 +160,7 @@ public class Line {
 				i++;
 			}
 		}
-		offset = i;
+		return i;
 	}
 
 	public boolean atEndOfLine() {

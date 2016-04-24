@@ -1,6 +1,5 @@
 package ru.tesei7.textEditor.app;
 
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -13,7 +12,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.border.EmptyBorder;
 
 import ru.tesei7.textEditor.app.menuActions.MenuActions;
 import ru.tesei7.textEditor.app.menuActions.SaveLoadFileService;
