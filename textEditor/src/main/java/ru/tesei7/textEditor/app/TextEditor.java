@@ -45,12 +45,12 @@ public class TextEditor implements ActionListener {
 	}
 
 	public Container createContentPane() {
-		contentPane = new JPanel(new FlowLayout());
+		contentPane = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
 		contentPane.setOpaque(true);
-		contentPane.setBackground(Color.WHITE);
-		contentPane.setBorder(new EmptyBorder(0, 5, 0, 0));
 		textArea = new SyntaxTextEditor();
-		textArea.setText("\n\nsdfg^$(*dfgdsfgfdg\n\n\n" + "dsfsgg  435sdfgsdfg\n" + "45	36jhj\n" + "\n");
+		textArea.setText("12345678901234567890123456789012345678901234567890123456789012345678901234567890\n"
+				+ "2\n3\n4\n5\n6\n7\n8\n9\n0\n" + "1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n" + "1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n"
+				+ "1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n");
 		contentPane.add(textArea);
 		return contentPane;
 	}

@@ -1,10 +1,9 @@
 package ru.tesei7.textEditor.editor;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FontMetrics;
-import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,11 +12,7 @@ import javax.swing.JScrollBar;
 import javax.swing.Timer;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
-import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
-import ru.tesei7.textEditor.editor.caret.SyntaxCaretListener;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
-import ru.tesei7.textEditor.editor.document.DocumentEditEvent;
-import ru.tesei7.textEditor.editor.document.DocumentEditListener;
 import ru.tesei7.textEditor.editor.document.DocumentEditObservable;
 import ru.tesei7.textEditor.editor.document.SyntaxDocumentEditor;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
@@ -28,15 +23,11 @@ import ru.tesei7.textEditor.editor.listeners.TextKeyListener;
 import ru.tesei7.textEditor.editor.painter.CaretPainter;
 import ru.tesei7.textEditor.editor.painter.SyntaxDocumentPainter;
 import ru.tesei7.textEditor.editor.scroll.Direction;
-import ru.tesei7.textEditor.editor.scroll.SyntaxScrollEvent;
-import ru.tesei7.textEditor.editor.scroll.SyntaxScrollListener;
 import ru.tesei7.textEditor.editor.scroll.SyntaxScrollObserverable;
 import ru.tesei7.textEditor.editor.scroll.SyntaxTextEditorFrame;
 import ru.tesei7.textEditor.editor.scroll.bar.DimensionType;
 import ru.tesei7.textEditor.editor.scroll.bar.DimensionsEvent;
 import ru.tesei7.textEditor.editor.scroll.bar.DimensionsObservable;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameEvent;
-import ru.tesei7.textEditor.editor.scroll.bar.FrameListener;
 import ru.tesei7.textEditor.editor.scroll.bar.FrameObserverable;
 import ru.tesei7.textEditor.editor.scroll.bar.ScrollBarsManager;
 import ru.tesei7.textEditor.editor.utils.FontUtils;
@@ -48,7 +39,7 @@ import ru.tesei7.textEditor.editor.utils.FontUtils;
  *
  */
 public class SyntaxTextEditor extends JPanel
-		implements SyntaxCaretListener, DocumentEditListener, SyntaxScrollListener, FrameListener {
+		 {
 	private static final long serialVersionUID = 1485541136343010484L;
 	/**
 	 * Number of spaces of '\t' character representation
@@ -107,6 +98,8 @@ public class SyntaxTextEditor extends JPanel
 	private SyntaxDocumentPainter documentPainter;
 	private CaretPainter caretPainter;
 
+	private GridBagLayout layout;
+	private SyntaxTextPanel textPanel;
 	JScrollBar hbar;
 	JScrollBar vbar;
 
@@ -136,20 +129,59 @@ public class SyntaxTextEditor extends JPanel
 
 		caretObservable.addListener(caret);
 		caretObservable.addListener(frame);
-		caretObservable.addListener(this);
+		caretObservable.addListener(textPanel);
 
 		documentEditObservable.addListener(syntaxDocumentEditor);
-		documentEditObservable.addListener(this);
+		documentEditObservable.addListener(textPanel);
 
 		scrollObserverable.addListener(frame);
-		scrollObserverable.addListener(this);
+		scrollObserverable.addListener(textPanel);
 
 		dimensionsObservable.addListener(scrollBarsManager);
 		frameObserverable.addListener(scrollBarsManager);
-		frameObserverable.addListener(this);
+		frameObserverable.addListener(textPanel);
 
 		initCaretBlinker();
 		initUIListeners();
+	}
+
+	protected void createComponent() {
+		layout = new GridBagLayout();
+		setLayout(layout);
+
+		textPanel = new SyntaxTextPanel(this);
+		textPanel.setBackground(Color.WHITE);
+		textPanel.setFocusable(true);
+		textPanel.setFocusTraversalKeysEnabled(false);
+		textPanel.setFont(FontUtils.DEFAULT);
+		GridBagConstraints textPanelConstraints = new GridBagConstraints();
+		textPanelConstraints.gridx = 0;
+		textPanelConstraints.gridy = 0;
+		textPanelConstraints.fill = GridBagConstraints.BOTH;
+		add(textPanel, textPanelConstraints);
+
+		hbar = new JScrollBar(JScrollBar.HORIZONTAL, 0, getCols(), 0, getCols());
+		vbar = new JScrollBar(JScrollBar.VERTICAL, 0, getRows(), 0, getRows());
+		GridBagConstraints hbarConstraints = new GridBagConstraints();
+		hbarConstraints.gridx = 0;
+		hbarConstraints.gridy = 1;
+		hbarConstraints.fill = GridBagConstraints.HORIZONTAL;
+		add(hbar, hbarConstraints);
+		GridBagConstraints vbarConstraints = new GridBagConstraints();
+		vbarConstraints.gridx = 1;
+		vbarConstraints.gridy = 0;
+		vbarConstraints.fill = GridBagConstraints.VERTICAL;
+		add(vbar, vbarConstraints);
+		recalcSize();
+	}
+
+	protected void initUIListeners() {
+		textPanel.addKeyListener(textKeyListener);
+		textPanel.addKeyListener(caretKeyListener);
+		textPanel.addMouseListener(mouseListener);
+		textPanel.addMouseWheelListener(mouseListener);
+		hbar.addAdjustmentListener(hScrollListener);
+		vbar.addAdjustmentListener(vScrollListener);
 	}
 
 	private void initCaretBlinker() {
@@ -159,7 +191,7 @@ public class SyntaxTextEditor extends JPanel
 				if (!skipNextBlink) {
 					toggleCaretVisible();
 				}
-				SyntaxTextEditor.this.repaint();
+				textPanel.repaint();
 				skipNextBlink = false;
 			}
 		});
@@ -181,42 +213,6 @@ public class SyntaxTextEditor extends JPanel
 		skipNextBlink = true;
 	}
 
-	private void createComponent() {
-		recalcSize();
-
-		setFocusable(true);
-		setFocusTraversalKeysEnabled(false);
-		setBackground(Color.WHITE);
-		setFont(FontUtils.DEFAULT);
-
-		setLayout(new BorderLayout());
-		hbar = new JScrollBar(JScrollBar.HORIZONTAL, 0, getCols(), 0, getCols());
-		vbar = new JScrollBar(JScrollBar.VERTICAL, 0, getRows(), 0, getRows());
-		add(hbar, BorderLayout.SOUTH);
-		add(vbar, BorderLayout.EAST);
-	}
-
-	private void initUIListeners() {
-		addKeyListener(textKeyListener);
-		addKeyListener(caretKeyListener);
-		addMouseListener(mouseListener);
-		addMouseWheelListener(mouseListener);
-		hbar.addAdjustmentListener(hScrollListener);
-		vbar.addAdjustmentListener(vScrollListener);
-	}
-
-	@Override
-	protected void paintComponent(Graphics g) {
-		long t1 = System.currentTimeMillis();
-
-		super.paintComponent(g);
-		caretPainter.paint(g, caretVisible);
-		documentPainter.paint(g);
-
-		long t2 = System.currentTimeMillis();
-//		System.out.println("PAINT: " + (t2 - t1) + " ms");
-	}
-
 	public String getText() {
 		return document.getText();
 	}
@@ -224,7 +220,7 @@ public class SyntaxTextEditor extends JPanel
 	public void setText(String text) {
 		document.setText(text);
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
-		repaint();
+		textPanel.repaint();
 	}
 
 	public int getRows() {
@@ -234,7 +230,7 @@ public class SyntaxTextEditor extends JPanel
 	public void setRows(int rows) {
 		document.setRows(rows);
 		recalcSize();
-		repaint();
+		textPanel.repaint();
 	}
 
 	public int getCols() {
@@ -244,38 +240,27 @@ public class SyntaxTextEditor extends JPanel
 	public void setCols(int cols) {
 		document.setCols(cols);
 		recalcSize();
-		repaint();
+		textPanel.repaint();
 	}
 
-	void recalcSize() {
-		FontMetrics fm = getFontMetrics(getFont());
-		int height = fm.getHeight() * (getRows() + 1) + fm.getDescent();
-		int width = fm.charWidth('a') * getCols();
-		setPreferredSize(new Dimension(width + 100, height + 140));
+	protected void recalcSize() {
+		FontMetrics fm = textPanel.getFontMetrics(textPanel.getFont());
+		int height = fm.getHeight() * getRows();
+		int width = fm.charWidth('a') * getCols() + CARET_WIDTH;
+		layout.columnWidths = new int[] { width, 15 };
+		layout.rowHeights = new int[] { height, 15 };
 	}
 
-	@Override
-	public void onCaretChanged(SyntaxCaretEvent e) {
-		freezeCaret();
-		repaint();
+	CaretPainter getCaretPainter() {
+		return caretPainter;
 	}
-
-	@Override
-	public void onDocumentEdited(DocumentEditEvent e) {
-		freezeCaret();
-		repaint();
+	
+	SyntaxDocumentPainter getDocumentPainter() {
+		return documentPainter;
 	}
-
-	@Override
-	public void onScrollChanged(SyntaxScrollEvent e) {
-		freezeCaret();
-		repaint();
+	
+	boolean isCaretVisible() {
+		return caretVisible;
 	}
-
-	@Override
-	public void onFrameChanged(FrameEvent e) {
-		freezeCaret();
-		repaint();
-	}
-
+	
 }
