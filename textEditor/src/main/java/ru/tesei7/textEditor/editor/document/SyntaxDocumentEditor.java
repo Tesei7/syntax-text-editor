@@ -61,7 +61,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
-		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_RIGHT));
+		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_RIGHT, false));
 	}
 
 	void addNewLine() {
@@ -81,7 +81,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		document.setCurrentLine(newLine);
 		newLine.setOffset(0);
-		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_DOWN));
+		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_DOWN, false));
 	}
 
 	void delete() {
@@ -102,7 +102,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			currentLine.backspace();
 			// dimensions should be changed first
 			dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
-			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_LEFT));
+			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_LEFT, false));
 		}
 	}
 
@@ -128,7 +128,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		l1.setOffset(l1_lenght);
 		if (moveCaretUp) {
 			document.setCurrentLine(l1);
-			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_UP));
+			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_UP, false));
 		}
 
 	}

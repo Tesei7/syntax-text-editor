@@ -28,12 +28,14 @@ public class SyntaxMouseListener extends MouseAdapter {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOUSE, e.getX(), e.getY()));
+		caretObservable
+				.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOUSE, e.getX(), e.getY(), e.isShiftDown()));
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOUSE_SELECTION, e.getX(), e.getY()));
+		caretObservable.notifyListeners(
+				new SyntaxCaretEvent(SyntaxCaretEventType.MOUSE_SELECTION, e.getX(), e.getY(), e.isShiftDown()));
 	}
 
 }

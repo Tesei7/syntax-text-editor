@@ -23,6 +23,16 @@ public class SyntaxCaret implements SyntaxCaretListener {
 
 	@Override
 	public void onCaretChanged(SyntaxCaretEvent e) {
+		if (e.getType() != SyntaxCaretEventType.MOUSE_SELECTION && e.getType() != SyntaxCaretEventType.INSERT) {
+			if (e.isWithShift()) {
+				if (document.getSelection().notSelected()) {
+					startSelection();
+				}
+			} else {
+				document.clearSelection();
+			}
+		}
+
 		switch (e.getType()) {
 		case LEFT:
 			setX(getX() - 1);
@@ -53,13 +63,19 @@ public class SyntaxCaret implements SyntaxCaretListener {
 			document.setCaretType(caretType != CaretType.INSERT ? CaretType.INSERT : CaretType.NORMAL);
 			break;
 		case MOUSE:
-			setCaret(e.getX(), e.getY());
+			setCaret(e.getX(), e.getY(), e.isWithShift());
 			break;
 		case MOUSE_SELECTION:
 			setSelection(e.getX(), e.getY());
 			break;
 		default:
 			break;
+		}
+
+		if (e.getType() != SyntaxCaretEventType.MOUSE_SELECTION && e.getType() != SyntaxCaretEventType.INSERT) {
+			if (e.isWithShift()) {
+				setSelection();
+			}
 		}
 	}
 
@@ -99,15 +115,28 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		return document.getCurrentLine();
 	}
 
-	private void setCaret(int x, int y) {
+	private void startSelection() {
+		document.startSelection(document.getLineIndex(document.getCurrentLine()),
+				document.getCurrentLine().getOffset());
+	}
+
+	private void setSelection() {
+		document.selectTo(document.getLineIndex(document.getCurrentLine()), document.getCurrentLine().getOffset());
+	}
+
+	private void setCaret(int x, int y, boolean withShift) {
 		int lineIndex = y / fontProperties.getLineHeight() + document.getFirstVisibleRow();
 		document.setCurrentLine(lineIndex);
 		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
 		int offset = document.getCurrentLine().getOffestByOffsetToPaint(offsetToPaint);
 		document.getCurrentLine().setOffset(offset);
 
-		document.clearSelection();
-		document.startSelection(lineIndex, offset);
+		if (!withShift) {
+			document.clearSelection();
+			document.startSelection(lineIndex, offset);
+		} else {
+			document.selectTo(lineIndex, offset);
+		}
 	}
 
 	private void setSelection(int x, int y) {

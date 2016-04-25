@@ -41,26 +41,30 @@ public class SyntaxDocumentPainter {
 				- document.getFirstVisibleRow();
 		int lineTo = (isReversedLines ? selection.getStartLine() : selection.getEndLine())
 				- document.getFirstVisibleRow();
-		if (lineFrom < 0) {
-			lineFrom = 0;
-		}
-		if (lineTo > lines.size() - 1) {
-			lineTo = lines.size() - 1;
-		}
+		// if (lineFrom < 0) {
+		// lineFrom = 0;
+		// }
+		// if (lineTo > lines.size() - 1) {
+		// lineTo = lines.size() - 1;
+		// }
 
 		for (int i = lineFrom; i <= lineTo; i++) {
+			if (i < 0 || i > lines.size() - 1) {
+				continue;
+			}
+
 			Line l = lines.get(i);
 			int startOffset = selection.getStartOffset(l);
 			int endOffset = selection.getEndOffset(l);
 			boolean isReversedOffset = isReversedLines || (lineFrom == lineTo && startOffset > endOffset);
 			char[] lineCharsToShow = document.getLineCharsToShow(l);
 
-			int from = 0, to = lineCharsToShow.length;
+			int from = 0, to = document.getCols();
 			if (i == lineFrom) {
-				from = Math.min(isReversedOffset ? endOffset : startOffset, lineCharsToShow.length);
+				from = Math.min(isReversedOffset ? endOffset : startOffset, document.getCols());
 			}
 			if (i == lineTo) {
-				to = Math.min(isReversedOffset ? startOffset : endOffset, lineCharsToShow.length);
+				to = Math.min(isReversedOffset ? startOffset : endOffset, document.getCols());
 			}
 			int y = getHeightToPaint(i);
 			int by = fontProperties.getLineHeight() * i;
