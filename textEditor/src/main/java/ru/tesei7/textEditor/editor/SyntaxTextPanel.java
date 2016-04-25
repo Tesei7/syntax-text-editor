@@ -41,8 +41,9 @@ public class SyntaxTextPanel extends JPanel
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		editor.getCaretPainter().paint(g, editor.isCaretVisible());
+		editor.getCaretPainter().paintBackground(g);
 		editor.getDocumentPainter().paint(g);
+		editor.getCaretPainter().paintCaret(g, editor.isCaretVisible());
 	}
 
 	private void freezeCaretAndRepaint() {

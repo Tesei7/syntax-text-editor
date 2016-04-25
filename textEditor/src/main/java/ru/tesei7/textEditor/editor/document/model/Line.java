@@ -1,12 +1,9 @@
 package ru.tesei7.textEditor.editor.document.model;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-
-import com.sun.xml.internal.txw2.Document;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 
@@ -17,8 +14,6 @@ import ru.tesei7.textEditor.editor.SyntaxTextEditor;
  *
  */
 public class Line {
-	private Line previous;
-	private Line next;
 	private char[] text = new char[0];
 	private int offset;
 	private LinkedList<Token> tokens = new LinkedList<>();
@@ -29,38 +24,6 @@ public class Line {
 
 	char[] getText() {
 		return text;
-	}
-
-	// Prev/Next
-
-	public Line getPrevious() {
-		return previous;
-	}
-
-	public boolean hasPrevious() {
-		return previous != null;
-	}
-
-	/**
-	 * Atomic operation for line connection. Links {@code this} line with
-	 * {@code l}, making {@code l} next for {@code this} and this previous for l
-	 * 
-	 * @param l
-	 *            next line or null if {@code this} is last line
-	 */
-	public void linkWith(Line l) {
-		next = l;
-		if (l != null) {
-			l.previous = this;
-		}
-	}
-
-	public Line getNext() {
-		return next;
-	}
-
-	public boolean hasNext() {
-		return next != null;
 	}
 
 	public LinkedList<Token> getTokens() {

@@ -3,6 +3,7 @@ package ru.tesei7.textEditor.editor.document.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.OptionalInt;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -12,7 +13,7 @@ import ru.tesei7.textEditor.editor.scroll.FrameEventType;
 import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
 
 /**
- * Stores text data in linked list of {@link Line}s.
+ * Stores text data in list of {@link Line}s.
  * 
  * @author Ilya
  *
@@ -24,23 +25,23 @@ public class SyntaxDocument {
 	/**
 	 * Number of visible rows
 	 */
-	private int rows = DEFAULT_ROWS;
+	int rows = DEFAULT_ROWS;
 	/**
 	 * Number of visible columns
 	 */
-	private int cols = DEFAULT_COLS;
+	int cols = DEFAULT_COLS;
 	/**
 	 * Type of care
 	 */
-	private CaretType caretType = CaretType.NORMAL;
+	CaretType caretType = CaretType.NORMAL;
 	/**
-	 * First line. Should never be replaced by another line.
+	 * List of lines of the document
 	 */
-	Line firstLine;
+	List<Line> lines = new ArrayList<>(1000000);
 	/**
-	 * Line, cursor stays on
+	 * Current Line Index
 	 */
-	Line currentLine;
+	int curLineIndex = 0;
 	/**
 	 * Vertical offset of visible frame
 	 */
@@ -60,9 +61,8 @@ public class SyntaxDocument {
 
 	public SyntaxDocument(FrameObserverable frameObserverable) {
 		this.frameObserverable = frameObserverable;
-		firstLine = new Line();
 		selection = new TextSelection(this);
-		currentLine = firstLine;
+		lines.add(new Line());
 	}
 
 	// GETTERS & SETTERS
@@ -91,24 +91,28 @@ public class SyntaxDocument {
 		this.caretType = caretType;
 	}
 
+	public int getCurLineIndex() {
+		return curLineIndex;
+	}
+
+	public void setCurLineIndex(int curLineIndex) {
+		this.curLineIndex = getCorrectIndex(curLineIndex);
+	}
+
+	public void moveCurLineIndex(int reletive) {
+		setCurLineIndex(curLineIndex + reletive);
+	}
+
 	public TextSelection getSelection() {
 		return selection;
 	}
 
-	public Line getFirstLine() {
-		return firstLine;
+	public void addLineAfter(int index, Line l) {
+		lines.add(index + 1, l);
 	}
 
 	public Line getCurrentLine() {
-		return currentLine;
-	}
-
-	public void setCurrentLine(Line currentLine) {
-		this.currentLine = currentLine;
-	}
-
-	public void setCurrentLine(int index) {
-		this.currentLine = getLineByIndex(index);
+		return lines.get(curLineIndex);
 	}
 
 	public Line getFirstVisibleLine() {
@@ -158,23 +162,11 @@ public class SyntaxDocument {
 	// Lines
 
 	public List<Line> getVisibleLines() {
-		List<Line> lines = new ArrayList<>();
-		Integer i = new Integer(rows);
-		Line line = getFirstVisibleLine();
-		do {
-			lines.add(line);
-			if (!line.hasNext()) {
-				break;
-			} else {
-				line = line.getNext();
-				i--;
-			}
-		} while (i > 0);
-		return lines;
+		int endLine = Math.min(firstVisibleRow + rows, getSize());
+		return new ArrayList<>(lines.subList(firstVisibleRow, endLine));
 	}
 
-	public int getCurrentLineIndex() {
-		int curLineIndex = getLineIndex(currentLine);
+	public int getCurLineIndexToPaint() {
 		if (curLineIndex < firstVisibleRow) {
 			return -1;
 		} else if (curLineIndex >= firstVisibleRow + rows) {
@@ -183,7 +175,7 @@ public class SyntaxDocument {
 			return curLineIndex - firstVisibleRow;
 		}
 	}
-	
+
 	public char[] getLineCharsToShow(Line line) {
 		return getCharsToShow(line.getText());
 	}
@@ -197,7 +189,7 @@ public class SyntaxDocument {
 				out.add(' ');
 				out.add(' ');
 				out.add(' ');
-			} else if (c == '\r' ) {
+			} else if (c == '\r') {
 				out.add(' ');
 			} else {
 				out.add(c);
@@ -222,82 +214,67 @@ public class SyntaxDocument {
 	public void clearSelection() {
 		selection.clear();
 	}
-	
+
 	public void removeSelection() {
 		Line lineFrom = getLineByIndex(selection.getLineFrom());
 		// TODO Auto-generated method stub
 		selection.clear();
 	}
 
-	// O(n)
-
 	/**
-	 * Calculate total number of lines. O(n) operation.
+	 * Calculate total number of lines.
 	 * 
 	 * @return size of document
 	 */
 	public int getSize() {
-		int size = 1;
-		Line l = firstLine;
-		while (l.hasNext()) {
-			l = l.getNext();
-			size++;
-		}
-		return size;
+		return lines.size();
 	}
 
 	/**
-	 * Returns line by index. O(n) operation.
+	 * Returns line by index.
 	 * 
 	 * @param index
 	 *            number of line
 	 * @return line
 	 */
 	public Line getLineByIndex(int index) {
-		Line l = firstLine;
-		while (l.hasNext() && index > 0) {
-			l = l.getNext();
-			index--;
-		}
-		return l;
+		return lines.get(getCorrectIndex(index));
 	}
 
-	/**
-	 * Get number of line in document. O(n) operation.
-	 * 
-	 * @param line
-	 *            line of document
-	 * @return line number
-	 */
-	public int getLineIndex(Line line) {
-		int index = 0;
-		Line l = firstLine;
-		while (l.hasNext() && !l.equals(line)) {
-			l = l.getNext();
-			index++;
+	private int getCorrectIndex(int index) {
+		if (index < 0) {
+			index = 0;
+		}
+		if (index > lines.size() - 1) {
+			index = lines.size() - 1;
 		}
 		return index;
 	}
 
+	public boolean isCorrectLineIndex(int index) {
+		if (index < 0) {
+			return false;
+		}
+		if (index > lines.size() - 1) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
-	 * Calculate max width of document. O(n) operation.
+	 * Calculate max width of document. O(n)
 	 * 
 	 * @return length of the longest line in document
 	 */
 	public int getMaxCols() {
-		int max = cols;
-		Line l = firstLine;
-		do {
-			max = Math.max(l.getLengthToPaint(), max);
-			l = l.getNext();
-		} while (l != null);
-		return max;
+		OptionalInt max = lines.parallelStream().mapToInt(l -> l.getLengthToPaint()).max();
+		return max.isPresent() ? max.getAsInt() : cols;
 	}
 
 	// For cursor
 
 	public int getTargetLineOffset(Line targetLine) {
-		int xToPaint = currentLine.getOffsetToPaint();
+		int xToPaint = getCurrentLine().getOffsetToPaint();
 
 		int i = 0;
 		for (Iterator<Character> iterator = targetLine.getChars().iterator(); iterator.hasNext();) {
@@ -316,7 +293,7 @@ public class SyntaxDocument {
 	 * @return caret position considering {@link firstVisibleCol}
 	 */
 	public int getXToPaint() {
-		int xToPaint = currentLine.getOffsetToPaint();
+		int xToPaint = getCurrentLine().getOffsetToPaint();
 		return xToPaint - firstVisibleCol;
 	}
 
@@ -331,21 +308,14 @@ public class SyntaxDocument {
 		long t1 = System.currentTimeMillis();
 		System.out.println("Start loading file");
 
+		lines.clear();
 		String[] split = text.split("\n");
-		Line prev = null;
 		for (int i = 0; i < split.length; i++) {
-			Line l = null;
-			if (i == 0) {
-				l = firstLine;
-			} else {
-				l = new Line();
-				prev.linkWith(l);
-			}
+			Line l = new Line();
 			l.setText(split[i].toCharArray());
-			prev = l;
 			l.setOffset(0);
+			lines.add(l);
 		}
-		currentLine = firstLine;
 		firstVisibleRow = 0;
 		firstVisibleCol = 0;
 		selection.clear();
@@ -356,16 +326,15 @@ public class SyntaxDocument {
 
 	public String getText() {
 		StringBuilder sb = new StringBuilder();
-		Line line = firstLine;
-		do {
-			for (int i = 0; i < line.getText().length; i++) {
-				sb.append(line.getText()[i]);
+		for (int i = 0; i < lines.size(); i++) {
+			Line l = lines.get(i);
+			for (int j = 0; j < l.getText().length; j++) {
+				sb.append(l.getText()[j]);
 			}
-			if (line.hasNext()) {
+			if (i != lines.size() - 1) {
 				sb.append("\n");
 			}
-			line = line.getNext();
-		} while (line != null);
+		}
 		return sb.toString();
 	}
 

@@ -17,19 +17,11 @@ public class CaretPainter {
 		this.document = document;
 	}
 
-	public void paint(Graphics g, boolean caretVisible) {
-		int caretRow = document.getCurrentLineIndex();
-		if (caretRow < 0) {
+	public void paintCaret(Graphics g, boolean caretVisible) {
+		if (!caretVisible) {
 			return;
 		}
-
-		paintBackground(g, caretRow);
-		if (caretVisible) {
-			paintCaret(g, caretRow);
-		}
-	}
-
-	private void paintCaret(Graphics g, int caretRow) {
+		int caretRow = document.getCurLineIndexToPaint();
 		g.setColor(Color.BLACK);
 		FontMetrics fontMetrics = g.getFontMetrics();
 		int height = fontMetrics.getHeight();
@@ -40,7 +32,8 @@ public class CaretPainter {
 		g.fillRect(x, y, caretWidth, height);
 	}
 
-	private void paintBackground(Graphics g, int caretRow) {
+	public void paintBackground(Graphics g) {
+		int caretRow = document.getCurLineIndexToPaint();
 		g.setColor(Colors.CURRENT_LINE_BACKGROUND);
 		FontMetrics fontMetrics = g.getFontMetrics();
 		int height = fontMetrics.getHeight();

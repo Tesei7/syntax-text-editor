@@ -97,20 +97,9 @@ public class SyntaxCaret implements SyntaxCaretListener {
 	}
 
 	public void moveY(int y) {
-		Line targetLine = document.getCurrentLine();
-		if (y < 0) {
-			while (targetLine.hasPrevious() && y < 0) {
-				targetLine = targetLine.getPrevious();
-				y++;
-			}
-		} else if (y > 0) {
-			while (targetLine.hasNext() && y > 0) {
-				targetLine = targetLine.getNext();
-				y--;
-			}
-		}
+		Line targetLine = document.getLineByIndex(document.getCurLineIndex() + y);
 		targetLine.setOffset(document.getTargetLineOffset(targetLine));
-		document.setCurrentLine(targetLine);
+		document.moveCurLineIndex(y);
 	}
 
 	Line getCurrentLine() {
@@ -118,17 +107,16 @@ public class SyntaxCaret implements SyntaxCaretListener {
 	}
 
 	private void startSelection() {
-		document.startSelection(document.getLineIndex(document.getCurrentLine()),
-				document.getCurrentLine().getOffset());
+		document.startSelection(document.getCurLineIndex(), document.getCurrentLine().getOffset());
 	}
 
 	private void setSelection() {
-		document.selectTo(document.getLineIndex(document.getCurrentLine()), document.getCurrentLine().getOffset());
+		document.selectTo(document.getCurLineIndex(), document.getCurrentLine().getOffset());
 	}
 
 	private void setCaret(int x, int y, boolean withShift) {
 		int lineIndex = y / fontProperties.getLineHeight() + document.getFirstVisibleRow();
-		document.setCurrentLine(lineIndex);
+		document.setCurLineIndex(lineIndex);
 		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
 		int offset = document.getCurrentLine().getOffestByOffsetToPaint(offsetToPaint);
 		document.getCurrentLine().setOffset(offset);
@@ -147,7 +135,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		Line line = document.getLineByIndex(lineIndex);
 		int offset = line.getOffestByOffsetToPaint(offsetToPaint);
 		document.selectTo(lineIndex, offset);
-		document.setCurrentLine(line);
+		document.setCurLineIndex(lineIndex);
 		line.setOffset(offset);
 	}
 

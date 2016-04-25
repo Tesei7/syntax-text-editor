@@ -11,19 +11,11 @@ import org.junit.Test;
 
 public class LineTest {
 	private Line l = new Line();
-	private Line l2 = new Line();
 
 	@Test
 	public final void testLinkWith() throws Exception {
 		l.printChar('a');
 		l.printChar('b');
-		l.linkWith(null);
-		assertFalse(l.hasNext());
-
-		l2.printChar('c');
-		l.linkWith(l2);
-		assertTrue(l.equals(l2.getPrevious()));
-		assertTrue(l2.equals(l.getNext()));
 	}
 
 	@Test
