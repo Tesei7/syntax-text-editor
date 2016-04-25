@@ -139,9 +139,12 @@ public class Line {
 	public int getOffsetToPaint() {
 		return getOffsetToPaint(offset);
 	}
-	
+
 	public int getOffsetToPaint(int offset) {
 		int x = 0;
+		if (offset > text.length) {
+			offset = text.length;
+		}
 		for (int i = 0; i < offset; i++) {
 			if (text[i] == '\t') {
 				x += SyntaxTextEditor.TAB_INDENT;

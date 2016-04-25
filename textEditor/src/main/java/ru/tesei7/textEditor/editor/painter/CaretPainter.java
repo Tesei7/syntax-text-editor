@@ -5,7 +5,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
-import ru.tesei7.textEditor.editor.caret.CaretType;
+import ru.tesei7.textEditor.editor.document.model.CaretType;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.utils.Colors;
 

@@ -1,6 +1,7 @@
 package ru.tesei7.textEditor.editor.caret;
 
 import ru.tesei7.textEditor.editor.FontProperties;
+import ru.tesei7.textEditor.editor.document.model.CaretType;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
@@ -104,7 +105,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
 		int offset = document.getCurrentLine().getOffestByOffsetToPaint(offsetToPaint);
 		document.getCurrentLine().setOffset(offset);
-		
+
 		document.clearSelection();
 		document.startSelection(lineIndex, offset);
 	}
@@ -112,7 +113,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 	private void setSelection(int x, int y) {
 		int lineIndex = y / fontProperties.getLineHeight() + document.getFirstVisibleRow();
 		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
-		int offset = document.getCurrentLine().getOffestByOffsetToPaint(offsetToPaint);
+		int offset = document.getLineByIndex(lineIndex).getOffestByOffsetToPaint(offsetToPaint);
 		document.selectTo(lineIndex, offset);
 	}
 

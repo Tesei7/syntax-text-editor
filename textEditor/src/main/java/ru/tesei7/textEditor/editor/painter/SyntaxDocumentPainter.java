@@ -1,5 +1,6 @@
 package ru.tesei7.textEditor.editor.painter;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.List;
 
@@ -35,9 +36,10 @@ public class SyntaxDocumentPainter {
 			return;
 		}
 
-		int lineFrom = (selection.isReversed() ? selection.getEndLine() : selection.getStartLine())
+		boolean isReversedLines = selection.getStartLine() > selection.getEndLine();
+		int lineFrom = (isReversedLines ? selection.getEndLine() : selection.getStartLine())
 				- document.getFirstVisibleRow();
-		int lineTo = (selection.isReversed() ? selection.getStartLine() : selection.getEndLine())
+		int lineTo = (isReversedLines ? selection.getStartLine() : selection.getEndLine())
 				- document.getFirstVisibleRow();
 		if (lineFrom < 0) {
 			lineFrom = 0;
@@ -47,14 +49,18 @@ public class SyntaxDocumentPainter {
 		}
 
 		for (int i = lineFrom; i <= lineTo; i++) {
-			char[] lineCharsToShow = document.getLineCharsToShow(lines.get(i));
+			Line l = lines.get(i);
+			int startOffset = selection.getStartOffset(l);
+			int endOffset = selection.getEndOffset(l);
+			boolean isReversedOffset = isReversedLines || (lineFrom == lineTo && startOffset > endOffset);
+			char[] lineCharsToShow = document.getLineCharsToShow(l);
+
 			int from = 0, to = lineCharsToShow.length;
 			if (i == lineFrom) {
-				from = selection.isReversed() ? selection.getEndOffset() : selection.getStartOffset();
+				from = Math.min(isReversedOffset ? endOffset : startOffset, lineCharsToShow.length);
 			}
 			if (i == lineTo) {
-				to = Math.min(selection.isReversed() ? selection.getStartOffset() : selection.getEndOffset(),
-						lineCharsToShow.length);
+				to = Math.min(isReversedOffset ? startOffset : endOffset, lineCharsToShow.length);
 			}
 			int y = getHeightToPaint(i);
 			int by = fontProperties.getLineHeight() * i;
@@ -64,7 +70,10 @@ public class SyntaxDocumentPainter {
 
 	private void paintLines(Graphics g, List<Line> lines) {
 		for (int i = 0; i < lines.size(); i++) {
-			linePainter.paint(g, document.getLineCharsToShow(lines.get(i)), getHeightToPaint(i));
+			char[] chars = document.getLineCharsToShow(lines.get(i));
+			int y = getHeightToPaint(i);
+			g.setColor(Color.BLACK);
+			g.drawChars(chars, 0, chars.length, 0, y);
 		}
 	}
 

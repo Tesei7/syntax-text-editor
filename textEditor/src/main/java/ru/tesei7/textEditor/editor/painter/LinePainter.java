@@ -22,9 +22,4 @@ public class LinePainter {
 		g.drawChars(toShow, 0, toShow.length, x, textY);
 	}
 
-	public void paint(Graphics g, char[] chars, int y) {
-		g.setColor(Color.BLACK);
-		g.drawChars(chars, 0, chars.length, 0, y);
-	}
-
 }

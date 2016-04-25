@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
-import ru.tesei7.textEditor.editor.caret.CaretType;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameEventType;
 import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
@@ -210,14 +209,14 @@ public class SyntaxDocument {
 
 	// Selection
 
-	public void startSelection(int lineIndex, int offset) {
+	public void startSelection(int lineIndex, int offsetToPaint) {
 		selection.startLine = lineIndex;
-		selection.startOffset = offset;
+		selection.startOffset = offsetToPaint;
 	}
 
-	public void selectTo(int lineIndex, int offset) {
+	public void selectTo(int lineIndex, int offsetToPaint) {
 		selection.endLine = lineIndex;
-		selection.endOffset = offset;
+		selection.endOffset = offsetToPaint;
 	}
 
 	public void clearSelection() {
@@ -248,7 +247,7 @@ public class SyntaxDocument {
 	 *            number of line
 	 * @return line
 	 */
-	private Line getLineByIndex(int index) {
+	public Line getLineByIndex(int index) {
 		Line l = firstLine;
 		while (l.hasNext() && index > 0) {
 			l = l.getNext();
@@ -315,8 +314,8 @@ public class SyntaxDocument {
 		return xToPaint - firstVisibleCol;
 	}
 
-	public int getXToPaint(int offset) {
-		int xToPaint = currentLine.getOffsetToPaint(offset);
+	public int getXToPaint(Line l, int offset) {
+		int xToPaint = l.getOffsetToPaint(offset);
 		return xToPaint - firstVisibleCol;
 	}
 
