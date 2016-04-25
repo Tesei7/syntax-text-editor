@@ -18,8 +18,8 @@ public class TextSelection {
 		endOffset = null;
 	}
 
-	public Integer getStartLine() {
-		return startLine;
+	public Integer getStartOffset() {
+		return startOffset;
 	}
 
 	public Integer getStartOffset(Line l) {

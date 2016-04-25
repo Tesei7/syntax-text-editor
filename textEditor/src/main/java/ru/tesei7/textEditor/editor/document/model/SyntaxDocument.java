@@ -2,10 +2,13 @@ package ru.tesei7.textEditor.editor.document.model;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.OptionalInt;
 
 import org.apache.commons.lang.ArrayUtils;
+
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Text;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
@@ -216,7 +219,21 @@ public class SyntaxDocument {
 	}
 
 	public void removeSelection() {
-		Line lineFrom = getLineByIndex(selection.getLineFrom());
+		Integer lineFrom = selection.getLineFrom();
+		Integer lineTo = selection.getLineTo();
+
+		Line l1 = getLineByIndex(lineFrom);
+		Line l2 = getLineByIndex(lineTo);
+		LinkedList<Character> add = new LinkedList<>();
+		List<Character> subList1 = l1.getChars().subList(0, selection.getOffsetFrom(l1));
+		List<Character> subList2 = l2.getChars().subList(selection.getOffsetTo(l2), l2.getLength());
+		add.addAll(subList1);
+		add.addAll(subList2);
+		l1.setChars(add);
+		l1.setOffset(subList1.size());
+
+		lines.subList(Math.max(0, lineFrom + 1), Math.min(lineTo + 1, lines.size())).clear();
+		setCurLineIndex(lineFrom);
 		// TODO Auto-generated method stub
 		selection.clear();
 	}

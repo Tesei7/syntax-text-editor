@@ -90,7 +90,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		if (document.getSelection().notSelected()) {
 			deleteChar();
 		} else {
-			document.removeSelection();
+			removeSelection();
 		}
 	}
 
@@ -109,7 +109,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		if (document.getSelection().notSelected()) {
 			backspaceChar();
 		} else {
-			document.removeSelection();
+			removeSelection();
 		}
 	}
 
@@ -124,6 +124,12 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_LEFT, false));
 		}
+	}
+	
+	void removeSelection(){
+		document.removeSelection();
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
+		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_UP, false));
 	}
 
 	void concatLines(int l1Index, int l2Index, boolean moveCaretUp) {
