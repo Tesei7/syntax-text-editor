@@ -113,8 +113,11 @@ public class SyntaxCaret implements SyntaxCaretListener {
 	private void setSelection(int x, int y) {
 		int lineIndex = y / fontProperties.getLineHeight() + document.getFirstVisibleRow();
 		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
-		int offset = document.getLineByIndex(lineIndex).getOffestByOffsetToPaint(offsetToPaint);
+		Line line = document.getLineByIndex(lineIndex);
+		int offset = line.getOffestByOffsetToPaint(offsetToPaint);
 		document.selectTo(lineIndex, offset);
+		document.setCurrentLine(line);
+		line.setOffset(offset);
 	}
 
 }

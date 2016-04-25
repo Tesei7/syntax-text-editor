@@ -173,7 +173,7 @@ public class SyntaxDocument {
 		return lines;
 	}
 
-	public int getCurrentLineY() {
+	public int getCurrentLineIndex() {
 		int curLineIndex = getLineIndex(currentLine);
 		if (curLineIndex < firstVisibleRow) {
 			return -1;
@@ -183,7 +183,7 @@ public class SyntaxDocument {
 			return curLineIndex - firstVisibleRow;
 		}
 	}
-
+	
 	public char[] getLineCharsToShow(Line line) {
 		return getCharsToShow(line.getText());
 	}

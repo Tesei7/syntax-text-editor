@@ -47,10 +47,10 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 	}
 
 	private void makeCaretVisibleY(SyntaxCaretEventType type) {
-		int curLineY = document.getCurrentLineY();
+		int firstVisibleRow = document.getFirstVisibleRow();
 		int currentIndex = document.getLineIndex(document.getCurrentLine());
-		boolean beforeFrame = curLineY == -1;
-		boolean afterFrame = curLineY == -2;
+		boolean beforeFrame = currentIndex < firstVisibleRow;
+		boolean afterFrame = currentIndex >= firstVisibleRow + document.getRows();
 
 		if (beforeFrame) {
 			document.setFirstVisibleRow(currentIndex);

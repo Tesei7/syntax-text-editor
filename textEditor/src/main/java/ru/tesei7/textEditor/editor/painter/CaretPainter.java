@@ -18,7 +18,7 @@ public class CaretPainter {
 	}
 
 	public void paint(Graphics g, boolean caretVisible) {
-		int caretRow = document.getCurrentLineY();
+		int caretRow = document.getCurrentLineIndex();
 		if (caretRow < 0) {
 			return;
 		}
