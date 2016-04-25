@@ -33,7 +33,31 @@ public class TextSelection {
 	public Integer getEndOffset(Line l) {
 		return document.getXToPaint(l, endOffset);
 	}
+	
+	public Integer getLineFrom(){
+		return isReversedLines() ? endLine : startLine;
+	}
+	
+	public Integer getLineTo(){
+		return isReversedLines() ? startLine : endLine;
+	}
+	
+	public Integer getOffsetFrom(Line l){
+		return isReversedOffset(l) ? getEndOffset(l) : getStartOffset(l);
+	}
+	
+	public Integer getOffsetTo(Line l){
+		return isReversedOffset(l) ? getStartOffset(l) : getEndOffset(l);
+	}
 
+	public boolean isReversedLines(){
+		return startLine > endLine;
+	}
+	
+	public boolean isReversedOffset(Line l){
+		return isReversedLines() || (startLine == endLine && getStartOffset(l) > getEndOffset(l));
+	}
+	
 	public boolean notSelected() {
 		return startLine == null || startOffset == null || endLine == null || endOffset == null;
 	}

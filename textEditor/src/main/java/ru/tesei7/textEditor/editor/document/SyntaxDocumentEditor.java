@@ -58,7 +58,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		default:
 			break;
 		}
-		
+
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_RIGHT, false));
@@ -85,6 +85,14 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 	}
 
 	void delete() {
+		if (document.getSelection().notSelected()) {
+			deleteChar();
+		} else {
+			document.removeSelection();
+		}
+	}
+
+	void deleteChar() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == currentLine.getLength()) {
 			concatLines(currentLine, currentLine.getNext(), false);
@@ -95,6 +103,14 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 	}
 
 	void backspace() {
+		if (document.getSelection().notSelected()) {
+			backspaceChar();
+		} else {
+			document.removeSelection();
+		}
+	}
+
+	void backspaceChar() {
 		Line currentLine = document.getCurrentLine();
 		if (currentLine.getOffset() == 0) {
 			concatLines(currentLine.getPrevious(), currentLine, true);

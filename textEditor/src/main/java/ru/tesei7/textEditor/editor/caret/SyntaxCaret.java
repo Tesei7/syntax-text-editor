@@ -59,8 +59,10 @@ public class SyntaxCaret implements SyntaxCaretListener {
 			setX(getCurrentLine().getLength());
 			break;
 		case INSERT:
-			CaretType caretType = document.getCaretType();
-			document.setCaretType(caretType != CaretType.INSERT ? CaretType.INSERT : CaretType.NORMAL);
+			if (!e.isWithShift()) {
+				CaretType caretType = document.getCaretType();
+				document.setCaretType(caretType != CaretType.INSERT ? CaretType.INSERT : CaretType.NORMAL);
+			}
 			break;
 		case MOUSE:
 			setCaret(e.getX(), e.getY(), e.isWithShift());

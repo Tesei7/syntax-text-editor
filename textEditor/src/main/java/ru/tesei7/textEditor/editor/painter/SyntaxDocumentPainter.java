@@ -36,17 +36,8 @@ public class SyntaxDocumentPainter {
 			return;
 		}
 
-		boolean isReversedLines = selection.getStartLine() > selection.getEndLine();
-		int lineFrom = (isReversedLines ? selection.getEndLine() : selection.getStartLine())
-				- document.getFirstVisibleRow();
-		int lineTo = (isReversedLines ? selection.getStartLine() : selection.getEndLine())
-				- document.getFirstVisibleRow();
-		// if (lineFrom < 0) {
-		// lineFrom = 0;
-		// }
-		// if (lineTo > lines.size() - 1) {
-		// lineTo = lines.size() - 1;
-		// }
+		int lineFrom = selection.getLineFrom() - document.getFirstVisibleRow();
+		int lineTo = selection.getLineTo() - document.getFirstVisibleRow();
 
 		for (int i = lineFrom; i <= lineTo; i++) {
 			if (i < 0 || i > lines.size() - 1) {
@@ -54,17 +45,14 @@ public class SyntaxDocumentPainter {
 			}
 
 			Line l = lines.get(i);
-			int startOffset = selection.getStartOffset(l);
-			int endOffset = selection.getEndOffset(l);
-			boolean isReversedOffset = isReversedLines || (lineFrom == lineTo && startOffset > endOffset);
 			char[] lineCharsToShow = document.getLineCharsToShow(l);
 
 			int from = 0, to = document.getCols();
 			if (i == lineFrom) {
-				from = Math.min(isReversedOffset ? endOffset : startOffset, document.getCols());
+				from = Math.min(selection.getOffsetFrom(l), document.getCols());
 			}
 			if (i == lineTo) {
-				to = Math.min(isReversedOffset ? startOffset : endOffset, document.getCols());
+				to = Math.min(selection.getOffsetTo(l), document.getCols());
 			}
 			int y = getHeightToPaint(i);
 			int by = fontProperties.getLineHeight() * i;

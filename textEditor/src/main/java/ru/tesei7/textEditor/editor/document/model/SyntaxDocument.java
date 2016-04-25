@@ -222,6 +222,12 @@ public class SyntaxDocument {
 	public void clearSelection() {
 		selection.clear();
 	}
+	
+	public void removeSelection() {
+		Line lineFrom = getLineByIndex(selection.getLineFrom());
+		// TODO Auto-generated method stub
+		selection.clear();
+	}
 
 	// O(n)
 

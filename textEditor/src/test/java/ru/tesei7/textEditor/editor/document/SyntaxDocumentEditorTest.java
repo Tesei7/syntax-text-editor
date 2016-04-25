@@ -71,33 +71,33 @@ public class SyntaxDocumentEditorTest {
 	}
 
 	@Test
-	public final void testDelete() throws Exception {
+	public final void testDeleteChar() throws Exception {
 		Line l2 = mock(Line.class);
 		when(cline.getLength()).thenReturn(3);
 		when(cline.getOffset()).thenReturn(3);
 		when(cline.getNext()).thenReturn(l2);
 
 		doNothing().when(syntaxDocumentEditor).concatLines(any(), any(), eq(false));
-		syntaxDocumentEditor.delete();
+		syntaxDocumentEditor.deleteChar();
 		verify(syntaxDocumentEditor).concatLines(cline, l2, false);
 
 		when(cline.getOffset()).thenReturn(2);
-		syntaxDocumentEditor.delete();
+		syntaxDocumentEditor.deleteChar();
 		verify(cline).delete();
 	}
 
 	@Test
-	public final void testBackspace() throws Exception {
+	public final void testBackspaceChar() throws Exception {
 		Line l2 = mock(Line.class);
 		when(cline.getLength()).thenReturn(3);
 		when(cline.getPrevious()).thenReturn(l2);
 
 		doNothing().when(syntaxDocumentEditor).concatLines(any(), any(), eq(true));
-		syntaxDocumentEditor.backspace();
+		syntaxDocumentEditor.backspaceChar();
 		verify(syntaxDocumentEditor).concatLines(l2, cline, true);
 
 		when(cline.getOffset()).thenReturn(2);
-		syntaxDocumentEditor.backspace();
+		syntaxDocumentEditor.backspaceChar();
 		verify(cline).backspace();
 	}
 
