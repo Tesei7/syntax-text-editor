@@ -48,7 +48,9 @@ public class CaretKeyListener implements KeyListener {
 			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.END, e.isShiftDown()));
 			break;
 		case KeyEvent.VK_INSERT:
-			observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.INSERT, e.isShiftDown()));
+			if (!e.isShiftDown()) {
+				observable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.INSERT, e.isShiftDown()));
+			}
 			break;
 		}
 	}

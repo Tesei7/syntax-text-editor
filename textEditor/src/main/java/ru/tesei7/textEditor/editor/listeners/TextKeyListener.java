@@ -17,6 +17,9 @@ public class TextKeyListener implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
+		if (e.isControlDown()){
+			return;
+		}
 		char c = e.getKeyChar();
 		if (isPrintableChar(c) || c == '\t') {
 			observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.PRINT_CHAR, c));
@@ -39,6 +42,21 @@ public class TextKeyListener implements KeyListener {
 			break;
 		case KeyEvent.VK_DELETE:
 			observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.DELETE));
+			break;
+		case KeyEvent.VK_C:
+			if (e.isControlDown()) {
+				observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.COPY));
+			}
+			break;
+		case KeyEvent.VK_V:
+			if (e.isControlDown()) {
+				observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.PASTE));
+			}
+			break;
+		case KeyEvent.VK_INSERT:
+			if (e.isShiftDown()) {
+				observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.PASTE));
+			}
 			break;
 		}
 	}

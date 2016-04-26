@@ -201,7 +201,7 @@ public class SyntaxDocument {
 	public void addLineAfter(int index, Line l) {
 		lines.add(index + 1, l);
 	}
-	
+
 	public void removeLineAfter(int index) {
 		lines.remove(index + 1);
 	}
@@ -302,6 +302,29 @@ public class SyntaxDocument {
 		}
 		setCurLineIndex(lineFrom);
 		selection.clear();
+	}
+
+	public String getSelectedString() {
+		Integer lineFrom = selection.getLineFrom();
+		Integer lineTo = selection.getLineTo();
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = lineFrom; i <= lineTo; i++) {
+			List<Character> chars = getLineByIndex(i).getChars();
+			if (i == lineFrom) {
+				chars = chars.subList(selection.getOffsetFrom(), chars.size());
+			}
+			if (i == lineTo) {
+				chars = chars.subList(0, selection.getOffsetTo());
+			}
+			for (Character c : chars) {
+				sb.append(c);
+			}
+			if (i != lineTo) {
+				sb.append('\n');
+			}
+		}
+		return sb.toString();
 	}
 
 	// Dimensions

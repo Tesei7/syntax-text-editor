@@ -1,5 +1,12 @@
 package ru.tesei7.textEditor.editor.document;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,11 +48,59 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		case NEW_LINE:
 			addNewLine();
 			break;
+		case COPY:
+			copy();
+			break;
+		case PASTE:
+			paste();
+			break;
 		default:
 			break;
 		}
 	}
-	
+
+	private void paste() {
+		if (document.getSelection().notSelected()) {
+			pasteCaret();
+		} else {
+			pasteSelection();
+		}
+	}
+
+	private void pasteSelection() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void pasteCaret() {
+		String bufferString = getBufferString();
+		if (bufferString.isEmpty()){
+			return;
+		}
+		
+		//TODO
+	}
+
+	private String getBufferString() {
+		String result = "";
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		Transferable contents = clipboard.getContents(null);
+		boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
+		if (hasTransferableText) {
+			try {
+				result = (String) contents.getTransferData(DataFlavor.stringFlavor);
+			} catch (UnsupportedFlavorException | IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	private void copy() {
+		StringSelection contents = new StringSelection(document.getSelectedString());
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(contents, null);
+	}
+
 	void printChar(char c) {
 		if (document.getSelection().notSelected()) {
 			printCharCaret(c);
@@ -77,7 +132,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
-	
+
 	void addNewLine() {
 		if (document.getSelection().notSelected()) {
 			addNewLineCaret();
@@ -151,8 +206,8 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			caretObservable.notifyListeners(new SyntaxCaretEvent());
 		}
 	}
-	
-	void removeSelection(){
+
+	void removeSelection() {
 		document.removeSelection();
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
