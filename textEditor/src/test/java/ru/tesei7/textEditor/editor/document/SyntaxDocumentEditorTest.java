@@ -1,9 +1,5 @@
 package ru.tesei7.textEditor.editor.document;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,13 +42,13 @@ public class SyntaxDocumentEditorTest {
 	}
 
 	@Test
-	public final void testPrintChar() throws Exception {
+	public final void testPrintCharCaret() throws Exception {
 		when(document.getCaretType()).thenReturn(CaretType.NORMAL);
-		syntaxDocumentEditor.printChar('a');
+		syntaxDocumentEditor.printCharCaret('a');
 		verify(cline).printChar('a');
 		
 		when(document.getCaretType()).thenReturn(CaretType.INSERT);
-		syntaxDocumentEditor.printChar('a');
+		syntaxDocumentEditor.printCharCaret('a');
 		verify(cline).insertChar('a');
 	}
 

@@ -45,8 +45,23 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			break;
 		}
 	}
-
+	
 	void printChar(char c) {
+		if (document.getSelection().notSelected()) {
+			printCharCaret(c);
+		} else {
+			printCharSelection(c);
+		}
+	}
+
+	private void printCharSelection(char c) {
+		document.removeSelection();
+		document.getCurrentLine().printChar(c);
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
+		caretObservable.notifyListeners(new SyntaxCaretEvent());
+	}
+
+	void printCharCaret(char c) {
 		switch (document.getCaretType()) {
 		case NORMAL:
 			document.getCurrentLine().printChar(c);
@@ -62,8 +77,23 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
-
+	
 	void addNewLine() {
+		if (document.getSelection().notSelected()) {
+			addNewLineCaret();
+		} else {
+			addNewLineSelection();
+		}
+	}
+
+	private void addNewLineSelection() {
+		document.removeSelection();
+		addNewLineCaret();
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
+		caretObservable.notifyListeners(new SyntaxCaretEvent());
+	}
+
+	void addNewLineCaret() {
 		Line currentLine = document.getCurrentLine();
 		Line newLine = new Line();
 
