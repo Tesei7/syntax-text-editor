@@ -3,12 +3,9 @@ package ru.tesei7.textEditor.editor;
 import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
-import javax.swing.Timer;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
@@ -54,6 +51,10 @@ public class SyntaxTextEditor extends JPanel {
 	 * Number of lines to scroll with mouse wheel turn
 	 */
 	public static final int MOUSE_WHEEL_SCROLL_LINES = 3;
+	/**
+	 * Initial maximum number of lines for new document
+	 */
+	public static final int DEFAULT_LINES_COUNT = 1000000;
 
 	/**
 	 * Data model to store text and representation information

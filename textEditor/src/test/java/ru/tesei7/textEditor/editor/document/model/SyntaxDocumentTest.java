@@ -158,4 +158,30 @@ public class SyntaxDocumentTest {
 		syntaxDocument.firstVisibleCol = 1;
 		assertTrue(Arrays.equals(new char[] { ' ', ' ', ' ', ' ' }, syntaxDocument.getLineCharsToShow(currentLine)));
 	}
+
+	@Test
+	public void testGetCorrectLineIndex() throws Exception {
+		when(lines.size()).thenReturn(12);
+		assertThat(syntaxDocument.getCorrectLineIndex(-1), is(0));
+		assertThat(syntaxDocument.getCorrectLineIndex(0), is(0));
+		assertThat(syntaxDocument.getCorrectLineIndex(11), is(11));
+		assertThat(syntaxDocument.getCorrectLineIndex(12), is(11));
+		when(lines.size()).thenReturn(0);
+		assertThat(syntaxDocument.getCorrectLineIndex(0), is(0));
+		assertThat(syntaxDocument.getCorrectLineIndex(-1), is(0));
+		assertThat(syntaxDocument.getCorrectLineIndex(12), is(0));
+	}
+
+	@Test
+	public void testIsCorrectLineIndex() throws Exception {
+		when(lines.size()).thenReturn(12);
+		assertThat(syntaxDocument.isCorrectLineIndex(-1), is(false));
+		assertThat(syntaxDocument.isCorrectLineIndex(0), is(true));
+		assertThat(syntaxDocument.isCorrectLineIndex(11), is(true));
+		assertThat(syntaxDocument.isCorrectLineIndex(12), is(false));
+		when(lines.size()).thenReturn(0);
+		assertThat(syntaxDocument.isCorrectLineIndex(0), is(false));
+		assertThat(syntaxDocument.isCorrectLineIndex(-1), is(false));
+		assertThat(syntaxDocument.isCorrectLineIndex(12), is(false));
+	}
 }

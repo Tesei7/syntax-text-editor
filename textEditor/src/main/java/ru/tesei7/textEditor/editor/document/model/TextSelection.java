@@ -1,10 +1,10 @@
 package ru.tesei7.textEditor.editor.document.model;
 
 public class TextSelection {
-	Integer startLine;
-	Integer startOffset;
-	Integer endLine;
-	Integer endOffset;
+	private Integer startLine;
+	private Integer startOffset;
+	private Integer endLine;
+	private Integer endOffset;
 	private SyntaxDocument document;
 
 	public TextSelection(SyntaxDocument document) {
@@ -17,20 +17,28 @@ public class TextSelection {
 		endLine = null;
 		endOffset = null;
 	}
-
-	public Integer getStartOffset() {
-		return startOffset;
+	
+	public void setStartLine(Integer startLine) {
+		this.startLine = document.getCorrectLineIndex(startLine);
+	}
+	
+	public void setEndLine(Integer endLine) {
+		this.endLine = document.getCorrectLineIndex(endLine);
+	}
+	
+	public void setStartOffset(Integer startOffset) {
+		this.startOffset = startOffset;
+	}
+	
+	public void setEndOffset(Integer endOffset) {
+		this.endOffset = endOffset;
 	}
 
-	public Integer getStartOffset(Line l) {
+	Integer getStartOffsetToPaint(Line l) {
 		return document.getXToPaint(l, startOffset);
 	}
 
-	public Integer getEndLine() {
-		return endLine;
-	}
-
-	public Integer getEndOffset(Line l) {
+	Integer getEndOffsetToPaint(Line l) {
 		return document.getXToPaint(l, endOffset);
 	}
 
@@ -41,13 +49,21 @@ public class TextSelection {
 	public Integer getLineTo() {
 		return isReversedLines() ? startLine : endLine;
 	}
-
-	public Integer getOffsetFrom(Line l) {
-		return isReversedOffset(l) ? getEndOffset(l) : getStartOffset(l);
+	
+	public Integer getOffsetFrom() {
+		return isReversed() ? endOffset : startOffset;
+	}
+	
+	public Integer getOffsetTo() {
+		return isReversed() ? startOffset : endOffset;
 	}
 
-	public Integer getOffsetTo(Line l) {
-		return isReversedOffset(l) ? getStartOffset(l) : getEndOffset(l);
+	public Integer getOffsetToPaintFrom(Line l) {
+		return isReversedOffset(l) ? getEndOffsetToPaint(l) : getStartOffsetToPaint(l);
+	}
+
+	public Integer getOffsetToPaintTo(Line l) {
+		return isReversedOffset(l) ? getStartOffsetToPaint(l) : getEndOffsetToPaint(l);
 	}
 
 	public boolean isReversedLines() {
@@ -61,7 +77,11 @@ public class TextSelection {
 		if (notSelected()) {
 			return false;
 		}
-		return isReversedLines() || (startLine.equals(endLine) && getStartOffset(l) > getEndOffset(l));
+		return isReversedLines() || (startLine.equals(endLine) && getStartOffsetToPaint(l) > getEndOffsetToPaint(l));
+	}
+	
+	boolean isReversed() {
+		return isReversedLines() || (startLine.equals(endLine) && startOffset > endOffset);
 	}
 
 	public boolean notSelected() {

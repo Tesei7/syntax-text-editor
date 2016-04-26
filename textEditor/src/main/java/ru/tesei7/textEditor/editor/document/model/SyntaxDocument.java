@@ -8,8 +8,6 @@ import java.util.OptionalInt;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Text;
-
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameEventType;
@@ -40,7 +38,7 @@ public class SyntaxDocument {
 	/**
 	 * List of lines of the document
 	 */
-	List<Line> lines = new ArrayList<>(1000000);
+	List<Line> lines = new ArrayList<>(SyntaxTextEditor.DEFAULT_LINES_COUNT);
 	/**
 	 * Current Line Index
 	 */
@@ -68,7 +66,7 @@ public class SyntaxDocument {
 		lines.add(new Line());
 	}
 
-	// GETTERS & SETTERS
+	// ROWS & COLS
 
 	public int getRows() {
 		return rows;
@@ -86,6 +84,8 @@ public class SyntaxDocument {
 		this.cols = cols;
 	}
 
+	// CARET
+
 	public CaretType getCaretType() {
 		return caretType;
 	}
@@ -94,33 +94,25 @@ public class SyntaxDocument {
 		this.caretType = caretType;
 	}
 
+	// CUR LINE
+
 	public int getCurLineIndex() {
 		return curLineIndex;
 	}
 
 	public void setCurLineIndex(int curLineIndex) {
-		this.curLineIndex = getCorrectIndex(curLineIndex);
+		this.curLineIndex = getCorrectLineIndex(curLineIndex);
 	}
 
 	public void moveCurLineIndex(int reletive) {
 		setCurLineIndex(curLineIndex + reletive);
 	}
 
-	public TextSelection getSelection() {
-		return selection;
-	}
-
-	public void addLineAfter(int index, Line l) {
-		lines.add(index + 1, l);
-	}
-
 	public Line getCurrentLine() {
 		return lines.get(curLineIndex);
 	}
 
-	public Line getFirstVisibleLine() {
-		return getLineByIndex(firstVisibleRow);
-	}
+	// VISIBLE
 
 	public int getFirstVisibleRow() {
 		return firstVisibleRow;
@@ -162,7 +154,9 @@ public class SyntaxDocument {
 		}
 	}
 
-	// Lines
+	public Line getFirstVisibleLine() {
+		return getLineByIndex(firstVisibleRow);
+	}
 
 	public List<Line> getVisibleLines() {
 		int endLine = Math.min(firstVisibleRow + rows, getSize());
@@ -177,6 +171,12 @@ public class SyntaxDocument {
 		} else {
 			return curLineIndex - firstVisibleRow;
 		}
+	}
+
+	// Lines
+
+	public void addLineAfter(int index, Line l) {
+		lines.add(index + 1, l);
 	}
 
 	public char[] getLineCharsToShow(Line line) {
@@ -202,51 +202,6 @@ public class SyntaxDocument {
 		return ArrayUtils.toPrimitive(array);
 	}
 
-	// Selection
-
-	public void startSelection(int lineIndex, int offsetToPaint) {
-		selection.startLine = lineIndex;
-		selection.startOffset = offsetToPaint;
-	}
-
-	public void selectTo(int lineIndex, int offsetToPaint) {
-		selection.endLine = lineIndex;
-		selection.endOffset = offsetToPaint;
-	}
-
-	public void clearSelection() {
-		selection.clear();
-	}
-
-	public void removeSelection() {
-		Integer lineFrom = selection.getLineFrom();
-		Integer lineTo = selection.getLineTo();
-
-		Line l1 = getLineByIndex(lineFrom);
-		Line l2 = getLineByIndex(lineTo);
-		LinkedList<Character> add = new LinkedList<>();
-		List<Character> subList1 = l1.getChars().subList(0, selection.getOffsetFrom(l1));
-		List<Character> subList2 = l2.getChars().subList(selection.getOffsetTo(l2), l2.getLength());
-		add.addAll(subList1);
-		add.addAll(subList2);
-		l1.setChars(add);
-		l1.setOffset(subList1.size());
-
-		lines.subList(Math.max(0, lineFrom + 1), Math.min(lineTo + 1, lines.size())).clear();
-		setCurLineIndex(lineFrom);
-		// TODO Auto-generated method stub
-		selection.clear();
-	}
-
-	/**
-	 * Calculate total number of lines.
-	 * 
-	 * @return size of document
-	 */
-	public int getSize() {
-		return lines.size();
-	}
-
 	/**
 	 * Returns line by index.
 	 * 
@@ -255,10 +210,13 @@ public class SyntaxDocument {
 	 * @return line
 	 */
 	public Line getLineByIndex(int index) {
-		return lines.get(getCorrectIndex(index));
+		return lines.get(getCorrectLineIndex(index));
 	}
 
-	private int getCorrectIndex(int index) {
+	int getCorrectLineIndex(int index) {
+		if (lines.size() == 0) {
+			return 0;
+		}
 		if (index < 0) {
 			index = 0;
 		}
@@ -276,6 +234,58 @@ public class SyntaxDocument {
 			return false;
 		}
 		return true;
+	}
+
+	// Selection
+
+	public TextSelection getSelection() {
+		return selection;
+	}
+
+	public void startSelection(int lineIndex, int offsetToPaint) {
+		selection.setStartLine(lineIndex);
+		selection.setStartOffset(offsetToPaint);
+	}
+
+	public void selectTo(int lineIndex, int offsetToPaint) {
+		selection.setEndLine(lineIndex);
+		selection.setEndOffset(offsetToPaint);
+	}
+
+	public void clearSelection() {
+		selection.clear();
+	}
+
+	public void removeSelection() {
+		Integer lineFrom = selection.getLineFrom();
+		Integer lineTo = selection.getLineTo();
+
+		Line l1 = getLineByIndex(lineFrom);
+		Line l2 = getLineByIndex(lineTo);
+		LinkedList<Character> add = new LinkedList<>();
+		List<Character> subList1 = l1.getChars().subList(0, selection.getOffsetFrom());
+		List<Character> subList2 = l2.getChars().subList(selection.getOffsetTo(), l2.getLength());
+		add.addAll(subList1);
+		add.addAll(subList2);
+		l1.setChars(add);
+		l1.setOffset(subList1.size());
+
+		if (lineFrom < lineTo) {
+			lines.subList(lineFrom+1, lineTo+1).clear();
+		}
+		setCurLineIndex(lineFrom);
+		selection.clear();
+	}
+
+	// Dimensions
+
+	/**
+	 * Calculate total number of lines.
+	 * 
+	 * @return size of document
+	 */
+	public int getSize() {
+		return lines.size();
 	}
 
 	/**
