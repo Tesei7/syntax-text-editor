@@ -59,27 +59,40 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		}
 	}
 
+	// COPY / PASTE
+
 	private void paste() {
 		if (document.getSelection().notSelected()) {
 			pasteCaret();
 		} else {
-			pasteSelection();
+			removeSelection();
+			pasteCaret();
 		}
-	}
-
-	private void pasteSelection() {
-		// TODO Auto-generated method stub
-
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
+		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
 
 	private void pasteCaret() {
 		String bufferString = getBufferString();
-		if (bufferString.isEmpty()){
+		if (bufferString.isEmpty()) {
 			return;
 		}
-		
-		//TODO
+		String[] split = bufferString.split("\n");
+
+		for (int i = 0; i < split.length; i++) {
+			char[] chars = split[i].toCharArray();
+			if (i == 0) {
+				Line line = document.getCurrentLine();
+				line.printChars(chars);
+			} else {
+				addNewLine();
+				Line line = document.getCurrentLine();
+				line.printChars(chars);
+			}
+		}
 	}
+
+	
 
 	private String getBufferString() {
 		String result = "";
@@ -100,6 +113,8 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		StringSelection contents = new StringSelection(document.getSelectedString());
 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(contents, null);
 	}
+
+	// PRINT CHAR
 
 	void printChar(char c) {
 		if (document.getSelection().notSelected()) {
@@ -133,6 +148,8 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
 
+	// ADD LINE
+
 	void addNewLine() {
 		if (document.getSelection().notSelected()) {
 			addNewLineCaret();
@@ -161,11 +178,12 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
-		// document.setCurrentLine(newLine);
-		document.setCurLineIndex(document.getCurLineIndex() + 1);
+		document.moveCurLineIndex(1);
 		newLine.setOffset(0);
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
+
+	// DELETE & BACKSPACE
 
 	void delete() {
 		if (document.getSelection().notSelected()) {

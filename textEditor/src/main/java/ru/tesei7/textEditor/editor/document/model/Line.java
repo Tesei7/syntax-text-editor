@@ -33,7 +33,7 @@ public class Line {
 	// Text
 
 	public List<Character> getChars() {
-		return toList();
+		return toList(text);
 	}
 
 	public void setChars(List<Character> chars) {
@@ -71,10 +71,10 @@ public class Line {
 		return ArrayUtils.toPrimitive(array);
 	}
 
-	private LinkedList<Character> toList() {
-		LinkedList<Character> list = new LinkedList<>();
-		for (int i = 0; i < text.length; i++) {
-			list.add(text[i]);
+	private List<Character> toList(char[] chars) {
+		List<Character> list = new LinkedList<>();
+		for (int i = 0; i < chars.length; i++) {
+			list.add(chars[i]);
 		}
 		return list;
 	}
@@ -136,10 +136,18 @@ public class Line {
 	// Edit
 
 	public void printChar(char c) {
-		LinkedList<Character> list = toList();
+		List<Character> list = toList(text);
 		list.add(offset, c);
 		text = toArray(list);
 		offset++;
+	}
+
+	public void printChars(char[] chars) {
+		List<Character> textList = toList(text);
+		List<Character> list = toList(chars);
+		textList.addAll(offset, list);
+		text = toArray(textList);
+		offset += chars.length;
 	}
 
 	public void insertChar(char c) {
@@ -155,7 +163,7 @@ public class Line {
 		if (offset >= getLength()) {
 			return;
 		}
-		LinkedList<Character> list = toList();
+		List<Character> list = toList(text);
 		list.remove(offset);
 		text = toArray(list);
 	}
@@ -164,7 +172,7 @@ public class Line {
 		if (offset == 0) {
 			return;
 		}
-		LinkedList<Character> list = toList();
+		List<Character> list = toList(text);
 		list.remove(offset - 1);
 		text = toArray(list);
 		offset--;
