@@ -6,7 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.OptionalInt;
 
+import javax.swing.text.Segment;
+
 import org.apache.commons.lang.ArrayUtils;
+import org.fife.ui.rsyntaxtextarea.modes.JavaTokenMaker;
+import org.fife.ui.rsyntaxtextarea.modes.Token;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
@@ -68,11 +72,14 @@ public class SyntaxDocument {
 	 * Broadcaster for frame movements
 	 */
 	private FrameObserverable frameObserverable;
+	
+	private JavaTokenMaker javaTokenMaker;
 
 	public SyntaxDocument(FrameObserverable frameObserverable) {
 		this.frameObserverable = frameObserverable;
 		selection = new TextSelection(this);
 		lines.add(new Line());
+		javaTokenMaker = new JavaTokenMaker();
 	}
 
 	// ROWS & COLS
@@ -389,6 +396,7 @@ public class SyntaxDocument {
 		long t1 = System.currentTimeMillis();
 		System.out.println("Start loading file");
 
+		int lastToken = Token.NULL;
 		lines.clear();
 		String[] split = text.split("\n");
 		for (int i = 0; i < split.length; i++) {
@@ -396,6 +404,7 @@ public class SyntaxDocument {
 			l.setText(split[i].toCharArray());
 			l.setOffset(0);
 			lines.add(l);
+			lastToken = recalcTokens(l, lastToken);
 		}
 		firstVisibleRow = 0;
 		firstVisibleCol = 0;
@@ -403,6 +412,16 @@ public class SyntaxDocument {
 
 		long t3 = System.currentTimeMillis();
 		System.out.println("File loaded: " + (t3 - t1) + "ms");
+	}
+
+	private int recalcTokens(Line l, int lastToken) {
+		Token tokenList = javaTokenMaker.getTokenList(new Segment(l.getText(), 0, l.getText().length), lastToken, 0);
+		l.getTokens().add(tokenList);
+		while(tokenList.getNextToken()!=null){
+			tokenList = tokenList.getNextToken();
+			l.getTokens().add(tokenList);
+		}
+		return tokenList.getType();
 	}
 
 	public String getText() {

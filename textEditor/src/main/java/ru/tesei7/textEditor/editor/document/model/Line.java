@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.fife.ui.rsyntaxtextarea.modes.Token;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 
