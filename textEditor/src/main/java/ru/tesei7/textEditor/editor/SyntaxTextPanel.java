@@ -3,8 +3,11 @@ package ru.tesei7.textEditor.editor;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretListener;
@@ -28,6 +31,15 @@ public class SyntaxTextPanel extends JPanel
 
 	private SyntaxTextEditor editor;
 
+	/**
+	 * Flag of caret visibility for blinking caret
+	 */
+	volatile private boolean caretVisible = true;
+	/**
+	 * Do not blink caret if edited
+	 */
+	volatile private boolean skipNextBlink = false;
+
 	public SyntaxTextPanel(SyntaxTextEditor editor) {
 		this.editor = editor;
 
@@ -36,6 +48,21 @@ public class SyntaxTextPanel extends JPanel
 		setFocusTraversalKeysEnabled(false);
 		setFont(FontUtils.DEFAULT);
 		setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		initCaretBlinker();
+	}
+	
+	private void initCaretBlinker() {
+		Timer timer = new Timer(SyntaxTextEditor.CARET_BLINK_PERIOD, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!skipNextBlink) {
+					toggleCaretVisible();
+				}
+				repaint();
+				skipNextBlink = false;
+			}
+		});
+		timer.start();
 	}
 
 	@Override
@@ -43,12 +70,27 @@ public class SyntaxTextPanel extends JPanel
 		super.paintComponent(g);
 		editor.getCaretPainter().paintBackground(g);
 		editor.getDocumentPainter().paint(g);
-		editor.getCaretPainter().paintCaret(g, editor.isCaretVisible());
+		editor.getCaretPainter().paintCaret(g, caretVisible);
 	}
 
 	private void freezeCaretAndRepaint() {
-		editor.freezeCaret();
+		freezeCaret();
 		repaint();
+	}
+	
+	/**
+	 * Blink caret
+	 */
+	void toggleCaretVisible() {
+		this.caretVisible = !caretVisible;
+	}
+
+	/**
+	 * Prevent caret from blinking while text editing
+	 */
+	void freezeCaret() {
+		caretVisible = true;
+		skipNextBlink = true;
 	}
 
 	@Override

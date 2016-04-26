@@ -101,15 +101,6 @@ public class SyntaxTextEditor extends JPanel {
 	JScrollBar hbar;
 	JScrollBar vbar;
 
-	/**
-	 * Flag of caret visibility for blinking caret
-	 */
-	volatile private boolean caretVisible = true;
-	/**
-	 * Do not blink caret if edited
-	 */
-	volatile private boolean skipNextBlink = false;
-
 	public SyntaxTextEditor() {
 		super();
 
@@ -139,7 +130,6 @@ public class SyntaxTextEditor extends JPanel {
 		frameObserverable.addListener(scrollBarsManager);
 		frameObserverable.addListener(textPanel);
 
-		initCaretBlinker();
 		initUIListeners();
 	}
 
@@ -178,35 +168,6 @@ public class SyntaxTextEditor extends JPanel {
 
 		hbar.addAdjustmentListener(hScrollListener);
 		vbar.addAdjustmentListener(vScrollListener);
-	}
-
-	private void initCaretBlinker() {
-		Timer timer = new Timer(CARET_BLINK_PERIOD, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!skipNextBlink) {
-					toggleCaretVisible();
-				}
-				textPanel.repaint();
-				skipNextBlink = false;
-			}
-		});
-		timer.start();
-	}
-
-	/**
-	 * Blink caret
-	 */
-	void toggleCaretVisible() {
-		this.caretVisible = !caretVisible;
-	}
-
-	/**
-	 * Prevent caret from blinking while text editing
-	 */
-	void freezeCaret() {
-		caretVisible = true;
-		skipNextBlink = true;
 	}
 
 	public String getText() {
@@ -254,10 +215,6 @@ public class SyntaxTextEditor extends JPanel {
 
 	SyntaxDocumentPainter getDocumentPainter() {
 		return documentPainter;
-	}
-
-	boolean isCaretVisible() {
-		return caretVisible;
 	}
 
 }

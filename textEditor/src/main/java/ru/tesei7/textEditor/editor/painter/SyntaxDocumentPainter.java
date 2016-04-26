@@ -49,10 +49,10 @@ public class SyntaxDocumentPainter {
 
 			int from = 0, to = document.getCols();
 			if (i == lineFrom) {
-				from = Math.min(selection.getOffsetFrom(l), document.getCols());
+				from = Math.max(0, Math.min(selection.getOffsetFrom(l), document.getCols()));
 			}
 			if (i == lineTo) {
-				to = Math.min(selection.getOffsetTo(l), document.getCols());
+				to = Math.max(0, Math.min(selection.getOffsetTo(l), document.getCols()));
 			}
 			int y = getHeightToPaint(i);
 			int by = fontProperties.getLineHeight() * i;
