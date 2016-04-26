@@ -7,14 +7,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
+import ru.tesei7.textEditor.editor.document.model.SyntaxTextEditorViewMode;
 
 public class Application implements ActionListener {
 	private JPanel contentPane;
@@ -52,6 +55,21 @@ public class Application implements ActionListener {
 		JMenuItem exitItem = new JMenuItem(MenuActions.EXIT);
 		exitItem.addActionListener(this);
 		menu.add(exitItem);
+		
+		menu = new JMenu("View");
+		menuBar.add(menu);
+		ButtonGroup group = new ButtonGroup();
+		JRadioButtonMenuItem rbMenuItem = new JRadioButtonMenuItem(MenuActions.DEFAULT_VIEW);
+		rbMenuItem.setSelected(true);
+		group.add(rbMenuItem);
+		menu.add(rbMenuItem);
+		rbMenuItem.addActionListener(this);
+
+		rbMenuItem = new JRadioButtonMenuItem(MenuActions.FIXED_WIDTH_VIEW);
+		rbMenuItem.addActionListener(this);
+		group.add(rbMenuItem);
+		menu.add(rbMenuItem);
+		
 		return menuBar;
 	}
 
@@ -78,6 +96,12 @@ public class Application implements ActionListener {
 			break;
 		case MenuActions.SAVE:
 			saveLoadFileService.saveFile(contentPane, textArea.getText());
+			break;
+		case MenuActions.DEFAULT_VIEW:
+			textArea.setViewMode(SyntaxTextEditorViewMode.DEFAULT);
+			break;
+		case MenuActions.FIXED_WIDTH_VIEW:
+			textArea.setViewMode(SyntaxTextEditorViewMode.FIXED_WIDTH);
 			break;
 		}
 	}

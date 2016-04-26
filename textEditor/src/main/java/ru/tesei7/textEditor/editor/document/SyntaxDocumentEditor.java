@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
-import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
@@ -61,17 +60,14 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
-		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_RIGHT, false));
+		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
 
 	void addNewLine() {
 		Line currentLine = document.getCurrentLine();
-		// Line nextLine = currentLine.getNext();
 		Line newLine = new Line();
 
 		document.addLineAfter(document.getCurLineIndex(), newLine);
-		// currentLine.linkWith(newLine);
-		// newLine.linkWith(nextLine);
 
 		int offset = currentLine.getOffset();
 		List<Character> curLineText = currentLine.getChars();
@@ -83,7 +79,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		// document.setCurrentLine(newLine);
 		document.setCurLineIndex(document.getCurLineIndex() + 1);
 		newLine.setOffset(0);
-		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_DOWN, false));
+		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
 
 	void delete() {
@@ -122,14 +118,14 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			currentLine.backspace();
 			// dimensions should be changed first
 			dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
-			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_LEFT, false));
+			caretObservable.notifyListeners(new SyntaxCaretEvent());
 		}
 	}
 	
 	void removeSelection(){
 		document.removeSelection();
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
-		caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_UP, false));
+		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
 
 	void concatLines(int l1Index, int l2Index, boolean moveCaretUp) {
@@ -138,20 +134,20 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		}
 		Line l1 = document.getLineByIndex(l1Index);
 		Line l2 = document.getLineByIndex(l2Index);
-		document.addLineAfter(l1Index, l2);
 
 		int l1_lenght = l1.getLength();
 		LinkedList<Character> concat = new LinkedList<>();
 		concat.addAll(l1.getChars());
 		concat.addAll(l2.getChars());
 		l1.setChars(concat);
+		document.removeLineAfter(l1Index);
 
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		l1.setOffset(l1_lenght);
 		if (moveCaretUp) {
 			document.moveCurLineIndex(-1);
-			caretObservable.notifyListeners(new SyntaxCaretEvent(SyntaxCaretEventType.MOVED_UP, false));
+			caretObservable.notifyListeners(new SyntaxCaretEvent());
 		}
 
 	}

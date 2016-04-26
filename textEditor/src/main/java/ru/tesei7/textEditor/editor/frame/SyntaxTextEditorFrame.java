@@ -1,7 +1,6 @@
 package ru.tesei7.textEditor.editor.frame;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
-import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretListener;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
@@ -26,12 +25,11 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 	@Override
 	public void onCaretChanged(SyntaxCaretEvent e) {
 		// if caret not visible now, make it visible
-		SyntaxCaretEventType type = e.getType();
-		makeCaretVisibleY(type);
-		makeCaretVisibleX(type);
+		makeCaretVisibleY();
+		makeCaretVisibleX();
 	}
 
-	private void makeCaretVisibleX(SyntaxCaretEventType type) {
+	private void makeCaretVisibleX() {
 		int offsetToPaint = document.getCurrentLine().getOffsetToPaint();
 		boolean beforeFrame = offsetToPaint < document.getFirstVisibleCol();
 		boolean afterFrame = offsetToPaint > document.getFirstVisibleCol() + document.getCols();
@@ -46,7 +44,7 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 		}
 	}
 
-	private void makeCaretVisibleY(SyntaxCaretEventType type) {
+	private void makeCaretVisibleY() {
 		int firstVisibleRow = document.getFirstVisibleRow();
 		int currentIndex = document.getCurLineIndex();
 		boolean beforeFrame = currentIndex < firstVisibleRow;

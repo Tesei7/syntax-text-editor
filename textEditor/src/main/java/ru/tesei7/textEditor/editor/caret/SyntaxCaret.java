@@ -23,6 +23,9 @@ public class SyntaxCaret implements SyntaxCaretListener {
 
 	@Override
 	public void onCaretChanged(SyntaxCaretEvent e) {
+		if (e.getType()==null){
+			return;
+		}
 		if (e.getType() != SyntaxCaretEventType.MOUSE_SELECTION && e.getType() != SyntaxCaretEventType.INSERT) {
 			if (e.isWithShift()) {
 				if (document.getSelection().notSelected()) {

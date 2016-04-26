@@ -7,6 +7,9 @@ public class SyntaxCaretEvent {
 	private int y;
 	private boolean withShift = false;
 
+	public SyntaxCaretEvent() {
+	}
+	
 	public SyntaxCaretEvent(SyntaxCaretEventType type, boolean withShift) {
 		this.type = type;
 		this.withShift = withShift;

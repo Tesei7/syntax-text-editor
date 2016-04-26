@@ -22,6 +22,7 @@ import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
 public class SyntaxDocument {
 	static final int DEFAULT_ROWS = 40;
 	static final int DEFAULT_COLS = 80;
+	static final int DEFAULT_MAX_COLS = 256;
 
 	/**
 	 * Number of visible rows
@@ -31,6 +32,14 @@ public class SyntaxDocument {
 	 * Number of visible columns
 	 */
 	int cols = DEFAULT_COLS;
+	/**
+	 * Number of columns in fixed width mode
+	 */
+	int maxCols = DEFAULT_MAX_COLS;
+	/**
+	 * Type of representation
+	 */
+	SyntaxTextEditorViewMode viewMode = SyntaxTextEditorViewMode.DEFAULT;
 	/**
 	 * Type of care
 	 */
@@ -82,6 +91,20 @@ public class SyntaxDocument {
 
 	public void setCols(int cols) {
 		this.cols = cols;
+	}
+
+	public void setMaxCols(int maxCols) {
+		this.maxCols = maxCols;
+	}
+
+	// VIEW MODE
+
+	public SyntaxTextEditorViewMode getViewMode() {
+		return viewMode;
+	}
+
+	public void setViewMode(SyntaxTextEditorViewMode viewMode) {
+		this.viewMode = viewMode;
 	}
 
 	// CARET
@@ -178,6 +201,10 @@ public class SyntaxDocument {
 	public void addLineAfter(int index, Line l) {
 		lines.add(index + 1, l);
 	}
+	
+	public void removeLineAfter(int index) {
+		lines.remove(index + 1);
+	}
 
 	public char[] getLineCharsToShow(Line line) {
 		return getCharsToShow(line.getText());
@@ -271,7 +298,7 @@ public class SyntaxDocument {
 		l1.setOffset(subList1.size());
 
 		if (lineFrom < lineTo) {
-			lines.subList(lineFrom+1, lineTo+1).clear();
+			lines.subList(lineFrom + 1, lineTo + 1).clear();
 		}
 		setCurLineIndex(lineFrom);
 		selection.clear();
@@ -294,8 +321,12 @@ public class SyntaxDocument {
 	 * @return length of the longest line in document
 	 */
 	public int getMaxCols() {
-		OptionalInt max = lines.parallelStream().mapToInt(l -> l.getLengthToPaint()).max();
-		return max.isPresent() ? max.getAsInt() : cols;
+		if (viewMode == SyntaxTextEditorViewMode.FIXED_WIDTH) {
+			return maxCols;
+		} else {
+			OptionalInt max = lines.parallelStream().mapToInt(l -> l.getLengthToPaint()).max();
+			return max.isPresent() ? max.getAsInt() : cols;
+		}
 	}
 
 	// For cursor

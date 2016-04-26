@@ -8,10 +8,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 
 import ru.tesei7.textEditor.editor.caret.SyntaxCaret;
+import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.DocumentEditObservable;
 import ru.tesei7.textEditor.editor.document.SyntaxDocumentEditor;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
+import ru.tesei7.textEditor.editor.document.model.SyntaxTextEditorViewMode;
 import ru.tesei7.textEditor.editor.frame.Direction;
 import ru.tesei7.textEditor.editor.frame.SyntaxScrollObserverable;
 import ru.tesei7.textEditor.editor.frame.SyntaxTextEditorFrame;
@@ -199,6 +201,16 @@ public class SyntaxTextEditor extends JPanel {
 		document.setCols(cols);
 		recalcSize();
 		textPanel.repaint();
+	}
+	
+	public SyntaxTextEditorViewMode getViewMode(){
+		return document.getViewMode();
+	}
+	
+	public void setViewMode(SyntaxTextEditorViewMode mode){
+		document.setViewMode(mode);
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
+		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
 
 	protected void recalcSize() {
