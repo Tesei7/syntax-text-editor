@@ -4,9 +4,12 @@ import java.awt.Graphics;
 import java.util.List;
 
 import ru.tesei7.textEditor.editor.FontProperties;
+import ru.tesei7.textEditor.editor.Language;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.document.model.TextSelection;
+import ru.tesei7.textEditor.editor.utils.Colors;
+import ru.tesei7.textEditor.editor.utils.FontUtils;
 
 public class SyntaxDocumentPainter {
 
@@ -22,10 +25,10 @@ public class SyntaxDocumentPainter {
 		this.linePainter = new LinePainter();
 	}
 
-	public void paint(Graphics g) {
+	public void paint(Graphics g, Language language) {
 		List<Line> lines = document.getVisibleLines();
 
-		paintLines(g, lines);
+		paintLines(g, lines, language);
 		paintSelection(g, lines);
 	}
 
@@ -59,10 +62,21 @@ public class SyntaxDocumentPainter {
 		}
 	}
 
-	private void paintLines(Graphics g, List<Line> lines) {
+	private void paintLines(Graphics g, List<Line> lines, Language language) {
 		for (int i = 0; i < lines.size(); i++) {
 			int y = getHeightToPaint(i);
-			linePainter.paintLine(g, lines.get(i), y, fontProperties, document);
+			Line line = lines.get(i);
+			switch (language) {
+			case PLAIN_TEXT:
+				int length = Math.max(0, line.getLengthToPaint() - document.getFirstVisibleCol());
+				g.setFont(FontUtils.DEFAULT);
+				g.setColor(Colors.DEFAULT_TEXT);
+				g.drawChars(line.getTextToPaint(), document.getFirstVisibleCol(), length, 0, y);
+				break;
+			default:
+				linePainter.paintLine(g, line, y, fontProperties, document);
+				break;
+			}
 		}
 	}
 

@@ -64,6 +64,22 @@ public class Line {
 		return l;
 	}
 
+	public char[] getTextToPaint() {
+		char[] chars = new char[getLengthToPaint()];
+		int x = 0;
+		for (int i = 0; i < text.length; i++) {
+			if (text[i] == '\t') {
+				chars[x++] = ' ';
+				chars[x++] = ' ';
+				chars[x++] = ' ';
+				chars[x++] = ' ';
+			} else {
+				chars[x++] = text[i];
+			}
+		}
+		return chars;
+	}
+
 	char[] toArray(List<Character> list) {
 		Character[] array = list.toArray(new Character[0]);
 		return ArrayUtils.toPrimitive(array);
@@ -177,23 +193,23 @@ public class Line {
 	}
 
 	// Tokens
-	
+
 	public int getLastTokenType() {
 		return lastTokenType;
 	}
-	
+
 	public void setLastTokenType(int lastTokenType) {
 		this.lastTokenType = lastTokenType;
 	}
-	
+
 	public void setToken(Token token) {
 		this.token = token;
 	}
-	
+
 	public Token getToken() {
 		return token;
 	}
-	
+
 	// Other
 
 	@Override
@@ -204,7 +220,5 @@ public class Line {
 		}
 		return sb.toString();
 	}
-
-
 
 }

@@ -69,7 +69,7 @@ public class SyntaxTextPanel extends JPanel
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		editor.getCaretPainter().paintBackground(g);
-		editor.getDocumentPainter().paint(g);
+		editor.getDocumentPainter().paint(g, editor.getLanguage());
 		editor.getCaretPainter().paintCaret(g, caretVisible);
 	}
 

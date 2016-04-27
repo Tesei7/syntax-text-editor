@@ -75,10 +75,7 @@ public class SyntaxTextEditor extends JPanel {
 	 * Data model to store text and representation information
 	 */
 	private SyntaxDocument document;
-	/**
-	 * Language to highlight
-	 */
-	private Language language;
+
 
 	/**
 	 * Notify caret changes
@@ -129,7 +126,7 @@ public class SyntaxTextEditor extends JPanel {
 		super();
 
 		this.document = new SyntaxDocument(frameObserverable);
-		this.language = language;
+		document.setLanguage(language);
 
 		createComponent();
 		wireListeners();
@@ -209,8 +206,13 @@ public class SyntaxTextEditor extends JPanel {
 	public String getText() {
 		return document.getText();
 	}
-
+	
 	public void setText(String text) {
+		this.setText(text, Language.PLAIN_TEXT);
+	}
+
+	public void setText(String text, Language language) {
+		document.setLanguage(language);
 		document.setText(text);
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
@@ -228,11 +230,11 @@ public class SyntaxTextEditor extends JPanel {
 	}
 
 	public Language getLanguage() {
-		return language;
+		return document.getLanguage();
 	}
 
 	public void setLanguage(Language language) {
-		this.language = language;
+		document.setLanguage(language);
 		// TODO
 	}
 

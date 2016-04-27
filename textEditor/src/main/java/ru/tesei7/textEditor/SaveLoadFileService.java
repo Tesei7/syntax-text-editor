@@ -9,35 +9,39 @@ import javax.swing.JPanel;
 import org.apache.commons.io.FileUtils;
 
 public class SaveLoadFileService {
-	
-	public String loadFile(JPanel parent) {
+
+	public LoadedFile loadFile(JPanel parent) {
 		JFileChooser chooser = new JFileChooser();
 		int val = chooser.showOpenDialog(parent);
 		if (val == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = chooser.getSelectedFile();
 			try {
-				return FileUtils.readFileToString(selectedFile);
+				String data = FileUtils.readFileToString(selectedFile);
+				return new LoadedFile(data, selectedFile);
 			} catch (IOException e) {
 				e.printStackTrace();
-				return "";
+				return null;
 			}
 		} else {
-			return "";
+			return null;
 		}
 	}
-	
-	public void saveFile(JPanel parent, String text) {
+
+	public LoadedFile saveFile(JPanel parent, String text) {
 		JFileChooser chooser = new JFileChooser();
 		int val = chooser.showSaveDialog(parent);
 		if (val == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = chooser.getSelectedFile();
 			try {
 				FileUtils.writeByteArrayToFile(selectedFile, text.getBytes("UTF-8"));
+				return new LoadedFile(selectedFile);
 			} catch (IOException e) {
 				e.printStackTrace();
+				return null;
 			}
 		} else {
 		}
+		return null;
 	}
 
 }

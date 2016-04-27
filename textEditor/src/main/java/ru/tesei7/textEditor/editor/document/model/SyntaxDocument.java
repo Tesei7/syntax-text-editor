@@ -12,6 +12,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.fife.ui.rsyntaxtextarea.modes.JavaTokenMaker;
 import org.fife.ui.rsyntaxtextarea.modes.Token;
 
+import ru.tesei7.textEditor.editor.Language;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameEventType;
@@ -36,6 +37,10 @@ public class SyntaxDocument {
 	 * Number of columns in fixed width mode
 	 */
 	int maxCols = SyntaxTextEditor.DEFAULT_MAX_COLS;
+	/**
+	 * Language to highlight
+	 */
+	Language language;
 	/**
 	 * Type of representation
 	 */
@@ -108,6 +113,16 @@ public class SyntaxDocument {
 
 	public void setViewMode(SyntaxTextEditorViewMode viewMode) {
 		this.viewMode = viewMode;
+	}
+
+	// LANGUAGE
+
+	public Language getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(Language language) {
+		this.language = language;
 	}
 
 	// CARET
@@ -405,7 +420,9 @@ public class SyntaxDocument {
 		curLineIndex = 0;
 		selection.clear();
 
-		recalcTokens(0, split.length);
+		if (language != Language.PLAIN_TEXT) {
+			recalcTokens(0, split.length);
+		}
 
 		long t3 = System.currentTimeMillis();
 		System.out.println("File loaded: " + (t3 - t1) + "ms");
