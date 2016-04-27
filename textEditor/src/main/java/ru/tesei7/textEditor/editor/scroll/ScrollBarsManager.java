@@ -29,13 +29,13 @@ public class ScrollBarsManager implements DocumentDimensionsListener, FrameListe
 	void recalcMaxRows() {
 		int height = document.getSize();
 		int max = Math.max(height, document.getRows());
-		setBarMaximum(vbar, max);
+		setBarFields(vbar, max, document.getRows());
 	}
 
 	void recalcMaxCols() {
 		int cols = document.getMaxCols();
 		int max = Math.max(cols, document.getCols());
-		setBarMaximum(hbar, max);
+		setBarFields(hbar, max, document.getCols());
 	}
 
 	@Override
@@ -52,16 +52,17 @@ public class ScrollBarsManager implements DocumentDimensionsListener, FrameListe
 	}
 
 	/**
-	 * Set bar maximum without notification
+	 * Set bar maximum and visible amount without notification
 	 * 
 	 * @param height
 	 */
-	void setBarMaximum(JScrollBar bar, int max) {
+	void setBarFields(JScrollBar bar, int max, int extent) {
 		AdjustmentListener[] listeners = bar.getAdjustmentListeners();
 		for (int i = 0; i < listeners.length; i++) {
 			bar.removeAdjustmentListener(listeners[i]);
 		}
 		bar.setMaximum(max);
+		bar.setVisibleAmount(extent);
 		for (AdjustmentListener l : listeners) {
 			bar.addAdjustmentListener(l);
 		}

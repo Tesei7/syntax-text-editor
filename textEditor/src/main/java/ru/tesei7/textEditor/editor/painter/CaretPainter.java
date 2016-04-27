@@ -38,7 +38,7 @@ public class CaretPainter {
 		FontMetrics fontMetrics = g.getFontMetrics();
 		int height = fontMetrics.getHeight();
 		int y = caretRow * height;
-		int width = fontMetrics.stringWidth("a") * document.getCols();
+		int width = fontMetrics.stringWidth("a") * (document.getCols() + 1);
 
 		g.fillRect(0, y, width, height);
 	}

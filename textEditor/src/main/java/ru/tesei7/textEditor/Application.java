@@ -1,7 +1,11 @@
 package ru.tesei7.textEditor;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -22,19 +26,21 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxTextEditorViewMode;
 public class Application implements ActionListener {
 	private JPanel contentPane;
 	private SyntaxTextEditor textArea;
+	private JFrame frame;
 
 	public void createAndShowGUI() {
-		// Create and set up the window.
-		JFrame frame = new JFrame("Syntax Text Editor");
+		frame = new JFrame("Syntax Text Editor");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new FlowLayout());
 
 		// Create and set up the content pane.
 		frame.setJMenuBar(createMenuBar());
 		frame.setContentPane(createContentPane());
-		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.pack();
+		frame.setLocationRelativeTo(null);
+		
+		frame.addComponentListener(new ResizeListener(textArea));
 	}
 	
 	public JMenuBar createMenuBar() {
@@ -74,14 +80,19 @@ public class Application implements ActionListener {
 	}
 
 	public Container createContentPane() {
-		contentPane = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
+		contentPane = new JPanel(new BorderLayout());
+//		contentPane.setBackground(Color.GREEN);
 		contentPane.setOpaque(true);
 		textArea = new SyntaxTextEditor();
 		textArea.setText("class 12345678901234567890123456789012345678901234567890123456789012345678901234567890\n"
 //				+ "2\n3\n4\n5\n6\n7\n8\n9\n0\n" + "1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n" + "1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n"
 //				+ "1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n"
 				);
-		contentPane.add(textArea);
+//		GridBagConstraints c = new GridBagConstraints();
+//		c.gridx = 0;
+//		c.gridy = 0;
+//		c.fill = GridBagConstraints.BOTH;
+		contentPane.add(textArea, BorderLayout.CENTER);
 		return contentPane;
 	}
 

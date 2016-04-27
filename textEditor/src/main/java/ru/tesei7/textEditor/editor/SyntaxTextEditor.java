@@ -1,5 +1,6 @@
 package ru.tesei7.textEditor.editor;
 
+import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -57,11 +58,27 @@ public class SyntaxTextEditor extends JPanel {
 	 * Initial maximum number of lines for new document
 	 */
 	public static final int DEFAULT_LINES_COUNT = 1000000;
+	/**
+	 * Default number of visible lines
+	 */
+	public static final int DEFAULT_ROWS = 30;
+	/**
+	 * Default number of visible columns
+	 */
+	public static final int DEFAULT_COLS = 100;
+	/**
+	 * Default maximum columns number in fixed width mode
+	 */
+	public static final int DEFAULT_MAX_COLS = 256;
 
 	/**
 	 * Data model to store text and representation information
 	 */
 	private SyntaxDocument document;
+	/**
+	 * Language to highlight
+	 */
+	private Language language;
 
 	/**
 	 * Notify caret changes
@@ -101,16 +118,29 @@ public class SyntaxTextEditor extends JPanel {
 
 	private GridBagLayout layout;
 	private SyntaxTextPanel textPanel;
-	JScrollBar hbar;
-	JScrollBar vbar;
+	private JScrollBar hbar;
+	private JScrollBar vbar;
 
 	public SyntaxTextEditor() {
+		this(Language.PLAIN_TEXT, DEFAULT_ROWS, DEFAULT_COLS);
+	}
+
+	public SyntaxTextEditor(Language language, int rows, int cols) {
 		super();
 
 		this.document = new SyntaxDocument(frameObserverable);
+		this.language = language;
 
 		createComponent();
+		wireListeners();
+		initUIListeners();
 
+		document.setRows(rows);
+		document.setCols(cols);
+		recalcSize();
+	}
+
+	protected void wireListeners() {
 		this.syntaxDocumentEditor = new SyntaxDocumentEditor(document, caretObservable, dimensionsObservable);
 		this.caret = new SyntaxCaret(document, fontProperties);
 		this.frame = new SyntaxTextEditorFrame(document);
@@ -132,8 +162,6 @@ public class SyntaxTextEditor extends JPanel {
 		dimensionsObservable.addListener(scrollBarsManager);
 		frameObserverable.addListener(scrollBarsManager);
 		frameObserverable.addListener(textPanel);
-
-		initUIListeners();
 	}
 
 	protected void createComponent() {
@@ -141,24 +169,29 @@ public class SyntaxTextEditor extends JPanel {
 		setLayout(layout);
 
 		textPanel = new SyntaxTextPanel(this);
-		GridBagConstraints textPanelConstraints = new GridBagConstraints();
-		textPanelConstraints.gridx = 0;
-		textPanelConstraints.gridy = 0;
-		textPanelConstraints.fill = GridBagConstraints.BOTH;
-		add(textPanel, textPanelConstraints);
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		add(textPanel, c);
 
 		hbar = new JScrollBar(JScrollBar.HORIZONTAL, 0, getCols(), 0, getCols());
 		vbar = new JScrollBar(JScrollBar.VERTICAL, 0, getRows(), 0, getRows());
-		GridBagConstraints hbarConstraints = new GridBagConstraints();
-		hbarConstraints.gridx = 0;
-		hbarConstraints.gridy = 1;
-		hbarConstraints.fill = GridBagConstraints.HORIZONTAL;
-		add(hbar, hbarConstraints);
-		GridBagConstraints vbarConstraints = new GridBagConstraints();
-		vbarConstraints.gridx = 1;
-		vbarConstraints.gridy = 0;
-		vbarConstraints.fill = GridBagConstraints.VERTICAL;
-		add(vbar, vbarConstraints);
+		c.gridx = 0;
+		c.gridy = 1;
+		c.anchor = GridBagConstraints.PAGE_END;
+		c.weighty = 0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		add(hbar, c);
+		c.gridx = 1;
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.weightx = 0;
+		c.fill = GridBagConstraints.VERTICAL;
+		add(vbar, c);
+
 		recalcSize();
 	}
 
@@ -180,8 +213,30 @@ public class SyntaxTextEditor extends JPanel {
 	public void setText(String text) {
 		document.setText(text);
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
+		caretObservable.notifyListeners(new SyntaxCaretEvent());
 		textPanel.repaint();
 	}
+
+	public SyntaxTextEditorViewMode getViewMode() {
+		return document.getViewMode();
+	}
+
+	public void setViewMode(SyntaxTextEditorViewMode mode) {
+		document.setViewMode(mode);
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
+		caretObservable.notifyListeners(new SyntaxCaretEvent());
+	}
+
+	public Language getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(Language language) {
+		this.language = language;
+		// TODO
+	}
+
+	// Size
 
 	public int getRows() {
 		return document.getRows();
@@ -202,13 +257,13 @@ public class SyntaxTextEditor extends JPanel {
 		recalcSize();
 		textPanel.repaint();
 	}
-	
-	public SyntaxTextEditorViewMode getViewMode(){
-		return document.getViewMode();
-	}
-	
-	public void setViewMode(SyntaxTextEditorViewMode mode){
-		document.setViewMode(mode);
+
+	public void setTextAreaSize(Dimension size) {
+		int rows = (size.height - 87) / fontProperties.getLineHeight();
+		int cols = (size.width - 37) / fontProperties.getCharWidth();
+		document.setRows(rows);
+		document.setCols(cols);
+		recalcSize();
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
@@ -218,9 +273,12 @@ public class SyntaxTextEditor extends JPanel {
 		fontProperties = new FontProperties(fm.charWidth('a'), fm.getHeight(), fm.getDescent());
 		int height = fontProperties.getLineHeight() * getRows();
 		int width = fontProperties.getCharWidth() * getCols() + CARET_WIDTH;
-		layout.columnWidths = new int[] { width, 15 };
-		layout.rowHeights = new int[] { height, 15 };
+		layout.columnWidths = new int[] { width, vbar.getWidth() };
+		layout.rowHeights = new int[] { height, hbar.getHeight() };
+		setLayout(layout);
 	}
+
+	// Painters
 
 	CaretPainter getCaretPainter() {
 		return caretPainter;

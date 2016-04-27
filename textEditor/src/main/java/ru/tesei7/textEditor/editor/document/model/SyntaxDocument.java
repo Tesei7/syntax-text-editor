@@ -24,22 +24,18 @@ import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
  *
  */
 public class SyntaxDocument {
-	static final int DEFAULT_ROWS = 40;
-	static final int DEFAULT_COLS = 80;
-	static final int DEFAULT_MAX_COLS = 256;
-
 	/**
 	 * Number of visible rows
 	 */
-	int rows = DEFAULT_ROWS;
+	int rows = SyntaxTextEditor.DEFAULT_ROWS;
 	/**
 	 * Number of visible columns
 	 */
-	int cols = DEFAULT_COLS;
+	int cols = SyntaxTextEditor.DEFAULT_COLS;
 	/**
 	 * Number of columns in fixed width mode
 	 */
-	int maxCols = DEFAULT_MAX_COLS;
+	int maxCols = SyntaxTextEditor.DEFAULT_MAX_COLS;
 	/**
 	 * Type of representation
 	 */
@@ -406,6 +402,7 @@ public class SyntaxDocument {
 		}
 		firstVisibleRow = 0;
 		firstVisibleCol = 0;
+		curLineIndex = 0;
 		selection.clear();
 
 		recalcTokens(0, split.length);
