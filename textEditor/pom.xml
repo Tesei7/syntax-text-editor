@@ -11,6 +11,44 @@
 		<powermock.version>1.6.4</powermock.version>
 	</properties>
 
+	<profiles>
+		<profile>
+			<id>flex</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>de.jflex</groupId>
+						<artifactId>jflex-maven-plugin</artifactId>
+						<version>1.6.1</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.github.vbmacher</groupId>
+						<artifactId>cup-maven-plugin</artifactId>
+						<version>11b-20151001</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<cupDefinition>src/main/cup/java12.cup</cupDefinition>
+							<packageName>ru.tesei7.textEditor.editor.syntax</packageName>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
@@ -94,6 +132,13 @@
 			<artifactId>powermock-api-mockito</artifactId>
 			<version>${powermock.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- CUP -->
+		<dependency>
+			<groupId>com.github.vbmacher</groupId>
+			<artifactId>java-cup-runtime</artifactId>
+			<version>11b</version>
 		</dependency>
 
 	</dependencies>
