@@ -90,9 +90,9 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 				line.printChars(chars);
 			}
 		}
-	}
 
-	
+		document.recalcTokens(document.getCurLineIndex() - split.length, split.length + 1);
+	}
 
 	private String getBufferString() {
 		String result = "";
@@ -127,6 +127,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 	private void printCharSelection(char c) {
 		document.removeSelection();
 		document.getCurrentLine().printChar(c);
+		document.recalcTokens(document.getCurLineIndex(), 1);
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
@@ -143,6 +144,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			break;
 		}
 
+		document.recalcTokens(document.getCurLineIndex(), 1);
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
@@ -176,6 +178,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		newLine.setChars(curLineText.subList(offset, curLineText.size()));
 		currentLine.setChars(curLineText.subList(0, offset));
 
+		document.recalcTokens(document.getCurLineIndex(), 2);
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		document.moveCurLineIndex(1);
@@ -198,8 +201,10 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		if (currentLine.getOffset() == currentLine.getLength()) {
 			int curLineIndex = document.getCurLineIndex();
 			concatLines(curLineIndex, curLineIndex + 1, false);
+			document.recalcTokens(document.getCurLineIndex(), 2);
 		} else {
 			currentLine.delete();
+			document.recalcTokens(document.getCurLineIndex(), 1);
 			dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 		}
 	}
@@ -217,8 +222,10 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		if (currentLine.getOffset() == 0) {
 			int curLineIndex = document.getCurLineIndex();
 			concatLines(curLineIndex - 1, curLineIndex, true);
+			document.recalcTokens(document.getCurLineIndex(), 2);
 		} else {
 			currentLine.backspace();
+			document.recalcTokens(document.getCurLineIndex(), 1);
 			// dimensions should be changed first
 			dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 			caretObservable.notifyListeners(new SyntaxCaretEvent());
@@ -227,6 +234,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 
 	void removeSelection() {
 		document.removeSelection();
+		document.recalcTokens(document.getCurLineIndex(), 2);
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}

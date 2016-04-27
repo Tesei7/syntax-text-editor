@@ -1,6 +1,5 @@
 package ru.tesei7.textEditor.editor.painter;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.util.List;
 
@@ -62,10 +61,8 @@ public class SyntaxDocumentPainter {
 
 	private void paintLines(Graphics g, List<Line> lines) {
 		for (int i = 0; i < lines.size(); i++) {
-			char[] chars = document.getLineCharsToShow(lines.get(i));
 			int y = getHeightToPaint(i);
-			g.setColor(Color.BLACK);
-			g.drawChars(chars, 0, chars.length, 0, y);
+			linePainter.paintLine(g, lines.get(i), y, fontProperties, document);
 		}
 	}
 

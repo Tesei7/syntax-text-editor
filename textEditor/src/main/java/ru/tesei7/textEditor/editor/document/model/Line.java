@@ -17,7 +17,8 @@ import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 public class Line {
 	private char[] text = new char[0];
 	private int offset;
-	private LinkedList<Token> tokens = new LinkedList<>();
+	private int lastTokenType = Token.NULL;
+	private Token token;
 
 	public Line() {
 		offset = 0;
@@ -25,10 +26,6 @@ public class Line {
 
 	char[] getText() {
 		return text;
-	}
-
-	public LinkedList<Token> getTokens() {
-		return tokens;
 	}
 
 	// Text
@@ -179,6 +176,24 @@ public class Line {
 		offset--;
 	}
 
+	// Tokens
+	
+	public int getLastTokenType() {
+		return lastTokenType;
+	}
+	
+	public void setLastTokenType(int lastTokenType) {
+		this.lastTokenType = lastTokenType;
+	}
+	
+	public void setToken(Token token) {
+		this.token = token;
+	}
+	
+	public Token getToken() {
+		return token;
+	}
+	
 	// Other
 
 	@Override
@@ -189,5 +204,7 @@ public class Line {
 		}
 		return sb.toString();
 	}
+
+
 
 }

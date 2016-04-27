@@ -72,7 +72,7 @@ public class SyntaxDocument {
 	 * Broadcaster for frame movements
 	 */
 	private FrameObserverable frameObserverable;
-	
+
 	private JavaTokenMaker javaTokenMaker;
 
 	public SyntaxDocument(FrameObserverable frameObserverable) {
@@ -396,7 +396,6 @@ public class SyntaxDocument {
 		long t1 = System.currentTimeMillis();
 		System.out.println("Start loading file");
 
-		int lastToken = Token.NULL;
 		lines.clear();
 		String[] split = text.split("\n");
 		for (int i = 0; i < split.length; i++) {
@@ -404,24 +403,30 @@ public class SyntaxDocument {
 			l.setText(split[i].toCharArray());
 			l.setOffset(0);
 			lines.add(l);
-			lastToken = recalcTokens(l, lastToken);
 		}
 		firstVisibleRow = 0;
 		firstVisibleCol = 0;
 		selection.clear();
 
+		recalcTokens(0, split.length);
+
 		long t3 = System.currentTimeMillis();
 		System.out.println("File loaded: " + (t3 - t1) + "ms");
 	}
 
-	private int recalcTokens(Line l, int lastToken) {
-		Token tokenList = javaTokenMaker.getTokenList(new Segment(l.getText(), 0, l.getText().length), lastToken, 0);
-		l.getTokens().add(tokenList);
-		while(tokenList.getNextToken()!=null){
-			tokenList = tokenList.getNextToken();
-			l.getTokens().add(tokenList);
+	public void recalcTokens(int firstLineIndex, int lines) {
+		for (int i = firstLineIndex; i < firstLineIndex + lines; i++) {
+			int prevToken = Token.NULL;
+			if (i != 0) {
+				prevToken = getLineByIndex(i - 1).getLastTokenType();
+			}
+			Line l = getLineByIndex(i);
+			Token token = new JavaTokenMaker().getTokenList(new Segment(l.getText(), 0, l.getText().length), prevToken,
+					0);
+			l.setToken(token);
+			Token lastPaintableToken = token.getLastPaintableToken();
+			l.setLastTokenType(lastPaintableToken == null ? Token.NULL : lastPaintableToken.getType());
 		}
-		return tokenList.getType();
 	}
 
 	public String getText() {
