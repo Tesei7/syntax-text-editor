@@ -7,6 +7,7 @@ import ru.tesei7.textEditor.editor.syntax.*;
 %public
 %class JavaTokenizer
 %implements TokenTypes
+%implements Tokenizer
 %unicode
 %type JavaToken
 

@@ -3,6 +3,7 @@ package ru.tesei7.textEditor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,31 +22,37 @@ public class ApplicationActionListenerTest {
 	private SaveLoadFileService saveLoadFileService;
 
 	@Test
+	@Ignore
 	public void testActionPerformed() throws Exception {
 		throw new RuntimeException("not yet implemented");
 	}
 
 	@Test
+	@Ignore
 	public void testNewFile() throws Exception {
 		throw new RuntimeException("not yet implemented");
 	}
 
 	@Test
+	@Ignore
 	public void testOpen() throws Exception {
 		throw new RuntimeException("not yet implemented");
 	}
 
 	@Test
+	@Ignore
 	public void testSave() throws Exception {
 		throw new RuntimeException("not yet implemented");
 	}
 
 	@Test
+	@Ignore
 	public void testSaveAs() throws Exception {
 		throw new RuntimeException("not yet implemented");
 	}
 
 	@Test
+	@Ignore
 	public void testChangeTitle() throws Exception {
 		throw new RuntimeException("not yet implemented");
 	}

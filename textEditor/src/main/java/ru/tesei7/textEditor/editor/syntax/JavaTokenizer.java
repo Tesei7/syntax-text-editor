@@ -10,7 +10,7 @@ import ru.tesei7.textEditor.editor.syntax.*;
  * <a href="http://www.jflex.de/">JFlex</a> 1.6.1
  * from the specification file <tt>C:/Users/Ilya/git/syntax-text-editor/textEditor/src/main/jflex/java.jflex</tt>
  */
-public class JavaTokenizer implements TokenTypes {
+public class JavaTokenizer implements TokenTypes, Tokenizer {
 
   /** This character denotes the end of file */
   public static final int YYEOF = -1;

@@ -1,7 +1,5 @@
 package ru.tesei7.textEditor.editor.document.model;
 
-import java.io.CharArrayReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,9 +13,9 @@ import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameEventType;
 import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
-import ru.tesei7.textEditor.editor.syntax.JavaToken;
 import ru.tesei7.textEditor.editor.syntax.JavaTokenizer;
-import ru.tesei7.textEditor.editor.syntax.TokenTypes;
+import ru.tesei7.textEditor.editor.syntax.Token;
+import ru.tesei7.textEditor.editor.syntax.Tokenizer;
 
 /**
  * Stores text data in list of {@link Line}s.
@@ -74,11 +72,21 @@ public class SyntaxDocument {
 	 * Broadcaster for frame movements
 	 */
 	private FrameObserverable frameObserverable;
+	/**
+	 * Read tokens from line
+	 */
+	private TokenCalculator tokenCalculator;
+	/**
+	 * Creates tokenizer
+	 */
+	private TokenizerFactory tokenizerFactory;
 
 	public SyntaxDocument(FrameObserverable frameObserverable) {
 		this.frameObserverable = frameObserverable;
 		selection = new TextSelection(this);
 		lines.add(new Line());
+		tokenizerFactory = new TokenizerFactory();
+		tokenCalculator = new TokenCalculator();
 	}
 
 	// ROWS & COLS
@@ -432,27 +440,15 @@ public class SyntaxDocument {
 			if (firstLineIndex > getSize()) {
 				return;
 			}
-			
+
 			int prevState = JavaTokenizer.YYINITIAL;
 			if (i != 0) {
 				prevState = getLineByIndex(i - 1).getLastTokenState();
 			}
 			Line l = getLineByIndex(i);
-			JavaTokenizer tokenizer = new JavaTokenizer(new CharArrayReader(l.getText()));
-			tokenizer.yybegin(prevState);
-			JavaToken token = null;
-			List<ru.tesei7.textEditor.editor.syntax.Token> tokens = new ArrayList<>();
-			do {
-				try {
-					token = tokenizer.yylex();
-					prevState = tokenizer.yystate();
-					if (token != null && token.getType() != TokenTypes.EOF) {
-						tokens.add(token);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} while (token != null && token.getType() != TokenTypes.EOF);
+			Tokenizer tokenizer = tokenizerFactory.createTokenizer(getLanguage(), l.getText(), prevState);
+			List<Token> tokens = new ArrayList<>();
+			prevState = tokenCalculator.readTokens(tokens, tokenizer);
 			l.setTokens(tokens);
 			l.setLastTokenState(prevState);
 
