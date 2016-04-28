@@ -28,16 +28,10 @@ public class ApplicationActionListener implements ActionListener {
 			System.exit(0);
 			break;
 		case MenuActions.NEW:
-			app.loadFile = null;
-			app.frame.setTitle(Application.TITLE);
-			app.textArea.setText("");
+			newFile();
 			break;
 		case MenuActions.OPEN:
-			LoadedFile loadFile = saveLoadFileService.loadFile(app.contentPane);
-			changeFile(loadFile);
-			if (app.loadFile != null) {
-				app.textArea.setText(app.loadFile.getData(), getLanguage(app.loadFile.getExtension()));
-			}
+			open();
 			break;
 		case MenuActions.SAVE:
 			if (app.loadFile != null && app.loadFile.getFile() != null) {
@@ -55,10 +49,37 @@ public class ApplicationActionListener implements ActionListener {
 		case MenuActions.FIXED_WIDTH_VIEW:
 			app.textArea.setViewMode(SyntaxTextEditorViewMode.FIXED_WIDTH);
 			break;
+		case MenuActions.PLAIN_TEXT:
+			app.textArea.setLanguage(Language.PLAIN_TEXT);
+			break;
+		case MenuActions.JAVA:
+			app.textArea.setLanguage(Language.JAVA);
+			break;
+		case MenuActions.JAVA_SCRIPT:
+			app.textArea.setLanguage(Language.JAVA_SCRIPT);
+			break;
 		}
 	}
 
-	private void save() {
+	void newFile() {
+		app.loadFile = null;
+		app.textArea.setText("");
+		changeTitle();
+		app.selectSyntaxMenuItem(Language.PLAIN_TEXT);
+	}
+
+	void open() {
+		LoadedFile loadFile = saveLoadFileService.loadFile(app.contentPane);
+		app.loadFile = loadFile;
+		changeTitle();
+		if (app.loadFile != null) {
+			Language language = getLanguage(app.loadFile.getExtension());
+			app.textArea.setText(app.loadFile.getData(), language);
+			app.selectSyntaxMenuItem(language);
+		}
+	}
+
+	void save() {
 		try {
 			FileUtils.writeByteArrayToFile(app.loadFile.getFile(), app.textArea.getText().getBytes("UTF-8"));
 		} catch (IOException e) {
@@ -66,23 +87,25 @@ public class ApplicationActionListener implements ActionListener {
 		}
 	}
 
-	private void saveAs() {
+	void saveAs() {
 		LoadedFile saveFile = saveLoadFileService.saveFile(app.contentPane, app.textArea.getText());
-		changeFile(saveFile);
+		app.loadFile = saveFile;
+		changeTitle();
 	}
 
-	private void changeFile(LoadedFile saveFile) {
-		app.loadFile = saveFile;
+	void changeTitle() {
 		if (app.loadFile != null) {
 			app.frame.setTitle(Application.TITLE + " - " + app.loadFile.getFileName());
+		} else {
+			app.frame.setTitle(Application.TITLE + " - New Document");
 		}
 	}
 
-	private Language getLanguage(String extension) {
+	Language getLanguage(String extension) {
 		switch (extension) {
 		case "java":
 			return Language.JAVA;
-		case "jS":
+		case "js":
 			return Language.JAVA_SCRIPT;
 		default:
 			return Language.PLAIN_TEXT;

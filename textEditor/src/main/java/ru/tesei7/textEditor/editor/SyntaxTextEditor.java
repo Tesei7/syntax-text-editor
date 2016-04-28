@@ -235,7 +235,8 @@ public class SyntaxTextEditor extends JPanel {
 
 	public void setLanguage(Language language) {
 		document.setLanguage(language);
-		// TODO
+		document.recalcTokens(0, document.getSize());
+		textPanel.repaint();
 	}
 
 	// Size

@@ -8,4 +8,7 @@ public interface MenuActions {
 	String EXIT = "Exit";
 	String DEFAULT_VIEW = "Default";
 	String FIXED_WIDTH_VIEW = "Fixed width";
+	String PLAIN_TEXT = "Plaint text";
+	String JAVA = "Java";
+	String JAVA_SCRIPT = "JavaScript";
 }
