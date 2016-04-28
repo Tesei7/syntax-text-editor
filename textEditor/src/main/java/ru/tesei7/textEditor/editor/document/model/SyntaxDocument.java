@@ -428,19 +428,11 @@ public class SyntaxDocument {
 
 	public void recalcTokens(int firstLineIndex, int lines) {
 		for (int i = firstLineIndex; i < firstLineIndex + lines; i++) {
-			// int prevToken = Token.NULL;
-			// if (i != 0) {
-			// prevToken = getLineByIndex(i - 1).getLastTokenType();
-			// }
-			// Line l = getLineByIndex(i);
-			// Token token = new JavaTokenMaker().getTokenList(new
-			// Segment(l.getText(), 0, l.getText().length), prevToken,
-			// 0);
-			// l.setToken(token);
-			// Token lastPaintableToken = token.getLastPaintableToken();
-			// l.setLastTokenType(lastPaintableToken == null ? Token.NULL :
-			// lastPaintableToken.getType());
-
+			// do not infinite loop
+			if (firstLineIndex > getSize()) {
+				return;
+			}
+			
 			int prevState = JavaTokenizer.YYINITIAL;
 			if (i != 0) {
 				prevState = getLineByIndex(i - 1).getLastTokenState();
@@ -450,34 +442,25 @@ public class SyntaxDocument {
 			tokenizer.yybegin(prevState);
 			JavaToken token = null;
 			List<ru.tesei7.textEditor.editor.syntax.Token> tokens = new ArrayList<>();
-			int lastTokenType = 0;
 			do {
 				try {
-					if (token != null) {
-						lastTokenType = token.getType();
-					}
 					token = tokenizer.yylex();
+					prevState = tokenizer.yystate();
 					if (token != null && token.getType() != TokenTypes.EOF) {
 						tokens.add(token);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-//				System.out.println(token.getType() + " - " + token.getText());
 			} while (token != null && token.getType() != TokenTypes.EOF);
-
-			if (lastTokenType == TokenTypes.STRING_LITERAL) {
-				prevState = JavaTokenizer.STRING;
-			} else if (lastTokenType == TokenTypes.CHARACTER_LITERAL) {
-				prevState = JavaTokenizer.CHARLITERAL;
-			} else {
-				// TODO comments
-				prevState = JavaTokenizer.YYINITIAL;
-			}
-
-			// l.setToken(token);
 			l.setTokens(tokens);
 			l.setLastTokenState(prevState);
+
+			// recalculate multiline tokens till the end
+			if (prevState == JavaTokenizer.COMMENT || prevState == JavaTokenizer.STRING
+					|| prevState == JavaTokenizer.CHARLITERAL) {
+				lines++;
+			}
 		}
 	}
 
