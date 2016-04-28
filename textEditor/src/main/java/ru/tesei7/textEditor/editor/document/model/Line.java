@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
+import ru.tesei7.textEditor.editor.syntax.Token;
 
 /**
  * Line of text document. Contains characters and calculated list of tokens.
@@ -17,7 +18,7 @@ public class Line {
 	private char[] text = new char[0];
 	private int offset;
 	private int lastTokenState = 0;
-	private List<ru.tesei7.textEditor.editor.syntax.Token> tokens;
+	private List<Token> tokens;
 
 	public Line() {
 		offset = 0;
@@ -200,11 +201,11 @@ public class Line {
 	public void setLastTokenState(int lastTokenState) {
 		this.lastTokenState = lastTokenState;
 	}
-	
+
 	public void setTokens(List<ru.tesei7.textEditor.editor.syntax.Token> tokens) {
 		this.tokens = tokens;
 	}
-	
+
 	public List<ru.tesei7.textEditor.editor.syntax.Token> getTokens() {
 		return tokens;
 	}
@@ -219,7 +220,5 @@ public class Line {
 		}
 		return sb.toString();
 	}
-
-	
 
 }

@@ -63,7 +63,7 @@ public class ApplicationActionListener implements ActionListener {
 
 	void newFile() {
 		app.loadFile = null;
-		app.textArea.setText("");
+		app.textArea.setText("", app.textArea.getLanguage());
 		changeTitle();
 		app.selectSyntaxMenuItem(Language.PLAIN_TEXT);
 	}

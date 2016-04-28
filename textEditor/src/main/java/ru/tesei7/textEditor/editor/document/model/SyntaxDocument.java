@@ -335,11 +335,15 @@ public class SyntaxDocument {
 		StringBuilder sb = new StringBuilder();
 		for (int i = lineFrom; i <= lineTo; i++) {
 			List<Character> chars = getLineByIndex(i).getChars();
-			if (i == lineFrom) {
-				chars = chars.subList(selection.getOffsetFrom(), chars.size());
-			}
-			if (i == lineTo) {
-				chars = chars.subList(0, selection.getOffsetTo());
+			if (lineFrom == lineTo) {
+				chars = chars.subList(selection.getOffsetFrom(), selection.getOffsetTo());
+			} else {
+				if (i == lineFrom) {
+					chars = chars.subList(selection.getOffsetFrom(), chars.size());
+				}
+				if (i == lineTo) {
+					chars = chars.subList(0, selection.getOffsetTo());
+				}
 			}
 			for (Character c : chars) {
 				sb.append(c);
@@ -435,9 +439,12 @@ public class SyntaxDocument {
 	}
 
 	public void recalcTokens(int firstLineIndex, int lines) {
+		if (getLanguage() == Language.PLAIN_TEXT) {
+			return;
+		}
 		for (int i = firstLineIndex; i < firstLineIndex + lines; i++) {
 			// do not infinite loop
-			if (firstLineIndex > getSize()) {
+			if (i >= getSize()) {
 				return;
 			}
 
@@ -448,13 +455,13 @@ public class SyntaxDocument {
 			Line l = getLineByIndex(i);
 			Tokenizer tokenizer = tokenizerFactory.createTokenizer(getLanguage(), l.getText(), prevState);
 			List<Token> tokens = new ArrayList<>();
-			prevState = tokenCalculator.readTokens(tokens, tokenizer);
+			int newState = tokenCalculator.readTokens(tokens, tokenizer);
 			l.setTokens(tokens);
-			l.setLastTokenState(prevState);
+			int oldState = l.getLastTokenState();
+			l.setLastTokenState(newState);
 
 			// recalculate multiline tokens till the end
-			if (prevState == JavaTokenizer.COMMENT || prevState == JavaTokenizer.STRING
-					|| prevState == JavaTokenizer.CHARLITERAL) {
+			if (newState != oldState && i == firstLineIndex + lines - 1) {
 				lines++;
 			}
 		}
