@@ -459,9 +459,10 @@ public class SyntaxDocument {
 			l.setTokens(tokens);
 			int oldState = l.getLastTokenState();
 			l.setLastTokenState(newState);
-
+			
 			// recalculate multiline tokens till the end
-			if (newState != oldState && i == firstLineIndex + lines - 1) {
+			boolean isLastRecalculatedLine = i == firstLineIndex + lines - 1;
+			if (newState != oldState && isLastRecalculatedLine) {
 				lines++;
 			}
 		}

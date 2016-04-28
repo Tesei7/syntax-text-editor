@@ -180,7 +180,7 @@ SingleCharacter = [^\r\n\'\\]
   ">>>="                         { return symbol(OPERATOR); }
   
   /* string literal */
-  \"                             { yybegin(STRING); string.setLength(0); }
+  \"                             { yybegin(STRING); return symbol(STRING_LITERAL); }
 
   /* character literal */
   \'                             { yybegin(CHARLITERAL); }
@@ -206,7 +206,7 @@ SingleCharacter = [^\r\n\'\\]
   
   /* comments */
   {EndOfLineComment}             { return symbol(COMMENT_EOL); }
-  {MultilineCommentBegin}        { yybegin(COMMENT); string.setLength(0); return symbol(COMMENT_MULTI); }
+  {MultilineCommentBegin}        { yybegin(COMMENT); return symbol(COMMENT_MULTI); }
 
   /* whitespace */
   {WhiteSpace}                   { return symbol(WHITESPACE); }
@@ -230,25 +230,24 @@ SingleCharacter = [^\r\n\'\\]
 }
 
 <STRING> {
-  \"                             { yybegin(YYINITIAL); return symbol(STRING_LITERAL, string.toString()); }
+  \"                             { yybegin(YYINITIAL); return symbol(STRING_LITERAL); }
   
-  {StringCharacter}+             { string.append( yytext() ); }
+  {StringCharacter}+             { return symbol(STRING_LITERAL); }
   
   /* escape sequences */
-  "\\b"                          { string.append( '\b' ); }
-  "\\t"                          { string.append( '\t' ); }
-  "\\n"                          { string.append( '\n' ); }
-  "\\f"                          { string.append( '\f' ); }
-  "\\r"                          { string.append( '\r' ); }
-  "\\\""                         { string.append( '\"' ); }
-  "\\'"                          { string.append( '\'' ); }
-  "\\\\"                         { string.append( '\\' ); }
-  \\[0-3]?{OctDigit}?{OctDigit}  { char val = (char) Integer.parseInt(yytext().substring(1),8);
-                        				   string.append( val ); }
+  "\\b"   |                       
+  "\\t"   |                       
+  "\\n"   |                       
+  "\\f"   |                       
+  "\\r"   |                       
+  "\\\""  |                       
+  "\\'"   |                       
+  "\\\\"                          { return symbol(STRING_LITERAL); }
+  {LineTerminator}                { yybegin(YYINITIAL); } 
   
   /* error cases */
   \\.                            { throw new RuntimeException("Illegal escape sequence \""+yytext()+"\""); }
-  {LineTerminator}               { throw new RuntimeException("Unterminated string at end of line"); }
+  
 }
 
 <CHARLITERAL> {

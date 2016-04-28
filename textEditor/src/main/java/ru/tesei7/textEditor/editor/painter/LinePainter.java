@@ -84,6 +84,8 @@ public class LinePainter {
 			return Colors.COMMENT;
 		case TokenTypes.IDENTIFIER:
 			return Colors.IDENTIFIER;
+		case TokenTypes.STRING_LITERAL:
+			return Colors.STRING_LITERAL;
 		default:
 			return Colors.DEFAULT_TEXT;
 		}
