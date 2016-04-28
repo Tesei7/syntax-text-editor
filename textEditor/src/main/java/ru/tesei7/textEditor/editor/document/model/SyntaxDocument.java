@@ -1,5 +1,7 @@
 package ru.tesei7.textEditor.editor.document.model;
 
+import java.io.CharArrayReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -17,6 +19,9 @@ import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameEventType;
 import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
+import ru.tesei7.textEditor.editor.syntax.JavaToken;
+import ru.tesei7.textEditor.editor.syntax.JavaTokenizer;
+import ru.tesei7.textEditor.editor.syntax.TokenTypes;
 
 /**
  * Stores text data in list of {@link Line}s.
@@ -74,13 +79,10 @@ public class SyntaxDocument {
 	 */
 	private FrameObserverable frameObserverable;
 
-	private JavaTokenMaker javaTokenMaker;
-
 	public SyntaxDocument(FrameObserverable frameObserverable) {
 		this.frameObserverable = frameObserverable;
 		selection = new TextSelection(this);
 		lines.add(new Line());
-		javaTokenMaker = new JavaTokenMaker();
 	}
 
 	// ROWS & COLS
@@ -430,16 +432,56 @@ public class SyntaxDocument {
 
 	public void recalcTokens(int firstLineIndex, int lines) {
 		for (int i = firstLineIndex; i < firstLineIndex + lines; i++) {
-			int prevToken = Token.NULL;
+			// int prevToken = Token.NULL;
+			// if (i != 0) {
+			// prevToken = getLineByIndex(i - 1).getLastTokenType();
+			// }
+			// Line l = getLineByIndex(i);
+			// Token token = new JavaTokenMaker().getTokenList(new
+			// Segment(l.getText(), 0, l.getText().length), prevToken,
+			// 0);
+			// l.setToken(token);
+			// Token lastPaintableToken = token.getLastPaintableToken();
+			// l.setLastTokenType(lastPaintableToken == null ? Token.NULL :
+			// lastPaintableToken.getType());
+
+			int prevState = JavaTokenizer.YYINITIAL;
 			if (i != 0) {
-				prevToken = getLineByIndex(i - 1).getLastTokenType();
+				prevState = getLineByIndex(i - 1).getLastTokenType();
 			}
 			Line l = getLineByIndex(i);
-			Token token = new JavaTokenMaker().getTokenList(new Segment(l.getText(), 0, l.getText().length), prevToken,
-					0);
-			l.setToken(token);
-			Token lastPaintableToken = token.getLastPaintableToken();
-			l.setLastTokenType(lastPaintableToken == null ? Token.NULL : lastPaintableToken.getType());
+			JavaTokenizer tokenizer = new JavaTokenizer(new CharArrayReader(l.getText()));
+			tokenizer.yybegin(prevState);
+			JavaToken token = null;
+			List<ru.tesei7.textEditor.editor.syntax.Token> tokens = new ArrayList<>();
+			int lastTokenType = 0;
+			do {
+				try {
+					if (token != null) {
+						lastTokenType = token.getType();
+					}
+					token = tokenizer.yylex();
+					if (token != null && token.getType() != TokenTypes.EOF) {
+						tokens.add(token);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+//				System.out.println(token.getType() + " - " + token.getText());
+			} while (token != null && token.getType() != TokenTypes.EOF);
+
+			if (lastTokenType == TokenTypes.STRING_LITERAL) {
+				prevState = JavaTokenizer.STRING;
+			} else if (lastTokenType == TokenTypes.CHARACTER_LITERAL) {
+				prevState = JavaTokenizer.CHARLITERAL;
+			} else {
+				// TODO comments
+				prevState = JavaTokenizer.YYINITIAL;
+			}
+
+			// l.setToken(token);
+			l.setTokens(tokens);
+			l.setLastTokenType(prevState);
 		}
 	}
 

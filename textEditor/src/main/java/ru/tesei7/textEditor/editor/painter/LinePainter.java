@@ -12,6 +12,7 @@ import org.fife.ui.rsyntaxtextarea.modes.Token;
 import ru.tesei7.textEditor.editor.FontProperties;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
+import ru.tesei7.textEditor.editor.syntax.TokenTypes;
 import ru.tesei7.textEditor.editor.utils.Colors;
 import ru.tesei7.textEditor.editor.utils.FontUtils;
 
@@ -55,6 +56,30 @@ public class LinePainter {
 			x += length;
 		}
 	}
+	
+	public void paintLine2(Graphics g, Line line, int y, FontProperties fp, SyntaxDocument document) {
+		int firstVisibleCol = document.getFirstVisibleCol();
+		List<StyledText> styledText = getStyledText2(line.getTokens());
+		int x = 0;
+		for (int i = 0; i < styledText.size(); i++) {
+			StyledText st = styledText.get(i);
+			g.setFont(st.font);
+			g.setColor(st.color);
+
+			int offset = 0;
+			int length = 0;
+			if (st.offset >= firstVisibleCol) {
+				offset = 0;
+				length = st.text.length;
+			} else {
+				offset = Math.min(st.text.length, firstVisibleCol - st.offset);
+				length = Math.max(0, st.text.length - (firstVisibleCol - st.offset));
+			}
+
+			g.drawChars(st.text, offset, length, fp.getCharWidth() * x, y);
+			x += length;
+		}
+	}
 
 	private List<StyledText> getStyledText(Token token) {
 		List<StyledText> list = new ArrayList<StyledText>();
@@ -73,11 +98,32 @@ public class LinePainter {
 		}
 		return list;
 	}
+	
+	private List<StyledText> getStyledText2(List<ru.tesei7.textEditor.editor.syntax.Token> tokens) {
+		List<StyledText> list = new ArrayList<StyledText>();
+		if (tokens == null) {
+			return list;
+		}
+		int offset = 0;
+		
+		for (ru.tesei7.textEditor.editor.syntax.Token t : tokens) {
+			Color color = getColor2(t.getType());
+			Font font = getFont2(t.getType());
+			char[] text = getChars2(t);
+			list.add(new StyledText(text, offset, font, color));
+			offset += text.length;
+		}
+		return list;
+	}
 
 	private char[] getChars(Token token) {
 		char[] chars = new char[token.length()];
 		System.arraycopy(token.getTextArray(), token.getOffset(), chars, 0, token.length());
 		return new String(chars).replaceAll("\t", "    ").toCharArray();
+	}
+	
+	private char[] getChars2(ru.tesei7.textEditor.editor.syntax.Token token) {
+		return token.getText().replaceAll("\t", "    ").toCharArray();
 	}
 
 	private Color getColor(int type) {
@@ -100,6 +146,28 @@ public class LinePainter {
 		switch (type) {
 		case Token.RESERVED_WORD:
 		case Token.RESERVED_WORD_2:
+			return FontUtils.BOLD;
+		default:
+			return FontUtils.DEFAULT;
+		}
+	}
+	
+	private Color getColor2(int type) {
+		switch (type) {
+		case TokenTypes.KEYWORD:
+			return Colors.KEY_WORD;
+		case TokenTypes.COMMENT:
+			return Colors.COMMENT;
+		case TokenTypes.IDENTIFIER:
+			return Colors.IDENTIFIER;
+		default:
+			return Colors.DEFAULT_TEXT;
+		}
+	}
+
+	private Font getFont2(int type) {
+		switch (type) {
+		case TokenTypes.KEYWORD:
 			return FontUtils.BOLD;
 		default:
 			return FontUtils.DEFAULT;

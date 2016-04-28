@@ -1,6 +1,6 @@
 package ru.tesei7.textEditor.editor.syntax;
 
-public class JavaToken {
+public class JavaToken implements Token {
 	private int type;
 	private String text;
 
@@ -14,11 +14,18 @@ public class JavaToken {
 		this.text = new String(new char[] { c });
 	}
 
+	@Override
 	public int getType() {
 		return type;
 	}
 
+	@Override
 	public String getText() {
+		return text;
+	}
+	
+	@Override
+	public String toString() {
 		return text;
 	}
 }

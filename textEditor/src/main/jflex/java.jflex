@@ -75,60 +75,56 @@ SingleCharacter = [^\r\n\'\\]
 <YYINITIAL> {
 
   /* keywords */
-	"abstract"|
-	"assert" |
-	"break"	 |
-	"case"	 |
-	"catch"	 |
-	"class"	 |
-	"const"	 |
-	"continue" |
-	"default" |
-	"do"	 |
-	"else"	 |
-	"enum"	 |
-	"extends" |
-	"final"	 |
-	"finally" |
-	"for"	 |
-	"goto"	 |
-	"if"	 |
-	"implements" |
-	"import" |
-	"instanceof" |
-	"interface" |
-	"native" |
-	"new"	 |
-	"null"	 |
-	"package" |
-	"private" |
-	"protected" |
-	"public" |
-	"static" |
-	"strictfp" |
-	"super"	 |
-	"switch" |
-	"synchronized" |
-	"this"	 |
-	"throw"	 |
-	"throws" |
-	"transient" |
-	"try"	 |
-	"void"	 |
-	"volatile" |
-	"while"		|			
-	"return"				{ symbol(KEYWORD); }
+  "abstract" |  
+  "boolean"  |  
+  "break"    |  
+  "byte"     |  
+  "case"     |  
+  "catch"    |  
+  "char"     |  
+  "class"    |  
+  "const"    |  
+  "continue" |  
+  "do"       |  
+  "double"   |  
+  "else"     |  
+  "extends"  |  
+  "final"    |  
+  "finally"  |  
+  "float"    |  
+  "for"      |  
+  "default"  |  
+  "implements"|     
+  "import"    |     
+  "instanceof"|     
+  "int"       |     
+  "interface" |     
+  "long"      |     
+  "native"    |     
+  "new"       | 
+  "null"      |     
+  "goto"      |     
+  "if"        |     
+  "public"    |     
+  "short"     |     
+  "super"     |     
+  "switch"    |     
+  "synchronized"|   
+  "package"     |       
+  "private"     |       
+  "protected"   |       
+  "transient"   |       
+  "return"      |       
+  "void"        |        
+  "static"      |        
+  "while"       |        
+  "this"        |        
+  "throw"       |        
+  "throws"      |        
+  "try"         |        
+  "volatile"    |        
+  "strictfp"                     { return symbol(KEYWORD); }
 
-	/* Data types. */
-	"boolean" |
-	"byte" |
-	"char" |
-	"double" |
-	"float" |
-	"int" |
-	"long" |
-	"short"					{ symbol(DATA_TYPE); }
-  
   /* boolean literals */
   "true"                         { return symbol(BOOLEAN_LITERAL); }
   "false"                        { return symbol(BOOLEAN_LITERAL); }

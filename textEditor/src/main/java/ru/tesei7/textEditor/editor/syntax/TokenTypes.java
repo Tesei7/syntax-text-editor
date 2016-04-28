@@ -1,6 +1,8 @@
 package ru.tesei7.textEditor.editor.syntax;
 
 public interface TokenTypes {
+	int INITIAL = 0;
+	
 	int KEYWORD = 1;
 	int BOOLEAN_LITERAL = 2;
 	int LPAREN = 4;
@@ -20,6 +22,5 @@ public interface TokenTypes {
 	int COMMENT = 18;
 	int IDENTIFIER = 19;
 	int EOF = 20;
-	int DATA_TYPE = 21;
 	int WHITESPACE = 22;
 }

@@ -19,6 +19,7 @@ public class Line {
 	private int offset;
 	private int lastTokenType = Token.NULL;
 	private Token token;
+	private List<ru.tesei7.textEditor.editor.syntax.Token> tokens;
 
 	public Line() {
 		offset = 0;
@@ -219,6 +220,14 @@ public class Line {
 			sb.append(text[i]);
 		}
 		return sb.toString();
+	}
+
+	public void setTokens(List<ru.tesei7.textEditor.editor.syntax.Token> tokens) {
+		this.tokens = tokens;
+	}
+	
+	public List<ru.tesei7.textEditor.editor.syntax.Token> getTokens() {
+		return tokens;
 	}
 
 }

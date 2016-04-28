@@ -74,7 +74,7 @@ public class SyntaxDocumentPainter {
 				g.drawChars(line.getTextToPaint(), document.getFirstVisibleCol(), length, 0, y);
 				break;
 			default:
-				linePainter.paintLine(g, line, y, fontProperties, document);
+				linePainter.paintLine2(g, line, y, fontProperties, document);
 				break;
 			}
 		}
