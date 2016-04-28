@@ -19,7 +19,8 @@ public interface TokenTypes {
 	int CHARACTER_LITERAL = 15;
 	int INTEGER_LITERAL = 16;
 	int FLOATING_POINT_LITERAL = 17;
-	int COMMENT = 18;
+	int COMMENT_EOL = 18;
+	int COMMENT_MULTI = 23;
 	int IDENTIFIER = 19;
 	int EOF = 20;
 	int WHITESPACE = 22;

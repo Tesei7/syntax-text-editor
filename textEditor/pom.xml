@@ -31,22 +31,6 @@
 							<outputDirectory>src/main/java</outputDirectory>
 						</configuration>
 					</plugin>
-<!-- 					<plugin> -->
-<!-- 						<groupId>com.github.vbmacher</groupId> -->
-<!-- 						<artifactId>cup-maven-plugin</artifactId> -->
-<!-- 						<version>11b-20151001</version> -->
-<!-- 						<executions> -->
-<!-- 							<execution> -->
-<!-- 								<goals> -->
-<!-- 									<goal>generate</goal> -->
-<!-- 								</goals> -->
-<!-- 							</execution> -->
-<!-- 						</executions> -->
-<!-- 						<configuration> -->
-<!-- 							<cupDefinition>src/main/cup/java12.cup</cupDefinition> -->
-<!-- 							<packageName>ru.tesei7.textEditor.editor.syntax</packageName> -->
-<!-- 						</configuration> -->
-<!-- 					</plugin> -->
 				</plugins>
 			</build>
 		</profile>
@@ -136,13 +120,5 @@
 			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- CUP -->
-		<dependency>
-			<groupId>com.github.vbmacher</groupId>
-			<artifactId>java-cup-runtime</artifactId>
-			<version>11b</version>
-		</dependency>
-
 	</dependencies>
 </project>

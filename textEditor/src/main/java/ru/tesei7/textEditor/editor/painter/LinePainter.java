@@ -79,7 +79,8 @@ public class LinePainter {
 		switch (type) {
 		case TokenTypes.KEYWORD:
 			return Colors.KEY_WORD;
-		case TokenTypes.COMMENT:
+		case TokenTypes.COMMENT_EOL:
+		case TokenTypes.COMMENT_MULTI:
 			return Colors.COMMENT;
 		case TokenTypes.IDENTIFIER:
 			return Colors.IDENTIFIER;

@@ -33,12 +33,10 @@ InputCharacter = [^\r\n]
 WhiteSpace = {LineTerminator} | [ \t\f]
 
 /* comments */
-Comment = {TraditionalComment} | {EndOfLineComment} | 
-          {DocumentationComment}
 
-TraditionalComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?
-DocumentationComment = "/*" "*"+ [^/*] ~"*/"
+MultilineCommentBegin = "/*" 
+MultilineCommentEnd = "*/"
 
 /* identifiers */
 Identifier = [:jletter:][:jletterdigit:]*
@@ -66,9 +64,10 @@ Exponent = [eE] [+-]? [0-9]+
 
 /* string and character literals */
 StringCharacter = [^\r\n\"\\]
+CommentCharacter = [^\r\n*]
 SingleCharacter = [^\r\n\'\\]
 
-%state STRING, CHARLITERAL
+%state STRING, CHARLITERAL, COMMENT
 
 %%
 
@@ -205,13 +204,28 @@ SingleCharacter = [^\r\n\'\\]
   {DoubleLiteral}[dD]            { return symbol(FLOATING_POINT_LITERAL); }
   
   /* comments */
-  {Comment}                      { return symbol(COMMENT); }
+  {EndOfLineComment}             { return symbol(COMMENT_EOL); }
+  {MultilineCommentBegin}        { yybegin(COMMENT); string.setLength(0); return symbol(COMMENT_MULTI); }
 
   /* whitespace */
   {WhiteSpace}                   { return symbol(WHITESPACE); }
 
   /* identifiers */ 
   {Identifier}                   { return symbol(IDENTIFIER); }  
+}
+
+<COMMENT> {
+
+  {MultilineCommentEnd}          { yybegin(YYINITIAL); return symbol(COMMENT_MULTI); }
+
+  {LineTerminator}               { return symbol(COMMENT_MULTI); }               
+
+  {CommentCharacter}+            { return symbol(COMMENT_MULTI); }
+  
+  \*                             { return symbol(COMMENT_MULTI); }
+  
+  /* error cases */
+  \\.                            { throw new RuntimeException("Illegal escape sequence \""+yytext()+"\""); }
 }
 
 <STRING> {
