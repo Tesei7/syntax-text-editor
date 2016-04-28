@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.fife.ui.rsyntaxtextarea.modes.Token;
 
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 
@@ -17,8 +16,7 @@ import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 public class Line {
 	private char[] text = new char[0];
 	private int offset;
-	private int lastTokenType = Token.NULL;
-	private Token token;
+	private int lastTokenState = 0;
 	private List<ru.tesei7.textEditor.editor.syntax.Token> tokens;
 
 	public Line() {
@@ -195,20 +193,20 @@ public class Line {
 
 	// Tokens
 
-	public int getLastTokenType() {
-		return lastTokenType;
+	public int getLastTokenState() {
+		return lastTokenState;
 	}
 
-	public void setLastTokenType(int lastTokenType) {
-		this.lastTokenType = lastTokenType;
+	public void setLastTokenState(int lastTokenState) {
+		this.lastTokenState = lastTokenState;
 	}
-
-	public void setToken(Token token) {
-		this.token = token;
+	
+	public void setTokens(List<ru.tesei7.textEditor.editor.syntax.Token> tokens) {
+		this.tokens = tokens;
 	}
-
-	public Token getToken() {
-		return token;
+	
+	public List<ru.tesei7.textEditor.editor.syntax.Token> getTokens() {
+		return tokens;
 	}
 
 	// Other
@@ -222,12 +220,6 @@ public class Line {
 		return sb.toString();
 	}
 
-	public void setTokens(List<ru.tesei7.textEditor.editor.syntax.Token> tokens) {
-		this.tokens = tokens;
-	}
 	
-	public List<ru.tesei7.textEditor.editor.syntax.Token> getTokens() {
-		return tokens;
-	}
 
 }

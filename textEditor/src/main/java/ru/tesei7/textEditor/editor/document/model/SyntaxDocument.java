@@ -8,11 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.OptionalInt;
 
-import javax.swing.text.Segment;
-
 import org.apache.commons.lang.ArrayUtils;
-import org.fife.ui.rsyntaxtextarea.modes.JavaTokenMaker;
-import org.fife.ui.rsyntaxtextarea.modes.Token;
 
 import ru.tesei7.textEditor.editor.Language;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
@@ -447,7 +443,7 @@ public class SyntaxDocument {
 
 			int prevState = JavaTokenizer.YYINITIAL;
 			if (i != 0) {
-				prevState = getLineByIndex(i - 1).getLastTokenType();
+				prevState = getLineByIndex(i - 1).getLastTokenState();
 			}
 			Line l = getLineByIndex(i);
 			JavaTokenizer tokenizer = new JavaTokenizer(new CharArrayReader(l.getText()));
@@ -481,7 +477,7 @@ public class SyntaxDocument {
 
 			// l.setToken(token);
 			l.setTokens(tokens);
-			l.setLastTokenType(prevState);
+			l.setLastTokenState(prevState);
 		}
 	}
 

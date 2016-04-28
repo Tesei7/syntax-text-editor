@@ -17,7 +17,7 @@ import ru.tesei7.textEditor.editor.frame.SyntaxScrollEvent;
 import ru.tesei7.textEditor.editor.frame.SyntaxScrollListener;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameListener;
-import ru.tesei7.textEditor.editor.utils.FontUtils;
+import ru.tesei7.textEditor.editor.utils.Fonts;
 
 /**
  * Text editor component
@@ -46,7 +46,7 @@ public class SyntaxTextPanel extends JPanel
 		setBackground(Color.WHITE);
 		setFocusable(true);
 		setFocusTraversalKeysEnabled(false);
-		setFont(FontUtils.DEFAULT);
+		setFont(Fonts.DEFAULT);
 		setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		initCaretBlinker();
 	}

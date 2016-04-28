@@ -6,7 +6,7 @@ public interface Colors {
 	Color DEFAULT_TEXT = Color.BLACK;
 	Color KEY_WORD = new Color(0, 0, 128);
 	Color COMMENT = new Color(63, 127, 95);
-	Color IDENTIFIER = Color.GRAY;
+	Color IDENTIFIER = Color.DARK_GRAY;
 
 	Color CURRENT_LINE_BACKGROUND = new Color(255, 250, 227);
 	Color SELECTED_BACKGROUND = new Color(89, 116, 171);

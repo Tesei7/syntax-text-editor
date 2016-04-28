@@ -9,7 +9,7 @@ import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.document.model.TextSelection;
 import ru.tesei7.textEditor.editor.utils.Colors;
-import ru.tesei7.textEditor.editor.utils.FontUtils;
+import ru.tesei7.textEditor.editor.utils.Fonts;
 
 public class SyntaxDocumentPainter {
 
@@ -69,12 +69,12 @@ public class SyntaxDocumentPainter {
 			switch (language) {
 			case PLAIN_TEXT:
 				int length = Math.max(0, line.getLengthToPaint() - document.getFirstVisibleCol());
-				g.setFont(FontUtils.DEFAULT);
+				g.setFont(Fonts.DEFAULT);
 				g.setColor(Colors.DEFAULT_TEXT);
 				g.drawChars(line.getTextToPaint(), document.getFirstVisibleCol(), length, 0, y);
 				break;
 			default:
-				linePainter.paintLine2(g, line, y, fontProperties, document);
+				linePainter.paintLine(g, line, y, fontProperties, document);
 				break;
 			}
 		}
