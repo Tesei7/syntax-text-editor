@@ -50,15 +50,19 @@ public class ApplicationActionListener implements ActionListener {
 			app.textArea.setViewMode(SyntaxTextEditorViewMode.FIXED_WIDTH);
 			break;
 		case MenuActions.PLAIN_TEXT:
-			app.textArea.setLanguage(Language.PLAIN_TEXT);
+			changeSyntax(Language.PLAIN_TEXT);
 			break;
 		case MenuActions.JAVA:
-			app.textArea.setLanguage(Language.JAVA);
+			changeSyntax(Language.JAVA);
 			break;
 		case MenuActions.JAVA_SCRIPT:
-			app.textArea.setLanguage(Language.JAVA_SCRIPT);
+			changeSyntax(Language.JAVA_SCRIPT);
 			break;
 		}
+	}
+
+	private void changeSyntax(Language language) {
+		new ProgressDialog(app.frame, "Changing syntax...",  () -> app.textArea.setLanguage(language));
 	}
 
 	void newFile() {

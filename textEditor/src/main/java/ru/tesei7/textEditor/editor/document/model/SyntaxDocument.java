@@ -72,7 +72,7 @@ public class SyntaxDocument {
 	/**
 	 * Read tokens from line
 	 */
-	private TokenCalculator tokenCalculator;
+	private LexicalAnalyzer lexicalAnalyzer;
 	/**
 	 * Can paint document content flag
 	 */
@@ -82,7 +82,7 @@ public class SyntaxDocument {
 		this.frameObserverable = frameObserverable;
 		selection = new TextSelection(this);
 		lines.add(new Line());
-		tokenCalculator = new TokenCalculator();
+		lexicalAnalyzer = new LexicalAnalyzer();
 	}
 
 	// ROWS & COLS
@@ -395,8 +395,8 @@ public class SyntaxDocument {
 
 		long t1 = System.currentTimeMillis();
 		System.out.println("Start loading file");
-		
-		try {			
+
+		try {
 			lines.clear();
 			String[] split = text.split("\n");
 			for (int i = 0; i < split.length; i++) {
@@ -431,13 +431,10 @@ public class SyntaxDocument {
 				return;
 			}
 
-			int prevState = JavaTokenizer.YYINITIAL;
-			if (i != 0) {
-				prevState = getLineByIndex(i - 1).getLastTokenState();
-			}
+			int previousState = i == 0 ? JavaTokenizer.YYINITIAL : getLineByIndex(i - 1).getLastTokenState();
 			Line l = getLineByIndex(i);
 			List<Token> tokens = new ArrayList<>();
-			int newState = tokenCalculator.readTokens(tokens, l, language, prevState);
+			int newState = lexicalAnalyzer.readTokensFromLine(tokens, l, language, previousState);
 
 			l.setTokens(tokens);
 			int oldState = l.getLastTokenState();
@@ -467,7 +464,7 @@ public class SyntaxDocument {
 
 	/**
 	 * 
-	 * @return {@code true} if can paint document, {@code false} - otherwise  
+	 * @return {@code true} if can paint document, {@code false} - otherwise
 	 */
 	public boolean isReady() {
 		return isReady;

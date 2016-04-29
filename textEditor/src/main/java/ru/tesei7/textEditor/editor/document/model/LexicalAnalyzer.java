@@ -9,13 +9,13 @@ import ru.tesei7.textEditor.editor.syntax.Token;
 import ru.tesei7.textEditor.editor.syntax.TokenTypes;
 import ru.tesei7.textEditor.editor.syntax.Tokenizer;
 
-public class TokenCalculator {
+public class LexicalAnalyzer {
 	/**
 	 * Creates tokenizer
 	 */
 	private TokenizerFactory tokenizerFactory;
 
-	public TokenCalculator() {
+	public LexicalAnalyzer() {
 		tokenizerFactory = new TokenizerFactory();
 	}
 
@@ -32,7 +32,7 @@ public class TokenCalculator {
 	 *            initial state of line
 	 * @return last state of line
 	 */
-	public int readTokens(final List<Token> tokens, Line l, Language language, int state) {
+	public int readTokensFromLine(final List<Token> tokens, Line l, Language language, int state) {
 		Tokenizer tokenizer = tokenizerFactory.createTokenizer(language, l.getText(), state);
 		return readTokens(tokens, tokenizer);
 	}
