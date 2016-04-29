@@ -4,6 +4,13 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretListener;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
+/**
+ * This listener moves visible part of document (frame) when caret moves and
+ * scroll events occured
+ * 
+ * @author Ilya Bochkarev
+ *
+ */
 public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollListener {
 
 	private SyntaxDocument document;
@@ -29,7 +36,7 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 		makeCaretVisibleX();
 	}
 
-	private void makeCaretVisibleX() {
+	void makeCaretVisibleX() {
 		int offsetToPaint = document.getCurrentLine().getOffsetToPaint();
 		boolean beforeFrame = offsetToPaint < document.getFirstVisibleCol();
 		boolean afterFrame = offsetToPaint > document.getFirstVisibleCol() + document.getCols();
@@ -44,7 +51,7 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 		}
 	}
 
-	private void makeCaretVisibleY() {
+	void makeCaretVisibleY() {
 		int firstVisibleRow = document.getFirstVisibleRow();
 		int currentIndex = document.getCurLineIndex();
 		boolean beforeFrame = currentIndex < firstVisibleRow;

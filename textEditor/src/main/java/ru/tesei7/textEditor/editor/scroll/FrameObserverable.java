@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FrameObserverable {
-	private List<FrameListener> listeners = new ArrayList<>();
+	List<FrameListener> listeners = new ArrayList<>();
 
 	public void addListener(FrameListener listener) {
 		listeners.add(listener);

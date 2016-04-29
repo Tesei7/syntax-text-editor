@@ -9,7 +9,7 @@ import java.util.List;
  *
  */
 public class DimensionsObservable {
-	private List<DocumentDimensionsListener> listeners = new ArrayList<>();
+	List<DocumentDimensionsListener> listeners = new ArrayList<>();
 
 	public void addListener(DocumentDimensionsListener listener) {
 		listeners.add(listener);

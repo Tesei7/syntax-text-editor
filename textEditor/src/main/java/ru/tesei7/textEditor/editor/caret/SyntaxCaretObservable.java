@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SyntaxCaretObservable {
 
-	private List<SyntaxCaretListener> listeners = new ArrayList<>();
+	List<SyntaxCaretListener> listeners = new ArrayList<>();
 
 	public void addListener(SyntaxCaretListener listener) {
 		listeners.add(listener);

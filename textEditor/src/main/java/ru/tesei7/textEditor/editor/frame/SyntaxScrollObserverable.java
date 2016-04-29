@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SyntaxScrollObserverable {
-	private List<SyntaxScrollListener> listeners = new ArrayList<>();
+	List<SyntaxScrollListener> listeners = new ArrayList<>();
 
 	public void addListener(SyntaxScrollListener listener) {
 		listeners.add(listener);
