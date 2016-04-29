@@ -5,27 +5,29 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.syntax.Token;
 import ru.tesei7.textEditor.editor.syntax.TokenTypes;
 
-public class BracketPositionService {
+public class BracketService {
 
 	private SyntaxDocument document;
 
-	public BracketPositionService(SyntaxDocument document) {
+	public BracketService(SyntaxDocument document) {
 		this.document = document;
 	}
 
 	/**
 	 * 
-	 * @return -1 - no bracket at curent position, 0 - bracket at curent position, 1 - bracket before current position
+	 * @return -1 - no bracket at curent position, 0 - bracket at curent
+	 *         position, 1 - bracket before current position
 	 */
 	public int getBracketAtCurrentPosition() {
 		Line l = document.getCurrentLine();
 		Token cur = l.getCurrentToken();
 		Token prev = l.getPreviousToken();
-		if (isBracket(cur)){
+		if (isBracket(cur)) {
 			return 0;
-		} else if (isBracket(prev)){
+		} else if (isBracket(prev)) {
 			return 1;
-		} else return -1;
+		} else
+			return -1;
 	}
 
 	boolean isBracket(Token t) {
@@ -38,8 +40,7 @@ public class BracketPositionService {
 	}
 
 	public int[] getReletiveBracket() {
-		// TODO Auto-generated method stub
-		return null;
+		return new BracketFinder(document, this).find();
 	}
 
 }

@@ -422,29 +422,34 @@ public class SyntaxDocument {
 	}
 
 	public void recalcTokens(int firstLineIndex, int lines) {
-		if (getLanguage() == Language.PLAIN_TEXT) {
-			return;
-		}
-		for (int i = firstLineIndex; i < firstLineIndex + lines; i++) {
-			// do not infinite loop
-			if (i >= getSize()) {
+		isReady = false;
+		try {
+			if (getLanguage() == Language.PLAIN_TEXT) {
 				return;
 			}
+			for (int i = firstLineIndex; i < firstLineIndex + lines; i++) {
+				// do not infinite loop
+				if (i >= getSize()) {
+					return;
+				}
 
-			int previousState = i == 0 ? JavaTokenizer.YYINITIAL : getLineByIndex(i - 1).getLastTokenState();
-			Line l = getLineByIndex(i);
-			List<Token> tokens = new ArrayList<>();
-			int newState = lexicalAnalyzer.readTokensFromLine(tokens, l, language, previousState);
+				int previousState = i == 0 ? JavaTokenizer.YYINITIAL : getLineByIndex(i - 1).getLastTokenState();
+				Line l = getLineByIndex(i);
+				List<Token> tokens = new ArrayList<>();
+				int newState = lexicalAnalyzer.readTokensFromLine(tokens, l, language, previousState);
 
-			l.setTokens(tokens);
-			int oldState = l.getLastTokenState();
-			l.setLastTokenState(newState);
+				l.setTokens(tokens);
+				int oldState = l.getLastTokenState();
+				l.setLastTokenState(newState);
 
-			// recalculate multiline tokens till the end
-			boolean isLastRecalculatedLine = i == firstLineIndex + lines - 1;
-			if (newState != oldState && isLastRecalculatedLine) {
-				lines++;
+				// recalculate multiline tokens till the end
+				boolean isLastRecalculatedLine = i == firstLineIndex + lines - 1;
+				if (newState != oldState && isLastRecalculatedLine) {
+					lines++;
+				}
 			}
+		} finally {
+			isReady = true;
 		}
 	}
 
