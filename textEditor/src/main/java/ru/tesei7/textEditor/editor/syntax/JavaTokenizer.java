@@ -887,18 +887,12 @@ public class JavaTokenizer implements TokenTypes, Tokenizer {
   private int zzFinalHighSurrogate = 0;
 
   /* user code: */
-	StringBuilder string = new StringBuilder();
-
-	public JavaToken symbol(int type) {
-		return new JavaToken(type, yytext());
+	public TokenImpl symbol(int type) {
+		return new TokenImpl(type, yytext(), yychar);
 	}
 	
-	public JavaToken symbol(int type, char c) {
-		return new JavaToken(type, c);
-	}
-	
-	public JavaToken symbol(int type, String s) {
-		return new JavaToken(type, s);
+	public TokenImpl symbol(int type, String s) {
+		return new TokenImpl(type, s, yychar);
 	}
 
 
@@ -1132,7 +1126,7 @@ public class JavaTokenizer implements TokenTypes, Tokenizer {
    * @return      the next token
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
-  public JavaToken yylex() throws java.io.IOException {
+  public TokenImpl yylex() throws java.io.IOException {
     int zzInput;
     int zzAction;
 
@@ -1149,6 +1143,8 @@ public class JavaTokenizer implements TokenTypes, Tokenizer {
 
     while (true) {
       zzMarkedPosL = zzMarkedPos;
+
+      yychar+= zzMarkedPosL-zzStartRead;
 
       zzAction = -1;
 

@@ -9,21 +9,17 @@ import ru.tesei7.textEditor.editor.syntax.*;
 %implements TokenTypes
 %implements Tokenizer
 %unicode
-%type JavaToken
+%char
+%type TokenImpl
+
 
 %{
-	StringBuilder string = new StringBuilder();
-
-	public JavaToken symbol(int type) {
-		return new JavaToken(type, yytext());
+	public TokenImpl symbol(int type) {
+		return new TokenImpl(type, yytext(), yychar);
 	}
 	
-	public JavaToken symbol(int type, char c) {
-		return new JavaToken(type, c);
-	}
-	
-	public JavaToken symbol(int type, String s) {
-		return new JavaToken(type, s);
+	public TokenImpl symbol(int type, String s) {
+		return new TokenImpl(type, s, yychar);
 	}
 %}
 

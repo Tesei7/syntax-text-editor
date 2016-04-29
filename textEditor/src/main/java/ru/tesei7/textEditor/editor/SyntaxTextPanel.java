@@ -70,6 +70,7 @@ public class SyntaxTextPanel extends JPanel
 		super.paintComponent(g);
 		if (editor.getDocument().isReady()) {
 			editor.getCaretPainter().paintBackground(g);
+			editor.getCaretPainter().highlightBrackets(g);
 			editor.getDocumentPainter().paint(g, editor.getLanguage());
 			editor.getCaretPainter().paintCaret(g, caretVisible);
 		}

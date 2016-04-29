@@ -5,4 +5,5 @@ public interface Token {
 
 	public String getText();
 
+	public int getOffset();
 }

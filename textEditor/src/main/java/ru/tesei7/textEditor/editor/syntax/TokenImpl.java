@@ -1,17 +1,14 @@
 package ru.tesei7.textEditor.editor.syntax;
 
-public class JavaToken implements Token {
+public class TokenImpl implements Token {
 	private int type;
 	private String text;
+	private int offset;
 
-	public JavaToken(int type, String text) {
+	public TokenImpl(int type, String text, int offset) {
 		this.type = type;
 		this.text = text;
-	}
-
-	public JavaToken(int type, char c) {
-		this.type = type;
-		this.text = new String(new char[] { c });
+		this.offset = offset;
 	}
 
 	@Override
@@ -27,5 +24,10 @@ public class JavaToken implements Token {
 	@Override
 	public String toString() {
 		return text;
+	}
+
+	@Override
+	public int getOffset() {
+		return offset;
 	}
 }

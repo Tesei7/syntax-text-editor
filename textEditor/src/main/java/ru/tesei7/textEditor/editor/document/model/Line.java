@@ -212,6 +212,24 @@ public class Line {
 		return tokens;
 	}
 
+	public Token getCurrentToken() {
+		for (Token t : tokens) {
+			if (t.getOffset() == offset) {
+				return t;
+			}
+		}
+		return null;
+	}
+
+	public Token getPreviousToken() {
+		for (Token t : tokens) {
+			if (t.getOffset() == offset - 1) {
+				return t;
+			}
+		}
+		return null;
+	}
+
 	// Other
 
 	@Override

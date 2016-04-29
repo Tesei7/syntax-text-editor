@@ -12,5 +12,6 @@ public interface Colors {
 
 	Color CURRENT_LINE_BACKGROUND = new Color(255, 250, 227);
 	Color SELECTED_BACKGROUND = new Color(89, 116, 171);
-
+	Color FOUND_BRACKET_BACKGROUND = new Color(153, 204, 255);
+	Color NOT_FOUND_BRACKET_BACKGROUND = new Color(255, 220, 220);
 }
