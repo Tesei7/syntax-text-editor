@@ -73,6 +73,8 @@ public class Line {
 				chars[x++] = ' ';
 				chars[x++] = ' ';
 				chars[x++] = ' ';
+			} else if (text[i] == '\r' || text[i] == '\f' || text[i] == '\b' || text[i] == '\n') {
+				chars[x++] = ' ';
 			} else {
 				chars[x++] = text[i];
 			}

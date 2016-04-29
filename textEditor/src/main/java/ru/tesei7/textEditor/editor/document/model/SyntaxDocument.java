@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.OptionalInt;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import ru.tesei7.textEditor.editor.Language;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
@@ -15,7 +13,6 @@ import ru.tesei7.textEditor.editor.scroll.FrameEventType;
 import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
 import ru.tesei7.textEditor.editor.syntax.JavaTokenizer;
 import ru.tesei7.textEditor.editor.syntax.Token;
-import ru.tesei7.textEditor.editor.syntax.Tokenizer;
 
 /**
  * Stores text data in list of {@link Line}s.
@@ -77,15 +74,14 @@ public class SyntaxDocument {
 	 */
 	private TokenCalculator tokenCalculator;
 	/**
-	 * Creates tokenizer
+	 * Can paint document content flag
 	 */
-	private TokenizerFactory tokenizerFactory;
+	volatile private boolean isReady = true;
 
 	public SyntaxDocument(FrameObserverable frameObserverable) {
 		this.frameObserverable = frameObserverable;
 		selection = new TextSelection(this);
 		lines.add(new Line());
-		tokenizerFactory = new TokenizerFactory();
 		tokenCalculator = new TokenCalculator();
 	}
 
@@ -231,26 +227,7 @@ public class SyntaxDocument {
 	}
 
 	public char[] getLineCharsToShow(Line line) {
-		return getCharsToShow(line.getText());
-	}
-
-	char[] getCharsToShow(char[] chars) {
-		ArrayList<Character> out = new ArrayList<>();
-		for (int i = firstVisibleCol; i < chars.length; i++) {
-			char c = chars[i];
-			if (c == '\t') {
-				out.add(' ');
-				out.add(' ');
-				out.add(' ');
-				out.add(' ');
-			} else if (c == '\r') {
-				out.add(' ');
-			} else {
-				out.add(c);
-			}
-		}
-		Character[] array = out.toArray(new Character[0]);
-		return ArrayUtils.toPrimitive(array);
+		return line.getTextToPaint();
 	}
 
 	/**
@@ -414,24 +391,30 @@ public class SyntaxDocument {
 	// Save / Load
 
 	public void setText(String text) {
+		isReady = false;
+
 		long t1 = System.currentTimeMillis();
 		System.out.println("Start loading file");
+		
+		try {			
+			lines.clear();
+			String[] split = text.split("\n");
+			for (int i = 0; i < split.length; i++) {
+				Line l = new Line();
+				l.setText(split[i].toCharArray());
+				l.setOffset(0);
+				lines.add(l);
+			}
+			firstVisibleRow = 0;
+			firstVisibleCol = 0;
+			curLineIndex = 0;
+			selection.clear();
 
-		lines.clear();
-		String[] split = text.split("\n");
-		for (int i = 0; i < split.length; i++) {
-			Line l = new Line();
-			l.setText(split[i].toCharArray());
-			l.setOffset(0);
-			lines.add(l);
-		}
-		firstVisibleRow = 0;
-		firstVisibleCol = 0;
-		curLineIndex = 0;
-		selection.clear();
-
-		if (language != Language.PLAIN_TEXT) {
-			recalcTokens(0, split.length);
+			if (language != Language.PLAIN_TEXT) {
+				recalcTokens(0, split.length);
+			}
+		} finally {
+			isReady = true;
 		}
 
 		long t3 = System.currentTimeMillis();
@@ -453,12 +436,9 @@ public class SyntaxDocument {
 				prevState = getLineByIndex(i - 1).getLastTokenState();
 			}
 			Line l = getLineByIndex(i);
-			Tokenizer tokenizer = tokenizerFactory.createTokenizer(getLanguage(), l.getText(), prevState);
 			List<Token> tokens = new ArrayList<>();
-			int newState = tokenCalculator.readTokens(tokens, tokenizer);
-			if (newState == JavaTokenizer.STRING || newState == JavaTokenizer.CHARLITERAL) {
-				newState = JavaTokenizer.YYINITIAL;
-			}
+			int newState = tokenCalculator.readTokens(tokens, l, language, prevState);
+
 			l.setTokens(tokens);
 			int oldState = l.getLastTokenState();
 			l.setLastTokenState(newState);
@@ -485,4 +465,11 @@ public class SyntaxDocument {
 		return sb.toString();
 	}
 
+	/**
+	 * 
+	 * @return {@code true} if can paint document, {@code false} - otherwise  
+	 */
+	public boolean isReady() {
+		return isReady;
+	}
 }

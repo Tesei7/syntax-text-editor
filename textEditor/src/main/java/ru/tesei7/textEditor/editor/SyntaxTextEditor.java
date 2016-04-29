@@ -290,5 +290,9 @@ public class SyntaxTextEditor extends JPanel {
 	SyntaxDocumentPainter getDocumentPainter() {
 		return documentPainter;
 	}
+	
+	SyntaxDocument getDocument() {
+		return document;
+	}
 
 }

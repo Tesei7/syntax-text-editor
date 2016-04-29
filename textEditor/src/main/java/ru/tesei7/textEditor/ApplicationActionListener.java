@@ -71,10 +71,10 @@ public class ApplicationActionListener implements ActionListener {
 	void open() {
 		LoadedFile loadFile = saveLoadFileService.loadFile(app.contentPane);
 		app.loadFile = loadFile;
-		changeTitle();
 		if (app.loadFile != null) {
 			Language language = getLanguage(app.loadFile.getExtension());
-			app.textArea.setText(app.loadFile.getData(), language);
+			new ProgressDialog(app.frame, "Loading file...",  () -> app.textArea.setText(app.loadFile.getData(), language));
+			changeTitle();
 			app.selectSyntaxMenuItem(language);
 		}
 	}

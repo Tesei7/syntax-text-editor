@@ -50,7 +50,7 @@ public class SyntaxTextPanel extends JPanel
 		setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		initCaretBlinker();
 	}
-	
+
 	private void initCaretBlinker() {
 		Timer timer = new Timer(SyntaxTextEditor.CARET_BLINK_PERIOD, new ActionListener() {
 			@Override
@@ -68,16 +68,18 @@ public class SyntaxTextPanel extends JPanel
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		editor.getCaretPainter().paintBackground(g);
-		editor.getDocumentPainter().paint(g, editor.getLanguage());
-		editor.getCaretPainter().paintCaret(g, caretVisible);
+		if (editor.getDocument().isReady()) {
+			editor.getCaretPainter().paintBackground(g);
+			editor.getDocumentPainter().paint(g, editor.getLanguage());
+			editor.getCaretPainter().paintCaret(g, caretVisible);
+		}
 	}
 
 	private void freezeCaretAndRepaint() {
 		freezeCaret();
 		repaint();
 	}
-	
+
 	/**
 	 * Blink caret
 	 */
