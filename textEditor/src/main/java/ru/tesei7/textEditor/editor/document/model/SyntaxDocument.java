@@ -456,10 +456,13 @@ public class SyntaxDocument {
 			Tokenizer tokenizer = tokenizerFactory.createTokenizer(getLanguage(), l.getText(), prevState);
 			List<Token> tokens = new ArrayList<>();
 			int newState = tokenCalculator.readTokens(tokens, tokenizer);
+			if (newState == JavaTokenizer.STRING || newState == JavaTokenizer.CHARLITERAL) {
+				newState = JavaTokenizer.YYINITIAL;
+			}
 			l.setTokens(tokens);
 			int oldState = l.getLastTokenState();
 			l.setLastTokenState(newState);
-			
+
 			// recalculate multiline tokens till the end
 			boolean isLastRecalculatedLine = i == firstLineIndex + lines - 1;
 			if (newState != oldState && isLastRecalculatedLine) {

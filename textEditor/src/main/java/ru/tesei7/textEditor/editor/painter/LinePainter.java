@@ -85,7 +85,10 @@ public class LinePainter {
 		case TokenTypes.IDENTIFIER:
 			return Colors.IDENTIFIER;
 		case TokenTypes.STRING_LITERAL:
+		case TokenTypes.CHARACTER_LITERAL:
 			return Colors.STRING_LITERAL;
+		case TokenTypes.ANNOTATION:
+			return Colors.ANNOTATION;
 		default:
 			return Colors.DEFAULT_TEXT;
 		}

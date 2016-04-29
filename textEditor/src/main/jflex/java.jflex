@@ -41,6 +41,7 @@ MultilineCommentEnd = "*/"
 
 /* identifiers */
 Identifier = [:jletter:][:jletterdigit:]*
+Annotation = "@"{Identifier}
 
 /* integer literals */
 DecIntegerLiteral = 0 | [1-9][0-9]*
@@ -98,7 +99,8 @@ SingleCharacter = [^\r\n\'\\]
   "import"    |     
   "instanceof"|     
   "int"       |     
-  "interface" |     
+  "interface" | 
+  "@interface"|     
   "long"      |     
   "native"    |     
   "new"       | 
@@ -183,7 +185,7 @@ SingleCharacter = [^\r\n\'\\]
   \"                             { yybegin(STRING); return symbol(STRING_LITERAL); }
 
   /* character literal */
-  \'                             { yybegin(CHARLITERAL); }
+  \'                             { yybegin(CHARLITERAL); return symbol(CHARACTER_LITERAL); }
 
   /* numeric literals */
 
@@ -213,6 +215,7 @@ SingleCharacter = [^\r\n\'\\]
 
   /* identifiers */ 
   {Identifier}                   { return symbol(IDENTIFIER); }  
+  {Annotation}                   { return symbol(ANNOTATION); }
 }
 
 <COMMENT> {
@@ -226,7 +229,7 @@ SingleCharacter = [^\r\n\'\\]
   \*                             { return symbol(COMMENT_MULTI); }
   
   /* error cases */
-  \\.                            { throw new RuntimeException("Illegal escape sequence \""+yytext()+"\""); }
+  \\.                            { return symbol(OTHER); }
 }
 
 <STRING> {
@@ -246,30 +249,30 @@ SingleCharacter = [^\r\n\'\\]
   {LineTerminator}                { yybegin(YYINITIAL); } 
   
   /* error cases */
-  \\.                            { throw new RuntimeException("Illegal escape sequence \""+yytext()+"\""); }
+  \\.                            { return symbol(OTHER); }
   
 }
 
 <CHARLITERAL> {
-  {SingleCharacter}\'            { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, yytext().charAt(0)); }
+  \'                             { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL); }
+  
+  {SingleCharacter}+             { return symbol(STRING_LITERAL); }
   
   /* escape sequences */
-  "\\b"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\b');}
-  "\\t"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\t');}
-  "\\n"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\n');}
-  "\\f"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\f');}
-  "\\r"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\r');}
-  "\\\""\'                       { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\"');}
-  "\\'"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\'');}
-  "\\\\"\'                       { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\\'); }
-  \\[0-3]?{OctDigit}?{OctDigit}\' { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL); }
+  "\\b"\'    |                    
+  "\\t"\'    |                    
+  "\\n"\'    |                    
+  "\\f"\'    |                    
+  "\\r"\'    |                    
+  "\\\""\'   |                    
+  "\\'"\'    |                    
+  "\\\\"\'                       { return symbol(CHARACTER_LITERAL); }
+  {LineTerminator}               { yybegin(YYINITIAL); }  
   
   /* error cases */
-  \\.                            { throw new RuntimeException("Illegal escape sequence \""+yytext()+"\""); }
-  {LineTerminator}               { throw new RuntimeException("Unterminated character literal at end of line"); }
+  \\.                            { return symbol(OTHER); }
 }
 
 /* error fallback */
-[^]                              { throw new RuntimeException("Illegal character \""+yytext()+
-                                                              "\" at line "+yyline+", column "+yycolumn); }
+[^]                              { return symbol(OTHER); }
 <<EOF>>                          { return symbol(EOF); }
