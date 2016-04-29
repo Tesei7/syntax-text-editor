@@ -17,19 +17,35 @@ public class TextSelection {
 		endLine = null;
 		endOffset = null;
 	}
-	
+
+	Integer _getStartLine() {
+		return startLine;
+	}
+
+	Integer _getEndLine() {
+		return endLine;
+	}
+
+	void _setStartLine(Integer startLine) {
+		this.startLine = startLine;
+	}
+
+	void _setEndLine(Integer endLine) {
+		this.endLine = endLine;
+	}
+
 	public void setStartLine(Integer startLine) {
 		this.startLine = document.getCorrectLineIndex(startLine);
 	}
-	
+
 	public void setEndLine(Integer endLine) {
 		this.endLine = document.getCorrectLineIndex(endLine);
 	}
-	
+
 	public void setStartOffset(Integer startOffset) {
 		this.startOffset = startOffset;
 	}
-	
+
 	public void setEndOffset(Integer endOffset) {
 		this.endOffset = endOffset;
 	}
@@ -49,11 +65,11 @@ public class TextSelection {
 	public Integer getLineTo() {
 		return isReversedLines() ? startLine : endLine;
 	}
-	
+
 	public Integer getOffsetFrom() {
 		return isReversed() ? endOffset : startOffset;
 	}
-	
+
 	public Integer getOffsetTo() {
 		return isReversed() ? startOffset : endOffset;
 	}
@@ -79,7 +95,7 @@ public class TextSelection {
 		}
 		return isReversedLines() || (startLine.equals(endLine) && getStartOffsetToPaint(l) > getEndOffsetToPaint(l));
 	}
-	
+
 	boolean isReversed() {
 		return isReversedLines() || (startLine.equals(endLine) && startOffset > endOffset);
 	}
