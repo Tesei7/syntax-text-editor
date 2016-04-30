@@ -47,6 +47,10 @@ HexDigit          = [0-9a-fA-F]
 OctIntegerLiteral = 0+ [1-3]? {OctDigit} {1,15}
 OctLongLiteral    = 0+ 1? {OctDigit} {1,21} [lL]
 OctDigit          = [0-7]
+
+BinaryIntegerLiteral = 0 [bB] {BinaryDigit} {1,31}
+BinaryLongLiteral    = 0 [bB] {BinaryDigit} {1,63} [lL]
+BinaryDigit          = [0-1]
     
 /* floating point literals */        
 FloatLiteral  = ({FLit1}|{FLit2}|{FLit3}) {Exponent}? [fF]
@@ -58,9 +62,9 @@ FLit3    = [0-9]+
 Exponent = [eE] [+-]? [0-9]+
 
 /* string and character literals */
-StringCharacter = [^\r\n\"\\]
+StringCharacter = [^\r\n\"]
 CommentCharacter = [^\r\n*]
-SingleCharacter = [^\r\n\'\\]
+SingleCharacter = [^\r\n\']
 
 %state STRING, CHARLITERAL, COMMENT
 
@@ -161,7 +165,8 @@ SingleCharacter = [^\r\n\'\\]
   "%"  |                  
   "<<" |                  
   ">>" |                  
-  ">>>"|                  
+  ">>>"|     
+  "->" |                  
   "+=" |                  
   "-=" |                  
   "*=" |                  
@@ -194,6 +199,9 @@ SingleCharacter = [^\r\n\'\\]
  
   {OctIntegerLiteral}            { return token(INTEGER_LITERAL); }  
   {OctLongLiteral}               { return token(INTEGER_LITERAL); }
+  
+  {BinaryIntegerLiteral}         { return token(INTEGER_LITERAL); }
+  {BinaryLongLiteral}            { return token(INTEGER_LITERAL); }
   
   {FloatLiteral}                 { return token(FLOATING_POINT_LITERAL); }
   {DoubleLiteral}                { return token(FLOATING_POINT_LITERAL); }
@@ -230,40 +238,22 @@ SingleCharacter = [^\r\n\'\\]
   
   {StringCharacter}+             { return token(STRING_LITERAL); }
   
-  /* escape sequences */
-  "\\b"   |                       
-  "\\t"   |                       
-  "\\n"   |                       
-  "\\f"   |                       
-  "\\r"   |                       
-  "\\\""  |                       
-  "\\'"   |                       
-  "\\\\"                          { return token(STRING_LITERAL); }
   {LineTerminator}                { yybegin(YYINITIAL); } 
   
   /* error cases */
-  \\.                            { return token(OTHER); }
+  \\.                            { return token(STRING_LITERAL); }
   
 }
 
 <CHARLITERAL> {
   \'                             { yybegin(YYINITIAL); return token(CHARACTER_LITERAL); }
   
-  {SingleCharacter}+             { return token(STRING_LITERAL); }
+  {SingleCharacter}+             { return token(CHARACTER_LITERAL); }
   
-  /* escape sequences */
-  "\\b"\'    |                    
-  "\\t"\'    |                    
-  "\\n"\'    |                    
-  "\\f"\'    |                    
-  "\\r"\'    |                    
-  "\\\""\'   |                    
-  "\\'"\'    |                    
-  "\\\\"\'                       { return token(CHARACTER_LITERAL); }
   {LineTerminator}               { yybegin(YYINITIAL); }  
   
   /* error cases */
-  \\.                            { return token(OTHER); }
+  \\.                            { return token(CHARACTER_LITERAL); }
 }
 
 /* error fallback */

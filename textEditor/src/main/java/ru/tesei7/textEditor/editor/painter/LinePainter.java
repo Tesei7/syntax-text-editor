@@ -83,6 +83,9 @@ public class LinePainter {
 			return Colors.STRING_LITERAL;
 		case TokenTypes.ANNOTATION:
 			return Colors.ANNOTATION;
+		case TokenTypes.INTEGER_LITERAL:
+		case TokenTypes.FLOATING_POINT_LITERAL:
+			return Colors.NUMBER_LITERAL;
 		default:
 			return Colors.DEFAULT_TEXT;
 		}
