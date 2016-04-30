@@ -53,9 +53,13 @@ public class Line {
 	 * @return line length considering tab indents
 	 */
 	public int getLengthToPaint() {
+		return getLengthTabReplaced(text);
+	}
+
+	private int getLengthTabReplaced(char[] chars) {
 		int l = 0;
-		for (int i = 0; i < text.length; i++) {
-			if (text[i] == '\t') {
+		for (int i = 0; i < chars.length; i++) {
+			if (chars[i] == '\t') {
 				l += SyntaxTextEditor.TAB_INDENT;
 			} else {
 				l++;
@@ -65,21 +69,25 @@ public class Line {
 	}
 
 	public char[] getTextToPaint() {
-		char[] chars = new char[getLengthToPaint()];
+		return getCharsTabReplaced(text);
+	}
+
+	public char[] getCharsTabReplaced(char[] chars) {
+		char[] charsReplaced = new char[getLengthTabReplaced(chars)];
 		int x = 0;
-		for (int i = 0; i < text.length; i++) {
-			if (text[i] == '\t') {
-				chars[x++] = ' ';
-				chars[x++] = ' ';
-				chars[x++] = ' ';
-				chars[x++] = ' ';
-			} else if (text[i] == '\r' || text[i] == '\f' || text[i] == '\b' || text[i] == '\n') {
-				chars[x++] = ' ';
+		for (int i = 0; i < chars.length; i++) {
+			if (chars[i] == '\t') {
+				charsReplaced[x++] = ' ';
+				charsReplaced[x++] = ' ';
+				charsReplaced[x++] = ' ';
+				charsReplaced[x++] = ' ';
+			} else if (chars[i] == '\r' || chars[i] == '\f' || chars[i] == '\b' || chars[i] == '\n') {
+				charsReplaced[x++] = ' ';
 			} else {
-				chars[x++] = text[i];
+				charsReplaced[x++] = chars[i];
 			}
 		}
-		return chars;
+		return charsReplaced;
 	}
 
 	char[] toArray(List<Character> list) {
@@ -228,6 +236,19 @@ public class Line {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Get chars in token
+	 * 
+	 * @param t
+	 *            token
+	 * @return chars in token
+	 */
+	public char[] getChars(Token t) {
+		char[] chars = new char[t.getLength()];
+		System.arraycopy(text, t.getOffset(), chars, 0, t.getLength());
+		return getCharsTabReplaced(chars);
 	}
 
 	// Other

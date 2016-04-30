@@ -10,6 +10,7 @@ import java.util.List;
 import ru.tesei7.textEditor.editor.FontProperties;
 import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
+import ru.tesei7.textEditor.editor.syntax.Token;
 import ru.tesei7.textEditor.editor.syntax.TokenTypes;
 import ru.tesei7.textEditor.editor.utils.Colors;
 import ru.tesei7.textEditor.editor.utils.Fonts;
@@ -32,7 +33,7 @@ public class LinePainter {
 
 	public void paintLine(Graphics g, Line line, int y, FontProperties fp, SyntaxDocument document) {
 		int firstVisibleCol = document.getFirstVisibleCol();
-		List<StyledText> styledText = getStyledText(line.getTokens());
+		List<StyledText> styledText = getStyledText(line, line.getTokens());
 		int x = 0;
 		for (int i = 0; i < styledText.size(); i++) {
 			StyledText st = styledText.get(i);
@@ -54,25 +55,18 @@ public class LinePainter {
 		}
 	}
 
-	private List<StyledText> getStyledText(List<ru.tesei7.textEditor.editor.syntax.Token> tokens) {
+	private List<StyledText> getStyledText(Line line, List<Token> tokens) {
 		List<StyledText> list = new ArrayList<StyledText>();
 		if (tokens == null) {
 			return list;
 		}
-		int offset = 0;
-		
-		for (ru.tesei7.textEditor.editor.syntax.Token t : tokens) {
+		for (Token t : tokens) {
 			Color color = getColor(t.getType());
 			Font font = getFont(t.getType());
-			char[] text = getChars(t);
-			list.add(new StyledText(text, offset, font, color));
-			offset += text.length;
+			char[] text = line.getChars(t);
+			list.add(new StyledText(text, t.getOffset(), font, color));
 		}
 		return list;
-	}
-
-	private char[] getChars(ru.tesei7.textEditor.editor.syntax.Token token) {
-		return token.getText().replaceAll("\t", "    ").toCharArray();
 	}
 
 	private Color getColor(int type) {

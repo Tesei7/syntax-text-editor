@@ -887,13 +887,10 @@ public class JavaTokenizer implements TokenTypes, Tokenizer {
   private int zzFinalHighSurrogate = 0;
 
   /* user code: */
-	public TokenImpl symbol(int type) {
-		return new TokenImpl(type, yytext(), yychar);
+	public Token token(int type) {
+		return new TokenImpl(type, yychar, yytext().length());
 	}
 	
-	public TokenImpl symbol(int type, String s) {
-		return new TokenImpl(type, s, yychar);
-	}
 
 
   /**
@@ -1126,7 +1123,7 @@ public class JavaTokenizer implements TokenTypes, Tokenizer {
    * @return      the next token
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
-  public TokenImpl yylex() throws java.io.IOException {
+  public Token yylex() throws java.io.IOException {
     int zzInput;
     int zzAction;
 
@@ -1209,77 +1206,77 @@ public class JavaTokenizer implements TokenTypes, Tokenizer {
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
               {
-                return symbol(EOF);
+                return token(EOF);
               }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { return symbol(OTHER);
+            { return token(OTHER);
             }
           case 30: break;
           case 2: 
-            { return symbol(WHITESPACE);
+            { return token(WHITESPACE);
             }
           case 31: break;
           case 3: 
-            { return symbol(OPERATOR);
+            { return token(OPERATOR);
             }
           case 32: break;
           case 4: 
-            { return symbol(IDENTIFIER);
+            { return token(IDENTIFIER);
             }
           case 33: break;
           case 5: 
-            { return symbol(INTEGER_LITERAL);
+            { return token(INTEGER_LITERAL);
             }
           case 34: break;
           case 6: 
-            { return symbol(DOT);
+            { return token(DOT);
             }
           case 35: break;
           case 7: 
-            { yybegin(STRING); return symbol(STRING_LITERAL);
+            { yybegin(STRING); return token(STRING_LITERAL);
             }
           case 36: break;
           case 8: 
-            { yybegin(CHARLITERAL); return symbol(CHARACTER_LITERAL);
+            { yybegin(CHARLITERAL); return token(CHARACTER_LITERAL);
             }
           case 37: break;
           case 9: 
-            { return symbol(LPAREN);
+            { return token(LPAREN);
             }
           case 38: break;
           case 10: 
-            { return symbol(RPAREN);
+            { return token(RPAREN);
             }
           case 39: break;
           case 11: 
-            { return symbol(LBRACE);
+            { return token(LBRACE);
             }
           case 40: break;
           case 12: 
-            { return symbol(RBRACE);
+            { return token(RBRACE);
             }
           case 41: break;
           case 13: 
-            { return symbol(LBRACK);
+            { return token(LBRACK);
             }
           case 42: break;
           case 14: 
-            { return symbol(RBRACK);
+            { return token(RBRACK);
             }
           case 43: break;
           case 15: 
-            { return symbol(SEMICOLON);
+            { return token(SEMICOLON);
             }
           case 44: break;
           case 16: 
-            { return symbol(COMMA);
+            { return token(COMMA);
             }
           case 45: break;
           case 17: 
-            { return symbol(STRING_LITERAL);
+            { return token(STRING_LITERAL);
             }
           case 46: break;
           case 18: 
@@ -1287,47 +1284,47 @@ public class JavaTokenizer implements TokenTypes, Tokenizer {
             }
           case 47: break;
           case 19: 
-            { yybegin(YYINITIAL); return symbol(STRING_LITERAL);
+            { yybegin(YYINITIAL); return token(STRING_LITERAL);
             }
           case 48: break;
           case 20: 
-            { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL);
+            { yybegin(YYINITIAL); return token(CHARACTER_LITERAL);
             }
           case 49: break;
           case 21: 
-            { return symbol(COMMENT_MULTI);
+            { return token(COMMENT_MULTI);
             }
           case 50: break;
           case 22: 
-            { return symbol(COMMENT_EOL);
+            { return token(COMMENT_EOL);
             }
           case 51: break;
           case 23: 
-            { yybegin(COMMENT); return symbol(COMMENT_MULTI);
+            { yybegin(COMMENT); return token(COMMENT_MULTI);
             }
           case 52: break;
           case 24: 
-            { return symbol(ANNOTATION);
+            { return token(ANNOTATION);
             }
           case 53: break;
           case 25: 
-            { return symbol(FLOATING_POINT_LITERAL);
+            { return token(FLOATING_POINT_LITERAL);
             }
           case 54: break;
           case 26: 
-            { return symbol(KEYWORD);
+            { return token(KEYWORD);
             }
           case 55: break;
           case 27: 
-            { yybegin(YYINITIAL); return symbol(COMMENT_MULTI);
+            { yybegin(YYINITIAL); return token(COMMENT_MULTI);
             }
           case 56: break;
           case 28: 
-            { return symbol(CHARACTER_LITERAL);
+            { return token(CHARACTER_LITERAL);
             }
           case 57: break;
           case 29: 
-            { return symbol(BOOLEAN_LITERAL);
+            { return token(BOOLEAN_LITERAL);
             }
           case 58: break;
           default:

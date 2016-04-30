@@ -10,17 +10,14 @@ import ru.tesei7.textEditor.editor.syntax.*;
 %implements Tokenizer
 %unicode
 %char
-%type TokenImpl
+%type Token
 
 
 %{
-	public TokenImpl symbol(int type) {
-		return new TokenImpl(type, yytext(), yychar);
+	public Token token(int type) {
+		return new TokenImpl(type, yychar, yytext().length());
 	}
 	
-	public TokenImpl symbol(int type, String s) {
-		return new TokenImpl(type, s, yychar);
-	}
 %}
 
 /* main character classes */
@@ -121,22 +118,22 @@ SingleCharacter = [^\r\n\'\\]
   "throws"      |        
   "try"         |        
   "volatile"    |        
-  "strictfp"                     { return symbol(KEYWORD); }
+  "strictfp"                     { return token(KEYWORD); }
 
   /* boolean literals */
-  "true"                         { return symbol(BOOLEAN_LITERAL); }
-  "false"                        { return symbol(BOOLEAN_LITERAL); }
+  "true"                         { return token(BOOLEAN_LITERAL); }
+  "false"                        { return token(BOOLEAN_LITERAL); }
   
   /* separators */
-  "("                            { return symbol(LPAREN); }
-  ")"                            { return symbol(RPAREN); }
-  "{"                            { return symbol(LBRACE); }
-  "}"                            { return symbol(RBRACE); }
-  "["                            { return symbol(LBRACK); }
-  "]"                            { return symbol(RBRACK); }
-  ";"                            { return symbol(SEMICOLON); }
-  ","                            { return symbol(COMMA); }
-  "."                            { return symbol(DOT); }
+  "("                            { return token(LPAREN); }
+  ")"                            { return token(RPAREN); }
+  "{"                            { return token(LBRACE); }
+  "}"                            { return token(RBRACE); }
+  "["                            { return token(LBRACK); }
+  "]"                            { return token(RBRACK); }
+  ";"                            { return token(SEMICOLON); }
+  ","                            { return token(COMMA); }
+  "."                            { return token(DOT); }
   
   /* operators */
   "="|                           
@@ -175,63 +172,63 @@ SingleCharacter = [^\r\n\'\\]
   "%=" |                  
   "<<=" |                 
   ">>=" |                 
-  ">>>="                         { return symbol(OPERATOR); }
+  ">>>="                         { return token(OPERATOR); }
   
   /* string literal */
-  \"                             { yybegin(STRING); return symbol(STRING_LITERAL); }
+  \"                             { yybegin(STRING); return token(STRING_LITERAL); }
 
   /* character literal */
-  \'                             { yybegin(CHARLITERAL); return symbol(CHARACTER_LITERAL); }
+  \'                             { yybegin(CHARLITERAL); return token(CHARACTER_LITERAL); }
 
   /* numeric literals */
 
   /* This is matched together with the minus, because the number is too big to 
      be represented by a positive integer. */
-  "-2147483648"                  { return symbol(INTEGER_LITERAL); }
+  "-2147483648"                  { return token(INTEGER_LITERAL); }
   
-  {DecIntegerLiteral}            { return symbol(INTEGER_LITERAL); }
-  {DecLongLiteral}               { return symbol(INTEGER_LITERAL); }
+  {DecIntegerLiteral}            { return token(INTEGER_LITERAL); }
+  {DecLongLiteral}               { return token(INTEGER_LITERAL); }
   
-  {HexIntegerLiteral}            { return symbol(INTEGER_LITERAL); }
-  {HexLongLiteral}               { return symbol(INTEGER_LITERAL); }
+  {HexIntegerLiteral}            { return token(INTEGER_LITERAL); }
+  {HexLongLiteral}               { return token(INTEGER_LITERAL); }
  
-  {OctIntegerLiteral}            { return symbol(INTEGER_LITERAL); }  
-  {OctLongLiteral}               { return symbol(INTEGER_LITERAL); }
+  {OctIntegerLiteral}            { return token(INTEGER_LITERAL); }  
+  {OctLongLiteral}               { return token(INTEGER_LITERAL); }
   
-  {FloatLiteral}                 { return symbol(FLOATING_POINT_LITERAL); }
-  {DoubleLiteral}                { return symbol(FLOATING_POINT_LITERAL); }
-  {DoubleLiteral}[dD]            { return symbol(FLOATING_POINT_LITERAL); }
+  {FloatLiteral}                 { return token(FLOATING_POINT_LITERAL); }
+  {DoubleLiteral}                { return token(FLOATING_POINT_LITERAL); }
+  {DoubleLiteral}[dD]            { return token(FLOATING_POINT_LITERAL); }
   
   /* comments */
-  {EndOfLineComment}             { return symbol(COMMENT_EOL); }
-  {MultilineCommentBegin}        { yybegin(COMMENT); return symbol(COMMENT_MULTI); }
+  {EndOfLineComment}             { return token(COMMENT_EOL); }
+  {MultilineCommentBegin}        { yybegin(COMMENT); return token(COMMENT_MULTI); }
 
   /* whitespace */
-  {WhiteSpace}                   { return symbol(WHITESPACE); }
+  {WhiteSpace}                   { return token(WHITESPACE); }
 
   /* identifiers */ 
-  {Identifier}                   { return symbol(IDENTIFIER); }  
-  {Annotation}                   { return symbol(ANNOTATION); }
+  {Identifier}                   { return token(IDENTIFIER); }  
+  {Annotation}                   { return token(ANNOTATION); }
 }
 
 <COMMENT> {
 
-  {MultilineCommentEnd}          { yybegin(YYINITIAL); return symbol(COMMENT_MULTI); }
+  {MultilineCommentEnd}          { yybegin(YYINITIAL); return token(COMMENT_MULTI); }
 
-  {LineTerminator}               { return symbol(COMMENT_MULTI); }               
+  {LineTerminator}               { return token(COMMENT_MULTI); }               
 
-  {CommentCharacter}+            { return symbol(COMMENT_MULTI); }
+  {CommentCharacter}+            { return token(COMMENT_MULTI); }
   
-  \*                             { return symbol(COMMENT_MULTI); }
+  \*                             { return token(COMMENT_MULTI); }
   
   /* error cases */
-  \\.                            { return symbol(OTHER); }
+  \\.                            { return token(OTHER); }
 }
 
 <STRING> {
-  \"                             { yybegin(YYINITIAL); return symbol(STRING_LITERAL); }
+  \"                             { yybegin(YYINITIAL); return token(STRING_LITERAL); }
   
-  {StringCharacter}+             { return symbol(STRING_LITERAL); }
+  {StringCharacter}+             { return token(STRING_LITERAL); }
   
   /* escape sequences */
   "\\b"   |                       
@@ -241,18 +238,18 @@ SingleCharacter = [^\r\n\'\\]
   "\\r"   |                       
   "\\\""  |                       
   "\\'"   |                       
-  "\\\\"                          { return symbol(STRING_LITERAL); }
+  "\\\\"                          { return token(STRING_LITERAL); }
   {LineTerminator}                { yybegin(YYINITIAL); } 
   
   /* error cases */
-  \\.                            { return symbol(OTHER); }
+  \\.                            { return token(OTHER); }
   
 }
 
 <CHARLITERAL> {
-  \'                             { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL); }
+  \'                             { yybegin(YYINITIAL); return token(CHARACTER_LITERAL); }
   
-  {SingleCharacter}+             { return symbol(STRING_LITERAL); }
+  {SingleCharacter}+             { return token(STRING_LITERAL); }
   
   /* escape sequences */
   "\\b"\'    |                    
@@ -262,13 +259,13 @@ SingleCharacter = [^\r\n\'\\]
   "\\r"\'    |                    
   "\\\""\'   |                    
   "\\'"\'    |                    
-  "\\\\"\'                       { return symbol(CHARACTER_LITERAL); }
+  "\\\\"\'                       { return token(CHARACTER_LITERAL); }
   {LineTerminator}               { yybegin(YYINITIAL); }  
   
   /* error cases */
-  \\.                            { return symbol(OTHER); }
+  \\.                            { return token(OTHER); }
 }
 
 /* error fallback */
-[^]                              { return symbol(OTHER); }
-<<EOF>>                          { return symbol(EOF); }
+[^]                              { return token(OTHER); }
+<<EOF>>                          { return token(EOF); }
