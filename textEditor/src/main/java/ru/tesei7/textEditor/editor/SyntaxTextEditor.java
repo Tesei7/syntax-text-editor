@@ -267,6 +267,18 @@ public class SyntaxTextEditor extends JPanel {
 		recalcSize();
 		textPanel.repaint();
 	}
+	
+	public int getMaxCols(){
+		return document.getMaxCols();
+	}
+	
+	public void setMaxCols(int maxCols){
+		document.setMaxCols(maxCols);
+		
+		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
+		caretObservable.notifyListeners(new SyntaxCaretEvent());
+		textPanel.repaint();
+	}
 
 	public void setTextAreaSize(Dimension size) {
 		int rows = (size.height - 87) / fontProperties.getLineHeight();
