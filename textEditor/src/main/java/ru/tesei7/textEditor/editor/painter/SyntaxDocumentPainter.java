@@ -68,11 +68,13 @@ public class SyntaxDocumentPainter {
 			Line line = lines.get(i);
 			switch (language) {
 			case PLAIN_TEXT:
-				int length = Math.max(0, line.getLengthToPaint() - document.getFirstVisibleCol());
-				int offset = Math.min(length, document.getFirstVisibleCol());
+				char[] textToPaint = line.getTextToPaint();
+				int length = Math.max(0, textToPaint.length - document.getFirstVisibleCol());
+				int offset = Math.min(textToPaint.length, document.getFirstVisibleCol());
 				g.setFont(Fonts.DEFAULT);
 				g.setColor(Colors.DEFAULT_TEXT);				
-				g.drawChars(line.getTextToPaint(), offset, length, 0, y);
+				
+				g.drawChars(textToPaint, offset, length, 0, y);
 				break;
 			default:
 				linePainter.paintLine(g, line, y, fontProperties, document);

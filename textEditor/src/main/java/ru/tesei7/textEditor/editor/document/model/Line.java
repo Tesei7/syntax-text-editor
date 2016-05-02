@@ -15,9 +15,26 @@ import ru.tesei7.textEditor.editor.syntax.Token;
  *
  */
 public class Line {
+	/**
+	 * Chars line consists of
+	 */
 	private char[] text = new char[0];
+	/**
+	 * Current caret position in line
+	 */
 	private int offset;
+	/**
+	 * Columns need to show this line (considering tab indents).
+	 * lengthToPaint cached for performance reasons.
+	 */
+	private int lengthToPaint = 0;
+	/**
+	 * State of lexical analyzer at the end of this line
+	 */
 	private int lastTokenState = 0;
+	/**
+	 * Tokens, this line include
+	 */
 	private List<Token> tokens;
 
 	public Line() {
@@ -40,8 +57,13 @@ public class Line {
 	}
 
 	public void setText(char[] text) {
-		this.text = text;
+		setTextInner(text);
 		offset = text.length;
+	}
+
+	private void setTextInner(char[] text) {
+		this.text = text;
+		recalcLenghtToPaint();
 	}
 
 	public int getLength() {
@@ -53,7 +75,14 @@ public class Line {
 	 * @return line length considering tab indents
 	 */
 	public int getLengthToPaint() {
-		return getLengthTabReplaced(text);
+		return lengthToPaint;
+	}
+
+	/**
+	 * Recalculates {@link lengthToPaint}. Should be run after each change of filed {@link text}
+	 */
+	private void recalcLenghtToPaint() {
+		lengthToPaint = getLengthTabReplaced(text);
 	}
 
 	private int getLengthTabReplaced(char[] chars) {
@@ -162,7 +191,7 @@ public class Line {
 	public void printChar(char c) {
 		List<Character> list = toList(text);
 		list.add(offset, c);
-		text = toArray(list);
+		setTextInner(toArray(list));
 		offset++;
 	}
 
@@ -170,7 +199,7 @@ public class Line {
 		List<Character> textList = toList(text);
 		List<Character> list = toList(chars);
 		textList.addAll(offset, list);
-		text = toArray(textList);
+		setTextInner(toArray(textList));
 		offset += chars.length;
 	}
 
@@ -179,6 +208,7 @@ public class Line {
 			printChar(c);
 		} else {
 			text[offset] = c;
+			setTextInner(text);
 			offset++;
 		}
 	}
@@ -189,7 +219,7 @@ public class Line {
 		}
 		List<Character> list = toList(text);
 		list.remove(offset);
-		text = toArray(list);
+		setTextInner(toArray(list));
 	}
 
 	public void backspace() {
@@ -198,7 +228,7 @@ public class Line {
 		}
 		List<Character> list = toList(text);
 		list.remove(offset - 1);
-		text = toArray(list);
+		setTextInner(toArray(list));
 		offset--;
 	}
 
