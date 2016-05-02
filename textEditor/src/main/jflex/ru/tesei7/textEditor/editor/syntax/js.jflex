@@ -1,7 +1,5 @@
 package ru.tesei7.textEditor.editor.syntax;
 
-import ru.tesei7.textEditor.editor.syntax.*;
-
 %%
 
 %public
