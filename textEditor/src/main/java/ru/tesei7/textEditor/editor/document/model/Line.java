@@ -212,11 +212,11 @@ public class Line {
 		this.lastTokenState = lastTokenState;
 	}
 
-	public void setTokens(List<ru.tesei7.textEditor.editor.syntax.Token> tokens) {
+	public void setTokens(List<Token> tokens) {
 		this.tokens = tokens;
 	}
 
-	public List<ru.tesei7.textEditor.editor.syntax.Token> getTokens() {
+	public List<Token> getTokens() {
 		return tokens;
 	}
 

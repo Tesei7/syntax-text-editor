@@ -5,12 +5,15 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
@@ -21,10 +24,10 @@ import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 public class Application {
 	static final String TITLE = "Syntax Text Editor";
 
-	JPanel contentPane;
-	SyntaxTextEditor textArea;
-	JFrame frame;
-	LoadedFile loadFile;
+	private JPanel contentPane;
+	private SyntaxTextEditor textArea;
+	private JFrame frame;
+	private LoadedFile loadFile;
 	private ApplicationActionListener actionListener;
 
 	private JRadioButtonMenuItem plainTextMenuItem;
@@ -33,7 +36,23 @@ public class Application {
 
 	public void createAndShowGUI() {
 		frame = new JFrame(TITLE + " - New Document");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent we) {
+				if (!textArea.isDirty()) {
+					System.exit(0);
+				} else {
+					String ObjButtons[] = { "Yes", "No" };
+					String message = "Exit and loose unsaved changes?";
+					int PromptResult = JOptionPane.showOptionDialog(null, message, TITLE, JOptionPane.DEFAULT_OPTION,
+							JOptionPane.WARNING_MESSAGE, null, ObjButtons, ObjButtons[1]);
+					if (PromptResult == JOptionPane.YES_OPTION) {
+						System.exit(0);
+					}
+				}
+			}
+		});
 		frame.setLayout(new FlowLayout());
 
 		// Create and set up the content pane.
@@ -44,6 +63,15 @@ public class Application {
 		frame.setLocationRelativeTo(null);
 
 		frame.addComponentListener(new ResizeListener(textArea));
+	}
+
+	public Container createContentPane() {
+		contentPane = new JPanel(new BorderLayout());
+		contentPane.setOpaque(true);
+		textArea = new SyntaxTextEditor();
+		textArea.addDirtyStateListener((e) -> changeTitle());
+		contentPane.add(textArea, BorderLayout.CENTER);
+		return contentPane;
 	}
 
 	public JMenuBar createMenuBar() {
@@ -122,8 +150,8 @@ public class Application {
 		exitItem.addActionListener(actionListener);
 		menu.add(exitItem);
 	}
-	
-	void selectSyntaxMenuItem(Language language){
+
+	void selectSyntaxMenuItem(Language language) {
 		switch (language) {
 		case PLAIN_TEXT:
 			plainTextMenuItem.setSelected(true);
@@ -137,18 +165,31 @@ public class Application {
 		}
 	}
 
-	public Container createContentPane() {
-		contentPane = new JPanel(new BorderLayout());
-		// contentPane.setBackground(Color.GREEN);
-		contentPane.setOpaque(true);
-		textArea = new SyntaxTextEditor();
-		textArea.setText("class 12345678901234567890123456789012345678901234567890123456789012345678901234567890\n"
-		// + "2\n3\n4\n5\n6\n7\n8\n9\n0\n" + "1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n" +
-		// "1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n"
-		// + "1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n"
-		);
-		contentPane.add(textArea, BorderLayout.CENTER);
-		return contentPane;
+	void changeTitle() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(Application.TITLE);
+		sb.append(" - ");
+		if (loadFile != null) {
+			sb.append(loadFile.getFileName());
+		} else {
+			sb.append("New Document");
+		}
+		if (textArea.isDirty()) {
+			sb.append(" *");
+		}
+		frame.setTitle(sb.toString());
+	}
+
+	SyntaxTextEditor getTextArea() {
+		return textArea;
+	}
+
+	LoadedFile getLoadFile() {
+		return loadFile;
+	}
+
+	void setLoadFile(LoadedFile loadFile) {
+		this.loadFile = loadFile;
 	}
 
 }

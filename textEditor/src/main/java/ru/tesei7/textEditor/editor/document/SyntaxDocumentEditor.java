@@ -57,6 +57,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		default:
 			break;
 		}
+		document.setDirty(true);
 	}
 
 	// COPY / PASTE
@@ -77,7 +78,8 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		if (bufferString.isEmpty()) {
 			return;
 		}
-		String[] split = bufferString.split("\n");
+		// -1 in split methods used to not ommit \n at the end of file
+		String[] split = bufferString.split("\n", -1);
 
 		for (int i = 0; i < split.length; i++) {
 			char[] chars = split[i].toCharArray();

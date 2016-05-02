@@ -2,12 +2,15 @@ package ru.tesei7.textEditor.editor.document.model;
 
 import static junit.framework.Assert.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
 import org.junit.Test;
+
+import ru.tesei7.textEditor.editor.syntax.TokenImpl;
 
 public class LineTest {
 	private Line l = new Line();
@@ -126,6 +129,57 @@ public class LineTest {
 
 		l.setText(new char[] { 'a', '\t', 'c' });
 		assertTrue(l.getLengthToPaint() == 6);
+	}
+
+	@Test
+	public void testGetTextToPaint() throws Exception {
+		l.setText(new char[] { 'a', 'b', 'c' });
+		assertTrue(Arrays.equals(l.getTextToPaint(), new char[] { 'a', 'b', 'c' }));
+
+		l.setText(new char[] { 'a', '\t', 'c', '\r' });
+		assertTrue(Arrays.equals(l.getTextToPaint(), new char[] { 'a', ' ', ' ', ' ', ' ', 'c', ' ' }));
+	}
+
+	@Test
+	public void testPrintChars() throws Exception {
+		l.setText(new char[] { 'a', 'b', 'c' });
+		l.setOffset(2);
+		l.printChars(new char[] { '1', '2', '\t' });
+		assertTrue(Arrays.equals(l.getText(), new char[] { 'a', 'b', '1', '2', '\t', 'c' }));
+	}
+
+	@Test
+	public void testGetCharsToken() throws Exception {
+		l.setText(new char[] { 'a', 'b', 'c', '\t' });
+		assertTrue(Arrays.equals(l.getChars(new TokenImpl(1, 1, 3)), new char[] { 'b', 'c', ' ', ' ', ' ', ' ' }));
+	}
+
+	@Test
+	public void testGetCurrentToken() throws Exception {
+		l.setText(new char[] { 'a', 'b', 'c', '\t' });
+		TokenImpl t1 = new TokenImpl(1, 1, 1);
+		TokenImpl t2 = new TokenImpl(1, 2, 1);
+		TokenImpl t3 = new TokenImpl(1, 3, 1);
+		l.setTokens(Arrays.asList(t1, t2, t3));
+		l.setOffset(2);
+		assertThat(l.getCurrentToken(), is(t2));
+
+		l.setOffset(23);
+		assertNull(l.getCurrentToken());
+	}
+
+	@Test
+	public void testGetPreviousToken() throws Exception {
+		l.setText(new char[] { 'a', 'b', 'c', '\t' });
+		TokenImpl t1 = new TokenImpl(1, 1, 1);
+		TokenImpl t2 = new TokenImpl(1, 2, 1);
+		TokenImpl t3 = new TokenImpl(1, 3, 1);
+		l.setTokens(Arrays.asList(t1, t2, t3));
+		l.setOffset(2);
+		assertThat(l.getPreviousToken(), is(t1));
+		
+		l.setOffset(23);
+		assertNull(l.getCurrentToken());
 	}
 
 }

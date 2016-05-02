@@ -13,6 +13,8 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.DocumentEditObservable;
 import ru.tesei7.textEditor.editor.document.SyntaxDocumentEditor;
+import ru.tesei7.textEditor.editor.document.dirtyState.DirtyStateListener;
+import ru.tesei7.textEditor.editor.document.dirtyState.DirtyStateObservable;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.document.model.SyntaxTextEditorViewMode;
 import ru.tesei7.textEditor.editor.frame.Direction;
@@ -76,7 +78,6 @@ public class SyntaxTextEditor extends JPanel {
 	 */
 	private SyntaxDocument document;
 
-
 	/**
 	 * Notify caret changes
 	 */
@@ -97,6 +98,10 @@ public class SyntaxTextEditor extends JPanel {
 	 * Notify first visible line and xOffset changes
 	 */
 	private FrameObserverable frameObserverable = new FrameObserverable();
+	/**
+	 * Notify dirty state changes
+	 */
+	private DirtyStateObservable dirtyObserverable = new DirtyStateObservable();
 
 	private CaretKeyListener caretKeyListener = new CaretKeyListener(caretObservable);
 	private TextKeyListener textKeyListener = new TextKeyListener(documentEditObservable);
@@ -125,7 +130,7 @@ public class SyntaxTextEditor extends JPanel {
 	public SyntaxTextEditor(Language language, int rows, int cols) {
 		super();
 
-		this.document = new SyntaxDocument(frameObserverable);
+		this.document = new SyntaxDocument(frameObserverable, dirtyObserverable);
 		document.setLanguage(language);
 
 		createComponent();
@@ -206,7 +211,7 @@ public class SyntaxTextEditor extends JPanel {
 	public String getText() {
 		return document.getText();
 	}
-	
+
 	public void setText(String text) {
 		this.setText(text, Language.PLAIN_TEXT);
 	}
@@ -214,6 +219,8 @@ public class SyntaxTextEditor extends JPanel {
 	public void setText(String text, Language language) {
 		document.setLanguage(language);
 		document.setText(text);
+		clearDirty();
+
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 		textPanel.repaint();
@@ -281,6 +288,32 @@ public class SyntaxTextEditor extends JPanel {
 		setLayout(layout);
 	}
 
+	// Dirty state
+
+	/**
+	 * Was text edited since last save or not
+	 * 
+	 * @return dirty flag
+	 */
+	public boolean isDirty() {
+		return document.isDirty();
+	}
+
+	/**
+	 * Set dirty state to false
+	 */
+	public void clearDirty() {
+		document.setDirty(false);
+	}
+
+	public void addDirtyStateListener(DirtyStateListener listener) {
+		dirtyObserverable.addListener(listener);
+	}
+
+	public void removeDirtyStateListener(DirtyStateListener listener) {
+		dirtyObserverable.removeListener(listener);
+	}
+
 	// Painters
 
 	CaretPainter getCaretPainter() {
@@ -290,7 +323,7 @@ public class SyntaxTextEditor extends JPanel {
 	SyntaxDocumentPainter getDocumentPainter() {
 		return documentPainter;
 	}
-	
+
 	SyntaxDocument getDocument() {
 		return document;
 	}

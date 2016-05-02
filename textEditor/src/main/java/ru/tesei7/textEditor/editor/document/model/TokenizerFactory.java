@@ -15,8 +15,8 @@ import ru.tesei7.textEditor.editor.syntax.Tokenizer;
  */
 public class TokenizerFactory {
 
-	private JavaTokenizer javaTokenizer;
-	private JavaScriptTokenizer javaScriptTokenizer;
+	JavaTokenizer javaTokenizer;
+	JavaScriptTokenizer javaScriptTokenizer;
 
 	public TokenizerFactory() {
 		javaTokenizer = new JavaTokenizer(new CharArrayReader(new char[0]));

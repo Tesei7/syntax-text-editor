@@ -4,9 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import org.apache.commons.io.FileUtils;
 
 import ru.tesei7.textEditor.editor.Language;
+import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.document.model.SyntaxTextEditorViewMode;
 
 public class ApplicationActionListener implements ActionListener {
@@ -21,6 +24,7 @@ public class ApplicationActionListener implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		SyntaxTextEditor textArea = app.getTextArea();
 		String actionCommand = e.getActionCommand();
 
 		switch (actionCommand) {
@@ -34,7 +38,8 @@ public class ApplicationActionListener implements ActionListener {
 			open();
 			break;
 		case MenuActions.SAVE:
-			if (app.loadFile != null && app.loadFile.getFile() != null) {
+			LoadedFile loadFile = app.getLoadFile();
+			if (loadFile != null && loadFile.getFile() != null) {
 				save();
 			} else {
 				saveAs();
@@ -44,10 +49,10 @@ public class ApplicationActionListener implements ActionListener {
 			saveAs();
 			break;
 		case MenuActions.DEFAULT_VIEW:
-			app.textArea.setViewMode(SyntaxTextEditorViewMode.DEFAULT);
+			textArea.setViewMode(SyntaxTextEditorViewMode.DEFAULT);
 			break;
 		case MenuActions.FIXED_WIDTH_VIEW:
-			app.textArea.setViewMode(SyntaxTextEditorViewMode.FIXED_WIDTH);
+			textArea.setViewMode(SyntaxTextEditorViewMode.FIXED_WIDTH);
 			break;
 		case MenuActions.PLAIN_TEXT:
 			changeSyntax(Language.PLAIN_TEXT);
@@ -62,46 +67,70 @@ public class ApplicationActionListener implements ActionListener {
 	}
 
 	private void changeSyntax(Language language) {
-		new ProgressDialog(app.frame, "Changing syntax...",  () -> app.textArea.setLanguage(language));
+		new ProgressDialog(null, "Changing syntax...", () -> app.getTextArea().setLanguage(language));
 	}
 
 	void newFile() {
-		app.loadFile = null;
-		app.textArea.setText("", app.textArea.getLanguage());
-		changeTitle();
-		app.selectSyntaxMenuItem(Language.PLAIN_TEXT);
+		if (!app.getTextArea().isDirty()) {
+			newFileWithoutPromt();
+		} else {
+			String ObjButtons[] = { "Yes", "No" };
+			String message = "Create new file and loose unsaved changes?";
+			String title = "New document";
+			int PromptResult = JOptionPane.showOptionDialog(null, message, title, JOptionPane.DEFAULT_OPTION,
+					JOptionPane.WARNING_MESSAGE, null, ObjButtons, ObjButtons[1]);
+			if (PromptResult == JOptionPane.YES_OPTION) {
+				newFileWithoutPromt();
+			}
+		}
+	}
+
+	private void newFileWithoutPromt() {
+		SyntaxTextEditor textArea = app.getTextArea();
+		app.setLoadFile(null);
+		textArea.setText("", textArea.getLanguage());
+		app.selectSyntaxMenuItem(textArea.getLanguage());
 	}
 
 	void open() {
-		LoadedFile loadFile = saveLoadFileService.loadFile(app.contentPane);
-		app.loadFile = loadFile;
-		if (app.loadFile != null) {
-			Language language = getLanguage(app.loadFile.getExtension());
-			new ProgressDialog(app.frame, "Loading file...",  () -> app.textArea.setText(app.loadFile.getData(), language));
-			changeTitle();
+		if (!app.getTextArea().isDirty()) {
+			openWithoutPromt();
+		} else {
+			String ObjButtons[] = { "Yes", "No" };
+			String message = "Open file and loose unsaved changes?";
+			String title = "Open document";
+			int PromptResult = JOptionPane.showOptionDialog(null, message, title, JOptionPane.DEFAULT_OPTION,
+					JOptionPane.WARNING_MESSAGE, null, ObjButtons, ObjButtons[1]);
+			if (PromptResult == JOptionPane.YES_OPTION) {
+				openWithoutPromt();
+			}
+		}
+	}
+
+	private void openWithoutPromt() {
+		LoadedFile loadFile = saveLoadFileService.loadFile(null);
+		app.setLoadFile(loadFile);
+		if (loadFile != null) {
+			Language language = getLanguage(loadFile.getExtension());
+			new ProgressDialog(null, "Loading file...", () -> app.getTextArea().setText(loadFile.getData(), language));
 			app.selectSyntaxMenuItem(language);
 		}
 	}
 
 	void save() {
 		try {
-			FileUtils.writeByteArrayToFile(app.loadFile.getFile(), app.textArea.getText().getBytes("UTF-8"));
+			FileUtils.writeByteArrayToFile(app.getLoadFile().getFile(), app.getTextArea().getText().getBytes("UTF-8"));
+			app.getTextArea().clearDirty();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	void saveAs() {
-		LoadedFile saveFile = saveLoadFileService.saveFile(app.contentPane, app.textArea.getText());
-		app.loadFile = saveFile;
-		changeTitle();
-	}
-
-	void changeTitle() {
-		if (app.loadFile != null) {
-			app.frame.setTitle(Application.TITLE + " - " + app.loadFile.getFileName());
-		} else {
-			app.frame.setTitle(Application.TITLE + " - New Document");
+		LoadedFile saveFile = saveLoadFileService.saveFile(null, app.getTextArea().getText());
+		if (saveFile != null) {
+			app.setLoadFile(saveFile);
+			app.getTextArea().clearDirty();
 		}
 	}
 

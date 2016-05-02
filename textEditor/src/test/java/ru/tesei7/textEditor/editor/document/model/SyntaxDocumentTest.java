@@ -39,6 +39,8 @@ public class SyntaxDocumentTest {
 	private FrameObserverable frameObserverable;
 	@Mock
 	private List<Line> lines;
+	@Mock
+	private Line line;
 
 	@Before
 	public void setUp() {
@@ -78,7 +80,7 @@ public class SyntaxDocumentTest {
 		when(l1.getLengthToPaint()).thenReturn(20);
 		when(l2.getLengthToPaint()).thenReturn(120);
 		assertThat(syntaxDocument.getMaxCols(), is(120));
-		
+
 		syntaxDocument.cols = 121;
 		assertThat(syntaxDocument.getMaxCols(), is(121));
 	}
@@ -183,5 +185,38 @@ public class SyntaxDocumentTest {
 		assertThat(syntaxDocument.isCorrectLineIndex(0), is(false));
 		assertThat(syntaxDocument.isCorrectLineIndex(-1), is(false));
 		assertThat(syntaxDocument.isCorrectLineIndex(12), is(false));
+	}
+
+	@Test
+	public void testSetCurLineIndex() throws Exception {
+		doReturn(1).when(syntaxDocument).getCorrectLineIndex(1);
+		syntaxDocument.setCurLineIndex(1);
+		assertThat(syntaxDocument.getCurLineIndex(), is(1));
+	}
+
+	@Test
+	public void testMoveCurLineIndex() throws Exception {
+		syntaxDocument.curLineIndex = 2;
+		syntaxDocument.moveCurLineIndex(1);
+		verify(syntaxDocument).setCurLineIndex(3);
+	}
+
+	@Test
+	public void testGetCurLineIndexToPaint() throws Exception {
+		syntaxDocument.curLineIndex = 2;
+		syntaxDocument.firstVisibleRow = 3;
+		syntaxDocument.rows = 40;
+		assertThat(syntaxDocument.getCurLineIndexToPaint(), is(-1));
+		syntaxDocument.curLineIndex = 5;
+		assertThat(syntaxDocument.getCurLineIndexToPaint(), is(2));
+		syntaxDocument.curLineIndex = 44;
+		assertThat(syntaxDocument.getCurLineIndexToPaint(), is(-2));
+	}
+
+	@Test
+	public void testGetLineByIndex() throws Exception {
+		doReturn(3).when(syntaxDocument).getCorrectLineIndex(1);
+		when(lines.get(3)).thenReturn(line);
+		assertEquals(line, syntaxDocument.getLineByIndex(1));
 	}
 }

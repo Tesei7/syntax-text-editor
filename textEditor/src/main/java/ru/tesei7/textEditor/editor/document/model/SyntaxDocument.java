@@ -8,6 +8,8 @@ import java.util.OptionalInt;
 
 import ru.tesei7.textEditor.editor.Language;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
+import ru.tesei7.textEditor.editor.document.dirtyState.DirtyStateEvent;
+import ru.tesei7.textEditor.editor.document.dirtyState.DirtyStateObservable;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameEventType;
 import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
@@ -77,9 +79,15 @@ public class SyntaxDocument {
 	 * Can paint document content flag
 	 */
 	volatile private boolean isReady = true;
+	/**
+	 * Dirty state flag
+	 */
+	private boolean isDirty = false;
+	private DirtyStateObservable dirtyObserverable;
 
-	public SyntaxDocument(FrameObserverable frameObserverable) {
+	public SyntaxDocument(FrameObserverable frameObserverable, DirtyStateObservable dirtyObserverable) {
 		this.frameObserverable = frameObserverable;
+		this.dirtyObserverable = dirtyObserverable;
 		selection = new TextSelection(this);
 		lines.add(new Line());
 		lexicalAnalyzer = new LexicalAnalyzer();
@@ -392,13 +400,10 @@ public class SyntaxDocument {
 
 	public void setText(String text) {
 		isReady = false;
-
-		long t1 = System.currentTimeMillis();
-		System.out.println("Start loading file");
-
 		try {
 			lines.clear();
-			String[] split = text.split("\n");
+			// -1 in split methods used to not ommit \n at the end of file
+			String[] split = text.split("\n", -1);
 			for (int i = 0; i < split.length; i++) {
 				Line l = new Line();
 				l.setText(split[i].toCharArray());
@@ -416,9 +421,6 @@ public class SyntaxDocument {
 		} finally {
 			isReady = true;
 		}
-
-		long t3 = System.currentTimeMillis();
-		System.out.println("File loaded: " + (t3 - t1) + "ms");
 	}
 
 	public void recalcTokens(int firstLineIndex, int lines) {
@@ -473,5 +475,15 @@ public class SyntaxDocument {
 	 */
 	public boolean isReady() {
 		return isReady;
+	}
+
+	public boolean isDirty() {
+		return isDirty;
+	}
+
+	public void setDirty(boolean isDirty) {
+		boolean oldState = this.isDirty;
+		this.isDirty = isDirty;
+		dirtyObserverable.notifyListeners(new DirtyStateEvent(oldState, isDirty));
 	}
 }

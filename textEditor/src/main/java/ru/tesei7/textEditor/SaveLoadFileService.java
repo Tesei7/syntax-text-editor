@@ -16,7 +16,7 @@ public class SaveLoadFileService {
 		if (val == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = chooser.getSelectedFile();
 			try {
-				String data = FileUtils.readFileToString(selectedFile);
+				String data = FileUtils.readFileToString(selectedFile, "UTF-8");
 				return new LoadedFile(data, selectedFile);
 			} catch (IOException e) {
 				e.printStackTrace();
