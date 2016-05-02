@@ -19,6 +19,13 @@ public class LoadedFile {
 		return data;
 	}
 
+	/**
+	 * Clear data stored in loaded file object
+	 */
+	public void clearData() {
+		data = null;
+	}
+
 	public File getFile() {
 		return file;
 	}

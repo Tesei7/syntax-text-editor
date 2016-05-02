@@ -29,6 +29,8 @@ import ru.tesei7.textEditor.editor.painter.SyntaxDocumentPainter;
 import ru.tesei7.textEditor.editor.scroll.DimensionType;
 import ru.tesei7.textEditor.editor.scroll.DimensionsEvent;
 import ru.tesei7.textEditor.editor.scroll.DimensionsObservable;
+import ru.tesei7.textEditor.editor.scroll.FrameEvent;
+import ru.tesei7.textEditor.editor.scroll.FrameEventType;
 import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
 import ru.tesei7.textEditor.editor.scroll.ScrollBarsManager;
 
@@ -208,14 +210,33 @@ public class SyntaxTextEditor extends JPanel {
 		vbar.addAdjustmentListener(vScrollListener);
 	}
 
+	/**
+	 * Get editor text
+	 * 
+	 * @return string, contains editor text with {@code \n} as line separator
+	 */
 	public String getText() {
 		return document.getText();
 	}
 
+	/**
+	 * Set editor text without syntax highlighting. {@code \n} is line separator
+	 * 
+	 * @param text
+	 *            text to show in editor
+	 */
 	public void setText(String text) {
 		this.setText(text, Language.PLAIN_TEXT);
 	}
 
+	/**
+	 * Set editor text and syntax type
+	 * 
+	 * @param text
+	 *            text to show
+	 * @param language
+	 *            syntax
+	 */
 	public void setText(String text, Language language) {
 		document.setLanguage(language);
 		document.setText(text);
@@ -226,10 +247,20 @@ public class SyntaxTextEditor extends JPanel {
 		textPanel.repaint();
 	}
 
+	/**
+	 * 
+	 * @return current editor view mode
+	 */
 	public SyntaxTextEditorViewMode getViewMode() {
 		return document.getViewMode();
 	}
 
+	/**
+	 * Set editor view mode
+	 * 
+	 * @param mode
+	 *            view mode
+	 */
 	public void setViewMode(SyntaxTextEditorViewMode mode) {
 		document.setViewMode(mode);
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
@@ -248,46 +279,68 @@ public class SyntaxTextEditor extends JPanel {
 
 	// Size
 
+	/**
+	 * 
+	 * @return number of lines to show
+	 */
 	public int getRows() {
 		return document.getRows();
 	}
 
+	/**
+	 * Set visible number of lines
+	 * 
+	 * @param rows
+	 *            number of lines
+	 */
 	public void setRows(int rows) {
 		document.setRows(rows);
 		recalcSize();
 		textPanel.repaint();
 	}
 
+	/**
+	 * 
+	 * @return number of columns to show
+	 */
 	public int getCols() {
 		return document.getCols();
 	}
 
+	/**
+	 * Set visible number of columns
+	 * 
+	 * @param cols
+	 *            number of columns
+	 */
 	public void setCols(int cols) {
 		document.setCols(cols);
 		recalcSize();
 		textPanel.repaint();
 	}
-	
-	public int getMaxCols(){
+
+	public int getMaxCols() {
 		return document.getMaxCols();
 	}
-	
-	public void setMaxCols(int maxCols){
+
+	public void setMaxCols(int maxCols) {
 		document.setMaxCols(maxCols);
-		
+
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 		textPanel.repaint();
 	}
 
 	public void setTextAreaSize(Dimension size) {
-		int rows = (size.height - 87) / fontProperties.getLineHeight();
-		int cols = (size.width - 37) / fontProperties.getCharWidth();
+		int rows = textPanel.getHeight() / fontProperties.getLineHeight();
+		int cols = textPanel.getWidth() / fontProperties.getCharWidth();
 		document.setRows(rows);
 		document.setCols(cols);
 		recalcSize();
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
+		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.HORIZONTAL, document.getFirstVisibleCol()));
+		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, document.getFirstVisibleRow()));
 	}
 
 	protected void recalcSize() {

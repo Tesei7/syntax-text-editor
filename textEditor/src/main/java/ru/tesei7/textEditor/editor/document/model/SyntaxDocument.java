@@ -210,7 +210,7 @@ public class SyntaxDocument {
 	}
 
 	public List<Line> getVisibleLines() {
-		int endLine = Math.min(firstVisibleRow + rows, getSize());
+		int endLine = Math.min(firstVisibleRow + rows + 1, getSize());
 		return new ArrayList<>(lines.subList(firstVisibleRow, endLine));
 	}
 
@@ -360,7 +360,8 @@ public class SyntaxDocument {
 		if (viewMode == SyntaxTextEditorViewMode.FIXED_WIDTH) {
 			return maxCols;
 		} else {
-			// parallel stream will run faster because of using parallel calculation of maximim length.
+			// parallel stream will run faster because of using parallel
+			// calculation of maximim length.
 			// We can use it because max() is associative operation.
 			OptionalInt max = lines.parallelStream().mapToInt(l -> l.getLengthToPaint()).max();
 			return max.isPresent() ? max.getAsInt() : cols;

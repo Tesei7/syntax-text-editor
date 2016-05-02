@@ -29,7 +29,7 @@ public class ApplicationActionListener implements ActionListener {
 
 		switch (actionCommand) {
 		case MenuActions.EXIT:
-			System.exit(0);
+			app.close();
 			break;
 		case MenuActions.NEW:
 			newFile();
@@ -66,7 +66,7 @@ public class ApplicationActionListener implements ActionListener {
 		}
 	}
 
-	private void changeSyntax(Language language) {
+	void changeSyntax(Language language) {
 		new ProgressDialog(null, "Changing syntax...", () -> app.getTextArea().setLanguage(language));
 	}
 
@@ -113,6 +113,8 @@ public class ApplicationActionListener implements ActionListener {
 		if (loadFile != null) {
 			Language language = getLanguage(loadFile.getExtension());
 			new ProgressDialog(null, "Loading file...", () -> app.getTextArea().setText(loadFile.getData(), language));
+			// remove link to data, because it is not necessary to store it any more
+			loadFile.clearData();
 			app.selectSyntaxMenuItem(language);
 		}
 	}

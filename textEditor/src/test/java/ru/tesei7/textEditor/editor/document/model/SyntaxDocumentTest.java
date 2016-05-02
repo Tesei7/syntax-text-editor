@@ -4,7 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -218,5 +219,31 @@ public class SyntaxDocumentTest {
 		doReturn(3).when(syntaxDocument).getCorrectLineIndex(1);
 		when(lines.get(3)).thenReturn(line);
 		assertEquals(line, syntaxDocument.getLineByIndex(1));
+	}
+
+	@Test
+	public void testAddLineAfter() throws Exception {
+		syntaxDocument.addLineAfter(1, line);
+		verify(lines).add(2, line);
+	}
+
+	@Test
+	public void testRemoveLineAfter() throws Exception {
+		syntaxDocument.removeLineAfter(1);
+		verify(lines).remove(2);
+	}
+
+	@Test
+	public void testGetText() throws Exception {
+		ArrayList<Line> list = new ArrayList<>();
+		Line l1 = mock(Line.class);
+		Line l2 = mock(Line.class);
+		list.add(l1);
+		list.add(l2);
+		syntaxDocument.lines = list;
+		
+		when(l1.getText()).thenReturn(new char[] {'a', 'b', '\t'});
+		when(l2.getText()).thenReturn(new char[] {'\r', 'c', 'x'});
+		assertThat(syntaxDocument.getText(), is("ab\t\n\rcx"));
 	}
 }
