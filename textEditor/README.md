@@ -19,7 +19,7 @@ Syntax Text editor has too view modes: default and fixed width. In default view 
 
 Default view mode is how text editors usually work. Fixed width mode is useful when big file (dozens of MBs) is edited, because in this mode total width of document is not recalculated.
 
-## Building and run
+## Building and running
 Syntax Text Editor requires Java 8 and uses [Maven](https://maven.apache.org/) to build. 
 To compile, run all unit tests, and create the jar, change directory to Syntax Text Editor folder and run
 

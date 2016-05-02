@@ -9,10 +9,10 @@ public class BracketFinder {
 
 	private SyntaxDocument document;
 	private BracketService bracketService;
-	private Token currentBracketToken;
-	private int direction;
-	private int reletiveBracketType;
-	private Token reletiveBracketToken;
+	Token currentBracketToken;
+	int direction;
+	int reletiveBracketType;
+	Token reletiveBracketToken;
 	private int reletiveBracketLine;
 
 	public BracketFinder(SyntaxDocument document, BracketService bracketService) {
@@ -41,7 +41,7 @@ public class BracketFinder {
 		return this;
 	}
 
-	private BracketFinder setReletiveBracketType() throws Exception {
+	BracketFinder setReletiveBracketType() throws Exception {
 		switch (currentBracketToken.getType()) {
 		case TokenTypes.LBRACK:
 			reletiveBracketType = TokenTypes.RBRACK;
@@ -65,7 +65,7 @@ public class BracketFinder {
 		throw new Exception();
 	}
 
-	private BracketFinder setSearchDirection() throws Exception {
+	BracketFinder setSearchDirection() throws Exception {
 		switch (currentBracketToken.getType()) {
 		case TokenTypes.LBRACK:
 		case TokenTypes.LBRACE:
