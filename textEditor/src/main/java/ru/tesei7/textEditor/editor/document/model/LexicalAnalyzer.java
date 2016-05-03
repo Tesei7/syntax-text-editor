@@ -13,7 +13,7 @@ public class LexicalAnalyzer {
 	/**
 	 * Creates tokenizer
 	 */
-	private TokenizerFactory tokenizerFactory;
+	TokenizerFactory tokenizerFactory;
 
 	public LexicalAnalyzer() {
 		tokenizerFactory = new TokenizerFactory();
@@ -48,7 +48,7 @@ public class LexicalAnalyzer {
 	 *            initial state of tokenizer
 	 * @return last state of tokenizer
 	 */
-	private int readTokens(final List<Token> tokens, Tokenizer tokenizer) {
+	int readTokens(final List<Token> tokens, Tokenizer tokenizer) {
 		int state = 0;
 		Token token = null;
 		do {

@@ -73,7 +73,6 @@ public class CaretKeyListenerTest {
 		verify(observable, never()).notifyListeners(argThat(isSyntaxCaretEvent(SyntaxCaretEventType.INSERT, true)));
 	}
 
-	@SuppressWarnings("unchecked")
 	private Matcher<SyntaxCaretEvent> isSyntaxCaretEvent(SyntaxCaretEventType type, boolean shift) {
 		return allOf(hasProperty("type", equalTo(type)), hasProperty("withShift", equalTo(shift)));
 	}

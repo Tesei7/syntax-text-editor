@@ -32,7 +32,7 @@ public class SyntaxDocumentPainter {
 		paintSelection(g, lines);
 	}
 
-	private void paintSelection(Graphics g, List<Line> lines) {
+	void paintSelection(Graphics g, List<Line> lines) {
 		TextSelection selection = document.getSelection();
 		if (selection.notSelected()) {
 			return;
@@ -62,7 +62,7 @@ public class SyntaxDocumentPainter {
 		}
 	}
 
-	private void paintLines(Graphics g, List<Line> lines, Language language) {
+	void paintLines(Graphics g, List<Line> lines, Language language) {
 		for (int i = 0; i < lines.size(); i++) {
 			int y = getHeightToPaint(i);
 			Line line = lines.get(i);
@@ -83,7 +83,7 @@ public class SyntaxDocumentPainter {
 		}
 	}
 
-	private int getHeightToPaint(int i) {
+	int getHeightToPaint(int i) {
 		int rowHeight = fontProperties.getLineHeight();
 		int descent = fontProperties.getDescent();
 		int height = rowHeight * (i + 1) - descent;

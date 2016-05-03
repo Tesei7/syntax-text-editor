@@ -20,13 +20,12 @@ package ru.tesei7.textEditor.editor.syntax;
 
 /* main character classes */
 LineTerminator = \r|\n|\r\n
-InputCharacter = [^\r\n]
 
 WhiteSpace = {LineTerminator} | [ \t\f]
 
 /* comments */
 
-EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?
+EndOfLineComment = "//" [^]* 
 MultilineCommentBegin = "/*" 
 MultilineCommentEnd = "*/"
 
@@ -187,7 +186,6 @@ SingleCharacter = [^\r\n\']
 
   /* This is matched together with the minus, because the number is too big to 
      be represented by a positive integer. */
-  "-2147483648"                  { return token(INTEGER_LITERAL); }
   
   {DecIntegerLiteral}            { return token(INTEGER_LITERAL); }
   {DecLongLiteral}               { return token(INTEGER_LITERAL); }

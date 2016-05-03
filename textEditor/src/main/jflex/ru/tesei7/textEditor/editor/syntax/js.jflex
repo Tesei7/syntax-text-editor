@@ -20,13 +20,12 @@ package ru.tesei7.textEditor.editor.syntax;
 
 /* main character classes */
 LineTerminator = \r|\n|\r\n
-InputCharacter = [^\r\n]
 
 WhiteSpace = {LineTerminator} | [ \t\f]
 
 /* comments */
 
-EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?
+EndOfLineComment = "//" [^]*
 MultilineCommentBegin = "/*" 
 MultilineCommentEnd = "*/"
 

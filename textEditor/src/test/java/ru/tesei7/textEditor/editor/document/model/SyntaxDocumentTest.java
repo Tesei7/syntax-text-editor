@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -27,6 +28,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import ru.tesei7.textEditor.editor.document.dirtyState.DirtyStateObservable;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameEventType;
 import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
@@ -42,6 +44,8 @@ public class SyntaxDocumentTest {
 	private List<Line> lines;
 	@Mock
 	private Line line;
+	@Mock
+	private DirtyStateObservable dirtyObservable;
 
 	@Before
 	public void setUp() {
@@ -241,9 +245,32 @@ public class SyntaxDocumentTest {
 		list.add(l1);
 		list.add(l2);
 		syntaxDocument.lines = list;
-		
-		when(l1.getText()).thenReturn(new char[] {'a', 'b', '\t'});
-		when(l2.getText()).thenReturn(new char[] {'\r', 'c', 'x'});
+
+		when(l1.getText()).thenReturn(new char[] { 'a', 'b', '\t' });
+		when(l2.getText()).thenReturn(new char[] { '\r', 'c', 'x' });
 		assertThat(syntaxDocument.getText(), is("ab\t\n\rcx"));
+	}
+
+	@Test
+	public void testSetDirty() throws Exception {
+		syntaxDocument.setDirty(true);
+		assertThat(syntaxDocument.isDirty(), is(true));
+		verify(dirtyObservable).notifyListeners(any());
+	}
+
+	@Test
+	public void testGetXToPaint() throws Exception {
+		doReturn(line).when(syntaxDocument).getCurrentLine();
+		when(line.getOffsetToPaint()).thenReturn(12);
+		syntaxDocument.firstVisibleCol = 10;
+		assertThat(syntaxDocument.getXToPaint(), is(2));
+	}
+
+	@Test
+	public void testGetXToPaint2() throws Exception {
+		doReturn(line).when(syntaxDocument).getCurrentLine();
+		when(line.getOffsetToPaint(1)).thenReturn(12);
+		syntaxDocument.firstVisibleCol = 10;
+		assertThat(syntaxDocument.getXToPaint(line, 1), is(2));
 	}
 }

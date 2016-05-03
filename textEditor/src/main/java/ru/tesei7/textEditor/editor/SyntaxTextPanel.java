@@ -34,7 +34,7 @@ public class SyntaxTextPanel extends JPanel
 	/**
 	 * Flag of caret visibility for blinking caret
 	 */
-	volatile private boolean caretVisible = true;
+	volatile private Boolean caretVisible = true;
 	/**
 	 * Do not blink caret if edited
 	 */
@@ -85,7 +85,9 @@ public class SyntaxTextPanel extends JPanel
 	 * Blink caret
 	 */
 	void toggleCaretVisible() {
-		this.caretVisible = !caretVisible;
+		synchronized (caretVisible) {
+			this.caretVisible = !caretVisible;
+		}
 	}
 
 	/**

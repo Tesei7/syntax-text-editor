@@ -66,7 +66,12 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 
 	// COPY / PASTE
 
-	private void paste() {
+	void copy() {
+		StringSelection contents = new StringSelection(document.getSelectedString());
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(contents, null);
+	}
+
+	void paste() {
 		if (document.getSelection().notSelected()) {
 			pasteCaret();
 		} else {
@@ -77,7 +82,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
 
-	private void pasteCaret() {
+	void pasteCaret() {
 		String bufferString = getBufferString();
 		if (bufferString.isEmpty()) {
 			return;
@@ -126,11 +131,6 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		return result;
 	}
 
-	private void copy() {
-		StringSelection contents = new StringSelection(document.getSelectedString());
-		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(contents, null);
-	}
-
 	// PRINT CHAR
 
 	void printChar(char c) {
@@ -141,7 +141,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		}
 	}
 
-	private void printCharSelection(char c) {
+	void printCharSelection(char c) {
 		document.removeSelection();
 		document.getCurrentLine().printChar(c);
 		document.recalcTokens(document.getCurLineIndex(), 1);
@@ -177,7 +177,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		}
 	}
 
-	private void addNewLineSelection() {
+	void addNewLineSelection() {
 		document.removeSelection();
 		addNewLineCaret();
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
