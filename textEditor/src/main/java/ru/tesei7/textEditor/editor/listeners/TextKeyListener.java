@@ -48,6 +48,11 @@ public class TextKeyListener implements KeyListener {
 				observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.COPY));
 			}
 			break;
+		case KeyEvent.VK_X:
+			if (e.isControlDown()) {
+				observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.COPY_REMOVE));
+			}
+			break;
 		case KeyEvent.VK_V:
 			if (e.isControlDown()) {
 				observable.notifyListeners(new DocumentEditEvent(DocumentEditEventType.PASTE));

@@ -1,6 +1,7 @@
 package ru.tesei7.textEditor.editor.document.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -230,6 +231,10 @@ public class SyntaxDocument {
 		lines.add(index + 1, l);
 	}
 
+	public void addLinesAfter(int index, List<Line> newLines) {
+		lines.addAll(index + 1, newLines);
+	}
+
 	public void removeLineAfter(int index) {
 		lines.remove(index + 1);
 	}
@@ -319,20 +324,18 @@ public class SyntaxDocument {
 
 		StringBuilder sb = new StringBuilder();
 		for (int i = lineFrom; i <= lineTo; i++) {
-			List<Character> chars = getLineByIndex(i).getChars();
-			if (lineFrom == lineTo) {
-				chars = chars.subList(selection.getOffsetFrom(), selection.getOffsetTo());
+			char[] chars = getLineByIndex(i).getText();
+			if (lineFrom.equals(lineTo)) {
+				chars = Arrays.copyOfRange(chars, selection.getOffsetFrom(), selection.getOffsetTo());
 			} else {
 				if (i == lineFrom) {
-					chars = chars.subList(selection.getOffsetFrom(), chars.size());
+					chars = Arrays.copyOfRange(chars, selection.getOffsetFrom(), chars.length);
 				}
 				if (i == lineTo) {
-					chars = chars.subList(0, selection.getOffsetTo());
+					chars = Arrays.copyOfRange(chars, 0, selection.getOffsetTo());
 				}
 			}
-			for (Character c : chars) {
-				sb.append(c);
-			}
+			sb.append(chars);
 			if (i != lineTo) {
 				sb.append('\n');
 			}

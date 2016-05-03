@@ -202,6 +202,13 @@ public class Line {
 		setTextInner(toArray(textList));
 		offset += chars.length;
 	}
+	
+	public void printChars(List<Character> list) {
+		List<Character> textList = toList(text);
+		textList.addAll(offset, list);
+		setTextInner(toArray(textList));
+		offset += list.size();
+	}
 
 	public void insertChar(char c) {
 		if (atEndOfLine()) {

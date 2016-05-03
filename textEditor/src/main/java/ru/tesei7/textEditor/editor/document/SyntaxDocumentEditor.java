@@ -51,6 +51,10 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		case COPY:
 			copy();
 			break;
+		case COPY_REMOVE:
+			copy();
+			removeSelection();
+			break;
 		case PASTE:
 			paste();
 			break;
@@ -81,16 +85,27 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		// -1 in split methods used to not ommit \n at the end of file
 		String[] split = bufferString.split("\n", -1);
 
+		Line line = document.getCurrentLine();
+		List<Character> curLineChars = line.getChars();
+		List<Character> afterCaret = curLineChars.subList(line.getOffset(), line.getLength());
+
+		LinkedList<Line> newLines = new LinkedList<>();
 		for (int i = 0; i < split.length; i++) {
 			char[] chars = split[i].toCharArray();
 			if (i == 0) {
-				Line line = document.getCurrentLine();
 				line.printChars(chars);
 			} else {
-				addNewLine();
-				Line line = document.getCurrentLine();
-				line.printChars(chars);
+				Line newLine = new Line();
+				newLine.setText(chars);
+				newLines.add(newLine);
 			}
+		}
+		if (split.length > 1) {
+			int length = newLines.getLast().getLength();
+			newLines.getLast().printChars(afterCaret);
+			newLines.getLast().setOffset(length);
+			document.addLinesAfter(document.getCurLineIndex(), newLines);
+			document.setCurLineIndex(document.getCurLineIndex() + newLines.size());
 		}
 
 		document.recalcTokens(document.getCurLineIndex() - split.length, split.length + 1);
