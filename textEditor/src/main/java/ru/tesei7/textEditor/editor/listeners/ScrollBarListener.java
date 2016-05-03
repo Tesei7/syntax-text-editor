@@ -9,7 +9,7 @@ import ru.tesei7.textEditor.editor.frame.SyntaxScrollObserverable;
 
 public class ScrollBarListener extends SyntaxScrollObserverable implements AdjustmentListener {
 
-	private Direction direction;
+	Direction direction;
 	private SyntaxScrollObserverable scrollObserverable;
 
 	public ScrollBarListener(SyntaxScrollObserverable scrollObserverable, Direction direction) {

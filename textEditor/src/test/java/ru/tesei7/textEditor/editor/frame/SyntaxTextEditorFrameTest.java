@@ -76,5 +76,23 @@ public class SyntaxTextEditorFrameTest {
 		syntaxTextEditorFrame.makeCaretVisibleX();
 		verify(document).setFirstVisibleCol(125);
 	}
+
+	@Test
+	public void testMakeCaretVisibleY() throws Exception {
+		when(document.getFirstVisibleRow()).thenReturn(1);
+		when(document.getCurLineIndex()).thenReturn(5);
+		when(document.getRows()).thenReturn(80);
+		
+		syntaxTextEditorFrame.makeCaretVisibleY();
+		verify(document).checkLastLinesNotEmpty();
+		
+		when(document.getFirstVisibleRow()).thenReturn(6);
+		syntaxTextEditorFrame.makeCaretVisibleY();
+		verify(document).setFirstVisibleRow(5);
+		
+		when(document.getCurLineIndex()).thenReturn(86);
+		syntaxTextEditorFrame.makeCaretVisibleY();
+		verify(document).setFirstVisibleRow(7);
+	}
 	
 }

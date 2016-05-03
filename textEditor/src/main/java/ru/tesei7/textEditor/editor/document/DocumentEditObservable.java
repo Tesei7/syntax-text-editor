@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentEditObservable {
-	private List<DocumentEditListener> listeners = new ArrayList<>();
+	List<DocumentEditListener> listeners = new ArrayList<>();
 
 	public void addListener(DocumentEditListener listener) {
 		listeners.add(listener);

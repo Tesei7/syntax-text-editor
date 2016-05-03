@@ -8,9 +8,9 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
 public class ScrollBarsManager implements DocumentDimensionsListener, FrameListener {
 
-	private SyntaxDocument document;
-	private JScrollBar hbar;
-	private JScrollBar vbar;
+	SyntaxDocument document;
+	JScrollBar hbar;
+	JScrollBar vbar;
 
 	public ScrollBarsManager(SyntaxDocument document, JScrollBar hbar, JScrollBar vbar) {
 		this.document = document;
