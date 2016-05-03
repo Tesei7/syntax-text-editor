@@ -49,16 +49,24 @@ public class SyntaxDocumentPainter {
 			Line l = lines.get(i);
 			char[] lineCharsToShow = document.getLineCharsToShow(l);
 
-			int from = 0, to = document.getCols();
+			int textFrom = 0;
+			int textTo = l.getLength();
+			int from = 0, to = document.getCols() + 1;
 			if (i == lineFrom) {
-				from = Math.max(0, Math.min(selection.getOffsetToPaintFrom(l), document.getCols()));
+				Integer offsetToPaintFrom = selection.getOffsetToPaintFrom(l);
+				from = Math.max(0, Math.min(offsetToPaintFrom, document.getCols()));
+				textFrom = l.getOffsetToPaint(selection.getOffsetFrom());
 			}
 			if (i == lineTo) {
-				to = Math.max(0, Math.min(selection.getOffsetToPaintTo(l), document.getCols()));
+				Integer offsetToPaintTo = selection.getOffsetToPaintTo(l);
+				to = Math.max(0, Math.min(offsetToPaintTo, document.getCols()));
+				textTo = l.getOffsetToPaint(selection.getOffsetTo());
 			}
 			int y = getHeightToPaint(i);
 			int by = fontProperties.getLineHeight() * i;
-			linePainter.paintSelection(g, lineCharsToShow, from, to, by, y, fontProperties);
+			linePainter.paintSelection(g, from, to, by, fontProperties);
+			int x = fontProperties.getCharWidth() * from;
+			linePainter.paintSelectionText(g, lineCharsToShow, textFrom, textTo, x, y, document);
 		}
 	}
 
@@ -72,8 +80,8 @@ public class SyntaxDocumentPainter {
 				int length = Math.max(0, textToPaint.length - document.getFirstVisibleCol());
 				int offset = Math.min(textToPaint.length, document.getFirstVisibleCol());
 				g.setFont(Fonts.DEFAULT);
-				g.setColor(Colors.DEFAULT_TEXT);				
-				
+				g.setColor(Colors.DEFAULT_TEXT);
+
 				g.drawChars(textToPaint, offset, length, 0, y);
 				break;
 			default:

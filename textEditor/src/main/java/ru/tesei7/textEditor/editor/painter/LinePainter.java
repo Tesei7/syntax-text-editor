@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import ru.tesei7.textEditor.editor.FontProperties;
@@ -17,18 +16,28 @@ import ru.tesei7.textEditor.editor.utils.Fonts;
 
 public class LinePainter {
 
-	public void paintSelection(Graphics g, char[] chars, int from, int to, int backgroundY, int textY,
-			FontProperties fp) {
-		char[] toShow = Arrays.copyOfRange(chars, from, to);
-
+	public void paintSelection(Graphics g, int from, int to, int backgroundY, FontProperties fp) {
 		g.setColor(Colors.SELECTED_BACKGROUND);
 		int x = fp.getCharWidth() * from;
-		int width = fp.getCharWidth() * toShow.length;
+		int width = fp.getCharWidth() * (to - from);
 		int height = fp.getLineHeight();
 		g.fillRect(x, backgroundY, width, height);
+	}
 
+	public void paintSelectionText(Graphics g, char[] chars, Integer from, Integer to, int x, int y,
+			SyntaxDocument document) {
 		g.setColor(Color.WHITE);
-		g.drawChars(toShow, 0, toShow.length, x, textY);
+		int firstVisibleCol = document.getFirstVisibleCol();
+		int selfOffset = Math.max(from, firstVisibleCol);
+		int offset = Math.min(chars.length, selfOffset);
+		int length = Math.max(0, to - selfOffset);
+
+		g.drawChars(chars, offset, length, x, y);
+	}
+
+	public void paintSelectionText(Graphics g, char[] chars, int y, FontProperties fontProperties,
+			SyntaxDocument document) {
+
 	}
 
 	public void paintLine(Graphics g, Line line, int y, FontProperties fp, SyntaxDocument document) {

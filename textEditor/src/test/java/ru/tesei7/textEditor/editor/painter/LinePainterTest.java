@@ -102,9 +102,8 @@ public class LinePainterTest {
 	public void testPaintSelection() throws Exception {
 		when(fp.getLineHeight()).thenReturn(10);
 		when(fp.getCharWidth()).thenReturn(5);
-		linePainter.paintSelection(g, new char[] { 'a', 'b', 'c', 'd' }, 1, 3, 5, 10, fp);
+		linePainter.paintSelection(g, 1, 3, 5, fp);
 		verify(g).fillRect(5, 5, 10, 10);
-		verify(g).drawChars(new char[] { 'b', 'c' }, 0, 2, 5, 10);
 	}
 
 	@Test
