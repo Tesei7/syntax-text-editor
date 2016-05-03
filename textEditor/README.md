@@ -2,6 +2,7 @@
 
 Syntax Text Editor is a text editor with syntax highlighting feature written on java swing without using standard text components.
 Syntax highlighting is based on lexical analysis which is realized using [JFlex](http://jflex.de/) lexical analysers generator. 
+Editor loads and saves file in UTF-8 encoding and uses `\n` as new line character.
 
 ## Main features
 * Loading and saving files;

@@ -50,7 +50,7 @@ public class SyntaxDocumentPainter {
 			char[] lineCharsToShow = document.getLineCharsToShow(l);
 
 			int textFrom = 0;
-			int textTo = l.getLength();
+			int textTo = l.getLengthToPaint();
 			int from = 0, to = document.getCols() + 1;
 			if (i == lineFrom) {
 				Integer offsetToPaintFrom = selection.getOffsetToPaintFrom(l);
