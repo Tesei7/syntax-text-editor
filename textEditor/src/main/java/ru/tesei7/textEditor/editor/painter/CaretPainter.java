@@ -13,7 +13,7 @@ import ru.tesei7.textEditor.editor.utils.Colors;
 public class CaretPainter {
 
 	private SyntaxDocument document;
-	private BracketService bracketPositionService;
+	BracketService bracketPositionService;
 
 	public CaretPainter(SyntaxDocument document) {
 		this.document = document;

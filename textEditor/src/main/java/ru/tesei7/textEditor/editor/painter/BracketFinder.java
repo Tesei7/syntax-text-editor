@@ -13,7 +13,7 @@ public class BracketFinder {
 	int direction;
 	int reletiveBracketType;
 	Token reletiveBracketToken;
-	private int reletiveBracketLine;
+	int reletiveBracketLine;
 
 	public BracketFinder(SyntaxDocument document, BracketService bracketService) {
 		this.document = document;
@@ -29,7 +29,7 @@ public class BracketFinder {
 		}
 	}
 
-	private BracketFinder findCurrentBracket() throws Exception {
+	BracketFinder findCurrentBracket() throws Exception {
 		Line l = document.getCurrentLine();
 		currentBracketToken = l.getCurrentToken();
 		if (!bracketService.isBracket(currentBracketToken)) {
@@ -81,7 +81,7 @@ public class BracketFinder {
 		throw new Exception();
 	}
 
-	private BracketFinder findReletiveBracket() throws Exception {
+	BracketFinder findReletiveBracket() throws Exception {
 		int currTokenType = currentBracketToken.getType();
 		int openBracketsCount = 1;
 		for (int i = document.getCurLineIndex(); direction > 0 ? i < document.getSize() : i >= 0; i = i + direction) {
@@ -106,7 +106,7 @@ public class BracketFinder {
 		throw new Exception();
 	}
 
-	private int[] getReletiveBracketCoordinates() {
+	int[] getReletiveBracketCoordinates() {
 		int offset = reletiveBracketToken.getOffset();
 		int offsetToPaint = document.getXToPaint(document.getLineByIndex(reletiveBracketLine), offset);
 		int rowToPaint = reletiveBracketLine - document.getFirstVisibleRow();

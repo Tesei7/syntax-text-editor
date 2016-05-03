@@ -55,7 +55,7 @@ public class LinePainter {
 		}
 	}
 
-	private List<StyledText> getStyledText(Line line, List<Token> tokens) {
+	List<StyledText> getStyledText(Line line, List<Token> tokens) {
 		List<StyledText> list = new ArrayList<StyledText>();
 		if (tokens == null) {
 			return list;
@@ -69,7 +69,7 @@ public class LinePainter {
 		return list;
 	}
 
-	private Color getColor(int type) {
+	Color getColor(int type) {
 		switch (type) {
 		case TokenTypes.KEYWORD:
 			return Colors.KEY_WORD;
@@ -91,7 +91,7 @@ public class LinePainter {
 		}
 	}
 
-	private Font getFont(int type) {
+	Font getFont(int type) {
 		switch (type) {
 		case TokenTypes.KEYWORD:
 			return Fonts.BOLD;
