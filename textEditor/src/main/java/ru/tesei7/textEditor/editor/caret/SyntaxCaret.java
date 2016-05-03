@@ -23,18 +23,10 @@ public class SyntaxCaret implements SyntaxCaretListener {
 
 	@Override
 	public void onCaretChanged(SyntaxCaretEvent e) {
-		if (e.getType()==null){
+		if (e.getType() == null) {
 			return;
 		}
-		if (e.getType() != SyntaxCaretEventType.MOUSE_SELECTION && e.getType() != SyntaxCaretEventType.INSERT) {
-			if (e.isWithShift()) {
-				if (document.getSelection().notSelected()) {
-					startSelection();
-				}
-			} else {
-				document.clearSelection();
-			}
-		}
+		doSelectBefore(e);
 
 		switch (e.getType()) {
 		case LEFT:
@@ -77,9 +69,25 @@ public class SyntaxCaret implements SyntaxCaretListener {
 			break;
 		}
 
+		doSelectAfter(e);
+	}
+
+	void doSelectAfter(SyntaxCaretEvent e) {
 		if (e.getType() != SyntaxCaretEventType.MOUSE_SELECTION && e.getType() != SyntaxCaretEventType.INSERT) {
 			if (e.isWithShift()) {
 				setSelection();
+			}
+		}
+	}
+
+	void doSelectBefore(SyntaxCaretEvent e) {
+		if (e.getType() != SyntaxCaretEventType.MOUSE_SELECTION && e.getType() != SyntaxCaretEventType.INSERT) {
+			if (e.isWithShift()) {
+				if (document.getSelection().notSelected()) {
+					startSelection();
+				}
+			} else {
+				document.clearSelection();
 			}
 		}
 	}
@@ -117,7 +125,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		document.selectTo(document.getCurLineIndex(), document.getCurrentLine().getOffset());
 	}
 
-	private void setCaret(int x, int y, boolean withShift) {
+	void setCaret(int x, int y, boolean withShift) {
 		int lineIndex = y / fontProperties.getLineHeight() + document.getFirstVisibleRow();
 		document.setCurLineIndex(lineIndex);
 		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
@@ -132,7 +140,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		}
 	}
 
-	private void setSelection(int x, int y) {
+	void setSelection(int x, int y) {
 		int lineIndex = y / fontProperties.getLineHeight() + document.getFirstVisibleRow();
 		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
 		Line line = document.getLineByIndex(lineIndex);
