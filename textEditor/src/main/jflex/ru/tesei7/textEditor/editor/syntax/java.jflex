@@ -234,8 +234,6 @@ SingleCharacter = [^\r\n\']
   
   {StringCharacter}+             { return token(STRING_LITERAL); }
   
-  {LineTerminator}                { yybegin(YYINITIAL); } 
-  
   /* error cases */
   \\.                            { return token(STRING_LITERAL); }
   
@@ -245,8 +243,6 @@ SingleCharacter = [^\r\n\']
   \'                             { yybegin(YYINITIAL); return token(CHARACTER_LITERAL); }
   
   {SingleCharacter}+             { return token(CHARACTER_LITERAL); }
-  
-  {LineTerminator}               { yybegin(YYINITIAL); }  
   
   /* error cases */
   \\.                            { return token(CHARACTER_LITERAL); }
