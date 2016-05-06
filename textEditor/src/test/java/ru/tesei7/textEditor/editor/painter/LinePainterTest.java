@@ -87,9 +87,11 @@ public class LinePainterTest {
 		when(t2.getOffset()).thenReturn(2);
 		when(t1.getType()).thenReturn(TokenTypes.IDENTIFIER);
 		when(t2.getType()).thenReturn(TokenTypes.IDENTIFIER);
+		when(line.getOffsetToPaint(0)).thenReturn(0);
+		when(line.getOffsetToPaint(2)).thenReturn(3);
 
 		Matcher<StyledText> t1Matcher = isStyledText(new char[] { 'a', 'b' }, 0, Fonts.DEFAULT, Colors.IDENTIFIER);
-		Matcher<StyledText> t2Matcher = isStyledText(new char[] { 'c', 'd', 'e' }, 2, Fonts.DEFAULT, Colors.IDENTIFIER);
+		Matcher<StyledText> t2Matcher = isStyledText(new char[] { 'c', 'd', 'e' }, 3, Fonts.DEFAULT, Colors.IDENTIFIER);
 		assertThat(linePainter.getStyledText(line, Arrays.asList(t1, t2)), contains(t1Matcher, t2Matcher));
 	}
 

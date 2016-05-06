@@ -73,7 +73,7 @@ public class LinePainter {
 			Color color = getColor(t.getType());
 			Font font = getFont(t.getType());
 			char[] text = line.getChars(t);
-			list.add(new StyledText(text, t.getOffset(), font, color));
+			list.add(new StyledText(text, line.getOffsetToPaint(t.getOffset()), font, color));
 		}
 		return list;
 	}
