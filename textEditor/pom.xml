@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ru.tesei7</groupId>
 	<artifactId>syntaxTextEditor</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>SyntaxTextEditor</name>
 
 	<properties>
