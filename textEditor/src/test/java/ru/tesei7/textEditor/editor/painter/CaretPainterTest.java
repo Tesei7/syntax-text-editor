@@ -90,12 +90,13 @@ public class CaretPainterTest {
 		when(document.getCurLineIndexToPaint()).thenReturn(2);
 		when(document.getCurrentLine()).thenReturn(line);
 		when(line.getOffsetToPaint()).thenReturn(3);
+		when(document.getFirstVisibleCol()).thenReturn(1);
 		caretPainter.highlightBrackets(g);
-		verify(caretPainter).highlightBracket(g, 2, 3, 0, Colors.NOT_FOUND_BRACKET_BACKGROUND);
+		verify(caretPainter).highlightBracket(g, 2, 2, 0, Colors.NOT_FOUND_BRACKET_BACKGROUND);
 
 		when(bracketPositionService.getReletiveBracket()).thenReturn(new int[] { 4, 5 });
 		caretPainter.highlightBrackets(g);
-		verify(caretPainter).highlightBracket(g, 2, 3, 0, Colors.FOUND_BRACKET_BACKGROUND);
+		verify(caretPainter).highlightBracket(g, 2, 2, 0, Colors.FOUND_BRACKET_BACKGROUND);
 		verify(caretPainter).highlightBracket(g, 4, 5, 0, Colors.FOUND_BRACKET_BACKGROUND);
 	}
 

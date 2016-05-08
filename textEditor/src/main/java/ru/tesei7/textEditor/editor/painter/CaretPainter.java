@@ -57,7 +57,7 @@ public class CaretPainter {
 
 		int[] coordinates = bracketPositionService.getReletiveBracket();
 		int caretRow = document.getCurLineIndexToPaint();
-		int offset = document.getCurrentLine().getOffsetToPaint();
+		int offset = document.getCurrentLine().getOffsetToPaint() - document.getFirstVisibleCol();
 		if (coordinates == null) {
 			highlightBracket(g, caretRow, offset, position, Colors.NOT_FOUND_BRACKET_BACKGROUND);
 		} else {
