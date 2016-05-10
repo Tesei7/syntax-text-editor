@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -21,100 +20,90 @@ import ru.tesei7.textEditor.editor.utils.Fonts;
 
 /**
  * Text editor component
- * 
- * @author Ilya
  *
+ * @author Ilya
  */
 public class SyntaxTextPanel extends JPanel
-		implements SyntaxCaretListener, DocumentEditListener, SyntaxScrollListener, FrameListener {
-	private static final long serialVersionUID = -8378730572715369064L;
+        implements SyntaxCaretListener, DocumentEditListener, SyntaxScrollListener, FrameListener {
+    private static final long serialVersionUID = -8378730572715369064L;
 
-	private SyntaxTextEditor editor;
+    private SyntaxTextEditor editor;
 
-	/**
-	 * Flag of caret visibility for blinking caret
-	 */
-	volatile private Boolean caretVisible = true;
-	/**
-	 * Do not blink caret if edited
-	 */
-	volatile private boolean skipNextBlink = false;
+    /**
+     * Flag of caret visibility for blinking caret
+     */
+    private boolean caretVisible = true;
+    /**
+     * Do not blink caret if edited
+     */
+    private boolean skipNextBlink = false;
 
-	public SyntaxTextPanel(SyntaxTextEditor editor) {
-		this.editor = editor;
+    public SyntaxTextPanel(SyntaxTextEditor editor) {
+        this.editor = editor;
 
-		setBackground(Color.WHITE);
-		setFocusable(true);
-		setFocusTraversalKeysEnabled(false);
-		setFont(Fonts.DEFAULT);
-		setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		initCaretBlinker();
-	}
+        setBackground(Color.WHITE);
+        setFocusable(true);
+        setFocusTraversalKeysEnabled(false);
+        setFont(Fonts.DEFAULT);
+        setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+        initCaretBlinker();
+    }
 
-	private void initCaretBlinker() {
-		Timer timer = new Timer(SyntaxTextEditor.CARET_BLINK_PERIOD, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!skipNextBlink) {
-					toggleCaretVisible();
-				}
-				repaint();
-				skipNextBlink = false;
-			}
-		});
-		timer.start();
-	}
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (editor.getDocument().isReady()) {
+            editor.getCaretPainter().paintBackground(g);
+            editor.getCaretPainter().highlightBrackets(g);
+            editor.getDocumentPainter().paint(g, editor.getLanguage());
+            editor.getCaretPainter().paintCaret(g, caretVisible);
+        }
+    }
 
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		if (editor.getDocument().isReady()) {
-			editor.getCaretPainter().paintBackground(g);
-			editor.getCaretPainter().highlightBrackets(g);
-			editor.getDocumentPainter().paint(g, editor.getLanguage());
-			editor.getCaretPainter().paintCaret(g, caretVisible);
-		}
-	}
+    private void initCaretBlinker() {
+        Timer timer = new Timer(SyntaxTextEditor.CARET_BLINK_PERIOD, this::blinkCaretAndRepaint);
+        timer.start();
+    }
 
-	private void freezeCaretAndRepaint() {
-		freezeCaret();
-		repaint();
-	}
+    private void blinkCaretAndRepaint(ActionEvent e) {
+        if (!skipNextBlink) {
+            //Blink caret
+            caretVisible = !caretVisible;
+        }
+        repaint();
+        skipNextBlink = false;
+    }
 
-	/**
-	 * Blink caret
-	 */
-	void toggleCaretVisible() {
-		synchronized (caretVisible) {
-			this.caretVisible = !caretVisible;
-		}
-	}
+    private void freezeCaretAndRepaint() {
+        freezeCaret();
+        repaint();
+    }
 
-	/**
-	 * Prevent caret from blinking while text editing
-	 */
-	void freezeCaret() {
-		caretVisible = true;
-		skipNextBlink = true;
-	}
+    /**
+     * Prevent caret from blinking while text editing
+     */
+    void freezeCaret() {
+        caretVisible = true;
+        skipNextBlink = true;
+    }
 
-	@Override
-	public void onCaretChanged(SyntaxCaretEvent e) {
-		freezeCaretAndRepaint();
-	}
+    @Override
+    public void onCaretChanged(SyntaxCaretEvent e) {
+        freezeCaretAndRepaint();
+    }
 
-	@Override
-	public void onDocumentEdited(DocumentEditEvent e) {
-		freezeCaretAndRepaint();
-	}
+    @Override
+    public void onDocumentEdited(DocumentEditEvent e) {
+        freezeCaretAndRepaint();
+    }
 
-	@Override
-	public void onScrollChanged(SyntaxScrollEvent e) {
-		freezeCaretAndRepaint();
-	}
+    @Override
+    public void onScrollChanged(SyntaxScrollEvent e) {
+        freezeCaretAndRepaint();
+    }
 
-	@Override
-	public void onFrameChanged(FrameEvent e) {
-		freezeCaretAndRepaint();
-	}
+    @Override
+    public void onFrameChanged(FrameEvent e) {
+        freezeCaretAndRepaint();
+    }
 }

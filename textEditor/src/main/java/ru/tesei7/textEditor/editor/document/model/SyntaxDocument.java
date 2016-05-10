@@ -2,7 +2,6 @@ package ru.tesei7.textEditor.editor.document.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.OptionalInt;

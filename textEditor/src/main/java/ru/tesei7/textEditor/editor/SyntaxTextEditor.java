@@ -331,7 +331,10 @@ public class SyntaxTextEditor extends JPanel {
 		textPanel.repaint();
 	}
 
-	public void setTextAreaSize(Dimension size) {
+	/**
+	 * Recalculate number of rows and columns to show depending on current size
+	 */
+	public void resizeToFitParent() {
 		int rows = textPanel.getHeight() / fontProperties.getLineHeight();
 		int cols = textPanel.getWidth() / fontProperties.getCharWidth();
 		document.setRows(rows);

@@ -16,7 +16,6 @@ public class ResizeListener extends ComponentAdapter {
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		Component component = e.getComponent();
-		textArea.setTextAreaSize(component.getSize());
+		textArea.resizeToFitParent();
 	}
 }
