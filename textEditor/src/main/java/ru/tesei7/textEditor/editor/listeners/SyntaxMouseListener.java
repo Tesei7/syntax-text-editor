@@ -20,6 +20,10 @@ public class SyntaxMouseListener extends MouseAdapter {
 		this.caretObservable = caretObservable;
 	}
 
+	public void setDocument(SyntaxDocument document) {
+		this.document = document;
+	}
+
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		int value = e.getWheelRotation() * SyntaxTextEditor.MOUSE_WHEEL_SCROLL_LINES;

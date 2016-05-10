@@ -52,7 +52,7 @@ public class SyntaxTextPanel extends JPanel
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (editor.getDocument().isReady()) {
+        if (editor.isReady()) {
             editor.getCaretPainter().paintBackground(g);
             editor.getCaretPainter().highlightBrackets(g);
             editor.getDocumentPainter().paint(g, editor.getLanguage());

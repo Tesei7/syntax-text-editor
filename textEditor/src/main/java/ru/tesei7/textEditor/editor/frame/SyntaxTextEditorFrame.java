@@ -19,6 +19,10 @@ public class SyntaxTextEditorFrame implements SyntaxCaretListener, SyntaxScrollL
 		this.document = document;
 	}
 
+	public void setDocument(SyntaxDocument document) {
+		this.document = document;
+	}
+
 	@Override
 	public void onScrollChanged(SyntaxScrollEvent e) {
 		Integer value = e.getValue();

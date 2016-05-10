@@ -30,11 +30,7 @@ public class ProgressDialog extends JDialog {
         worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                try {
-                    task.run();
-                } catch (Throwable t) {
-                    System.out.println("Interrupted");
-                }
+                task.run();
                 return null;
             }
 
@@ -58,7 +54,7 @@ public class ProgressDialog extends JDialog {
 
         JLabel label = new JLabel(message);
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(10,10,10,10);
+        c.insets = new Insets(10, 10, 10, 10);
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1.0;
@@ -69,7 +65,7 @@ public class ProgressDialog extends JDialog {
         JProgressBar progressBar = new JProgressBar(0, 100);
         progressBar.setIndeterminate(true);
         progressBar.setPreferredSize(new Dimension(420, 20));
-        c.insets = new Insets(0,10,0,10);
+        c.insets = new Insets(0, 10, 0, 10);
         c.gridx = 0;
         c.gridy = 1;
         c.weightx = 1.0;
@@ -84,7 +80,7 @@ public class ProgressDialog extends JDialog {
             }
         });
         cancelButton.setEnabled(canCancel);
-        c.insets = new Insets(10,10,10,10);
+        c.insets = new Insets(10, 10, 10, 10);
         c.gridx = 0;
         c.gridy = 2;
         c.weightx = 1.0;

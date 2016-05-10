@@ -18,6 +18,10 @@ public class ScrollBarsManager implements DocumentDimensionsListener, FrameListe
 		this.vBar = vBar;
 	}
 
+	public void setDocument(SyntaxDocument document) {
+		this.document = document;
+	}
+
 	@Override
 	public void onDimensionsChanged(DimensionsEvent e) {
 		recalculateMaxCols();

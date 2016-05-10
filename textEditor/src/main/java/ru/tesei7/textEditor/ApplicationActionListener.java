@@ -67,7 +67,8 @@ public class ApplicationActionListener implements ActionListener {
     }
 
     void changeSyntax(Language language) {
-        new ProgressDialog(app.getFrame(), "Changing syntax...", "Changing syntax, please wait", false, () -> app.getTextArea().setLanguage(language));
+        new ProgressDialog(app.getFrame(), "Changing syntax...",
+                "Changing syntax, please wait", false, () -> app.getTextArea().setLanguage(language));
     }
 
     void newFile() {
@@ -112,7 +113,8 @@ public class ApplicationActionListener implements ActionListener {
         app.setLoadFile(loadFile);
         if (loadFile != null) {
             Language language = getLanguage(loadFile.getExtension());
-            new ProgressDialog(app.getFrame(), "Loading file...", "Loading file, please wait", true, () -> app.getTextArea().setText(loadFile.getData(), language));
+            new ProgressDialog(app.getFrame(), "Loading file...", "Loading file, please wait",
+                    true, () -> app.getTextArea().setText(loadFile.getData(), language));
             // remove link to data, because it is not necessary to store it any more
             loadFile.clearData();
             app.selectSyntaxMenuItem(language);
