@@ -28,11 +28,11 @@ public class SyntaxTextEditorFrameTest {
 	@Mock
 	private SyntaxScrollEvent scrollEvent;
 	@Mock
-	private Line fline;
+	private Line line;
 
 	@Before
 	public void setUp() {
-		when(document.getFirstVisibleLine()).thenReturn(fline);
+		when(document.getFirstVisibleLine()).thenReturn(line);
 	}
 
 	@Test

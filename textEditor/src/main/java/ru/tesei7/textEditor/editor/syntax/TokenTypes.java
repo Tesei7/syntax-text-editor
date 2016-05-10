@@ -5,12 +5,12 @@ public interface TokenTypes {
 	
 	int KEYWORD = 1;
 	int BOOLEAN_LITERAL = 2;
-	int LPAREN = 3;
-	int RPAREN = 4;
-	int LBRACE = 5;
-	int RBRACE = 6;
-	int LBRACK = 7;
-	int RBRACK = 8;
+	int L_PARENTHESIS = 3;
+	int R_PARENTHESIS = 4;
+	int L_BRACE = 5;
+	int R_BRACE = 6;
+	int L_BRACKET = 7;
+	int R_BRACKET = 8;
 	int SEMICOLON = 9;
 	int COMMA = 10;
 	int DOT = 11;

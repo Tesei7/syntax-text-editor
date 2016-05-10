@@ -24,7 +24,7 @@ public class TokenizerFactory {
 	}
 
 	Tokenizer createTokenizer(Language language, char[] text, int state) {
-		Tokenizer tokenizer = null;
+		Tokenizer tokenizer;
 		switch (language) {
 		case JAVA:
 			tokenizer = javaTokenizer;

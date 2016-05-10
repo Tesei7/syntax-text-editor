@@ -17,7 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class DirtyStateObservableTest {
 	@InjectMocks
-	private DirtyStateObservable observerable;
+	private DirtyStateObservable observable;
 	@Mock
 	private List<DirtyStateListener> listeners;
 	@Mock
@@ -27,29 +27,29 @@ public class DirtyStateObservableTest {
 
 	@Test
 	public final void testAddListener() throws Exception {
-		observerable.addListener(listener);
+		observable.addListener(listener);
 		verify(listeners).add(listener);
 	}
 
 	@Test
 	public final void testRemoveListener() throws Exception {
-		observerable.removeListener(listener);
+		observable.removeListener(listener);
 		verify(listeners).remove(listener);
 	}
 
 	@Test
 	public final void testNotifyListeners() throws Exception {
-		observerable.listeners = new ArrayList<>();
-		observerable.listeners.add(listener);
-		observerable.listeners.add(listener);
-		observerable.notifyListeners(event);
+		observable.listeners = new ArrayList<>();
+		observable.listeners.add(listener);
+		observable.listeners.add(listener);
+		observable.notifyListeners(event);
 		
 		when(event.getOldDirtyState()).thenReturn(true);
 		when(event.getNewDirtyState()).thenReturn(true);
 		verify(listener, never()).onDirtyStateChanged(event);
 		
 		when(event.getNewDirtyState()).thenReturn(false);
-		observerable.notifyListeners(event);
+		observable.notifyListeners(event);
 		verify(listener, times(2)).onDirtyStateChanged(event);
 	}
 

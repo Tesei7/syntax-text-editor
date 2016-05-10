@@ -39,7 +39,6 @@ public class SaveLoadFileService {
 				e.printStackTrace();
 				return null;
 			}
-		} else {
 		}
 		return null;
 	}

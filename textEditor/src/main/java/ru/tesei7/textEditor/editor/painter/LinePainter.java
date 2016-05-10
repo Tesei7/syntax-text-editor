@@ -35,22 +35,15 @@ public class LinePainter {
 		g.drawChars(chars, offset, length, x, y);
 	}
 
-	public void paintSelectionText(Graphics g, char[] chars, int y, FontProperties fontProperties,
-			SyntaxDocument document) {
-
-	}
-
 	public void paintLine(Graphics g, Line line, int y, FontProperties fp, SyntaxDocument document) {
 		int firstVisibleCol = document.getFirstVisibleCol();
 		List<StyledText> styledText = getStyledText(line, line.getTokens());
 		int x = 0;
-		for (int i = 0; i < styledText.size(); i++) {
-			StyledText st = styledText.get(i);
+		for (StyledText st : styledText) {
 			g.setFont(st.font);
 			g.setColor(st.color);
 
-			int offset = 0;
-			int length = 0;
+			int offset, length;
 			if (st.offset >= firstVisibleCol) {
 				offset = 0;
 				length = st.text.length;
@@ -65,7 +58,7 @@ public class LinePainter {
 	}
 
 	List<StyledText> getStyledText(Line line, List<Token> tokens) {
-		List<StyledText> list = new ArrayList<StyledText>();
+		List<StyledText> list = new ArrayList<>();
 		if (tokens == null) {
 			return list;
 		}

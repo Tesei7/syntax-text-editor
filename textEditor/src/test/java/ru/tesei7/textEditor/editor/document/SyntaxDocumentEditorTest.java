@@ -19,7 +19,7 @@ import ru.tesei7.textEditor.editor.document.model.Line;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.document.model.TextSelection;
 import ru.tesei7.textEditor.editor.scroll.DimensionsObservable;
-import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.FrameObservable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntaxDocumentEditorTest {
@@ -33,9 +33,9 @@ public class SyntaxDocumentEditorTest {
 	@Mock
 	private SyntaxCaretObservable syntaxCaretObservable;
 	@Mock
-	private DimensionsObservable dimentionsObservable;
+	private DimensionsObservable dimensionsObservable;
 	@Mock
-	private FrameObserverable frameObserverable;
+	private FrameObservable frameObservable;
 	@Mock
 	private TextSelection selection;
 	@Mock

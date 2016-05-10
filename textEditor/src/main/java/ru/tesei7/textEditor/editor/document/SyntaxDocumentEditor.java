@@ -17,14 +17,14 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.scroll.DimensionType;
 import ru.tesei7.textEditor.editor.scroll.DimensionsEvent;
 import ru.tesei7.textEditor.editor.scroll.DimensionsObservable;
-import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.FrameObservable;
 
 public class SyntaxDocumentEditor implements DocumentEditListener {
 
 	private SyntaxDocument document;
 	SyntaxCaretObservable caretObservable;
 	DimensionsObservable dimensionsObservable;
-	FrameObserverable frameObserverable;
+	FrameObservable frameObservable;
 
 	public SyntaxDocumentEditor(SyntaxDocument document, SyntaxCaretObservable syntaxCaretObservable,
 			DimensionsObservable dimensionsObservable) {
@@ -87,7 +87,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		if (bufferString.isEmpty()) {
 			return;
 		}
-		// -1 in split methods used to not ommit \n at the end of file
+		// -1 in split methods used to not omit \n at the end of file
 		String[] split = bufferString.split("\n", -1);
 
 		Line line = document.getCurrentLine();
@@ -113,7 +113,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			document.setCurLineIndex(document.getCurLineIndex() + newLines.size());
 		}
 
-		document.recalcTokens(document.getCurLineIndex() - split.length, split.length + 1);
+		document.recalculateTokens(document.getCurLineIndex() - split.length, split.length + 1);
 	}
 
 	private String getBufferString() {
@@ -144,7 +144,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 	void printCharSelection(char c) {
 		document.removeSelection();
 		document.getCurrentLine().printChar(c);
-		document.recalcTokens(document.getCurLineIndex(), 1);
+		document.recalculateTokens(document.getCurLineIndex(), 1);
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
@@ -161,7 +161,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 			break;
 		}
 
-		document.recalcTokens(document.getCurLineIndex(), 1);
+		document.recalculateTokens(document.getCurLineIndex(), 1);
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
@@ -195,7 +195,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		newLine.setChars(curLineText.subList(offset, curLineText.size()));
 		currentLine.setChars(curLineText.subList(0, offset));
 
-		document.recalcTokens(document.getCurLineIndex(), 2);
+		document.recalculateTokens(document.getCurLineIndex(), 2);
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		document.moveCurLineIndex(1);
@@ -218,10 +218,10 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		if (currentLine.getOffset() == currentLine.getLength()) {
 			int curLineIndex = document.getCurLineIndex();
 			concatLines(curLineIndex, curLineIndex + 1, false);
-			document.recalcTokens(document.getCurLineIndex(), 2);
+			document.recalculateTokens(document.getCurLineIndex(), 2);
 		} else {
 			currentLine.delete();
-			document.recalcTokens(document.getCurLineIndex(), 1);
+			document.recalculateTokens(document.getCurLineIndex(), 1);
 			dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 		}
 	}
@@ -239,10 +239,10 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		if (currentLine.getOffset() == 0) {
 			int curLineIndex = document.getCurLineIndex();
 			concatLines(curLineIndex - 1, curLineIndex, true);
-			document.recalcTokens(document.getCurLineIndex(), 2);
+			document.recalculateTokens(document.getCurLineIndex(), 2);
 		} else {
 			currentLine.backspace();
-			document.recalcTokens(document.getCurLineIndex(), 1);
+			document.recalculateTokens(document.getCurLineIndex(), 1);
 			// dimensions should be changed first
 			dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.ONLY_X));
 			caretObservable.notifyListeners(new SyntaxCaretEvent());
@@ -251,7 +251,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 
 	void removeSelection() {
 		document.removeSelection();
-		document.recalcTokens(document.getCurLineIndex(), 2);
+		document.recalculateTokens(document.getCurLineIndex(), 2);
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
 	}
@@ -263,7 +263,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		Line l1 = document.getLineByIndex(l1Index);
 		Line l2 = document.getLineByIndex(l2Index);
 
-		int l1_lenght = l1.getLength();
+		int l1Length = l1.getLength();
 		LinkedList<Character> concat = new LinkedList<>();
 		concat.addAll(l1.getChars());
 		concat.addAll(l2.getChars());
@@ -272,7 +272,7 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 
 		// dimensions should be changed first
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
-		l1.setOffset(l1_lenght);
+		l1.setOffset(l1Length);
 		if (moveCaretUp) {
 			document.moveCurLineIndex(-1);
 			caretObservable.notifyListeners(new SyntaxCaretEvent());

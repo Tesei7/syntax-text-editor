@@ -1,6 +1,5 @@
 package ru.tesei7.textEditor.editor.painter;
 
-import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
@@ -54,7 +53,7 @@ public class BracketServiceTest {
 		assertThat(bracketService.isBracket(null), is(false));
 		when(t1.getType()).thenReturn(TokenTypes.IDENTIFIER);
 		assertThat(bracketService.isBracket(t1), is(false));
-		when(t1.getType()).thenReturn(TokenTypes.LBRACE);
+		when(t1.getType()).thenReturn(TokenTypes.L_BRACE);
 		assertThat(bracketService.isBracket(t1), is(true));
 	}
 

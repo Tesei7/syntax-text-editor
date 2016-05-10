@@ -72,7 +72,7 @@ public class ApplicationActionListener implements ActionListener {
 
 	void newFile() {
 		if (!app.getTextArea().isDirty()) {
-			newFileWithoutPromt();
+			newFileWithoutPrompt();
 		} else {
 			String ObjButtons[] = { "Yes", "No" };
 			String message = "Create new file and loose unsaved changes?";
@@ -80,12 +80,12 @@ public class ApplicationActionListener implements ActionListener {
 			int PromptResult = JOptionPane.showOptionDialog(null, message, title, JOptionPane.DEFAULT_OPTION,
 					JOptionPane.WARNING_MESSAGE, null, ObjButtons, ObjButtons[1]);
 			if (PromptResult == JOptionPane.YES_OPTION) {
-				newFileWithoutPromt();
+				newFileWithoutPrompt();
 			}
 		}
 	}
 
-	private void newFileWithoutPromt() {
+	private void newFileWithoutPrompt() {
 		SyntaxTextEditor textArea = app.getTextArea();
 		app.setLoadFile(null);
 		textArea.setText("", textArea.getLanguage());
@@ -94,7 +94,7 @@ public class ApplicationActionListener implements ActionListener {
 
 	void open() {
 		if (!app.getTextArea().isDirty()) {
-			openWithoutPromt();
+			openWithoutPrompt();
 		} else {
 			String ObjButtons[] = { "Yes", "No" };
 			String message = "Open file and loose unsaved changes?";
@@ -102,12 +102,12 @@ public class ApplicationActionListener implements ActionListener {
 			int PromptResult = JOptionPane.showOptionDialog(null, message, title, JOptionPane.DEFAULT_OPTION,
 					JOptionPane.WARNING_MESSAGE, null, ObjButtons, ObjButtons[1]);
 			if (PromptResult == JOptionPane.YES_OPTION) {
-				openWithoutPromt();
+				openWithoutPrompt();
 			}
 		}
 	}
 
-	private void openWithoutPromt() {
+	private void openWithoutPrompt() {
 		LoadedFile loadFile = saveLoadFileService.loadFile(null);
 		app.setLoadFile(loadFile);
 		if (loadFile != null) {

@@ -24,7 +24,6 @@ import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 public class Application {
 	static final String TITLE = "Syntax Text Editor";
 
-	private JPanel contentPane;
 	private SyntaxTextEditor textArea;
 	private JFrame frame;
 	private LoadedFile loadFile;
@@ -66,7 +65,7 @@ public class Application {
 	}
 
 	public Container createContentPane() {
-		contentPane = new JPanel(new BorderLayout());
+		JPanel contentPane = new JPanel(new BorderLayout());
 		contentPane.setOpaque(true);
 		textArea = new SyntaxTextEditor();
 		textArea.addDirtyStateListener((e) -> changeTitle());

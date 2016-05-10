@@ -129,7 +129,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		int lineIndex = y / fontProperties.getLineHeight() + document.getFirstVisibleRow();
 		document.setCurLineIndex(lineIndex);
 		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
-		int offset = document.getCurrentLine().getOffestByOffsetToPaint(offsetToPaint);
+		int offset = document.getCurrentLine().getOffsetByOffsetToPaint(offsetToPaint);
 		document.getCurrentLine().setOffset(offset);
 
 		if (!withShift) {
@@ -144,7 +144,7 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		int lineIndex = y / fontProperties.getLineHeight() + document.getFirstVisibleRow();
 		int offsetToPaint = x / fontProperties.getCharWidth() + document.getFirstVisibleCol();
 		Line line = document.getLineByIndex(lineIndex);
-		int offset = line.getOffestByOffsetToPaint(offsetToPaint);
+		int offset = line.getOffsetByOffsetToPaint(offsetToPaint);
 		document.selectTo(lineIndex, offset);
 		document.setCurLineIndex(lineIndex);
 		line.setOffset(offset);

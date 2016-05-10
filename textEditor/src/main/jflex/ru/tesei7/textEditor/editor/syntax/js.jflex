@@ -130,12 +130,12 @@ SingleCharacter = [^\r\n\']
   "false"                        { return token(BOOLEAN_LITERAL); }
   
   /* separators */
-  "("                            { return token(LPAREN); }
-  ")"                            { return token(RPAREN); }
-  "{"                            { return token(LBRACE); }
-  "}"                            { return token(RBRACE); }
-  "["                            { return token(LBRACK); }
-  "]"                            { return token(RBRACK); }
+  "("                            { return token(L_PARENTHESIS); }
+  ")"                            { return token(R_PARENTHESIS); }
+  "{"                            { return token(L_BRACE); }
+  "}"                            { return token(R_BRACE); }
+  "["                            { return token(L_BRACKET); }
+  "]"                            { return token(R_BRACKET); }
   ";"                            { return token(SEMICOLON); }
   ","                            { return token(COMMA); }
   "."                            { return token(DOT); }

@@ -958,27 +958,27 @@ public class JavaScriptTokenizer implements TokenTypes, Tokenizer {
             }
           case 35: break;
           case 9: 
-            { return token(LPAREN);
+            { return token(L_PARENTHESIS);
             }
           case 36: break;
           case 10: 
-            { return token(RPAREN);
+            { return token(R_PARENTHESIS);
             }
           case 37: break;
           case 11: 
-            { return token(LBRACE);
+            { return token(L_BRACE);
             }
           case 38: break;
           case 12: 
-            { return token(RBRACE);
+            { return token(R_BRACE);
             }
           case 39: break;
           case 13: 
-            { return token(LBRACK);
+            { return token(L_BRACKET);
             }
           case 40: break;
           case 14: 
-            { return token(RBRACK);
+            { return token(R_BRACKET);
             }
           case 41: break;
           case 15: 

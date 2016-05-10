@@ -9,33 +9,33 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 public class ScrollBarsManager implements DocumentDimensionsListener, FrameListener {
 
 	SyntaxDocument document;
-	JScrollBar hbar;
-	JScrollBar vbar;
+	JScrollBar hBar;
+	JScrollBar vBar;
 
-	public ScrollBarsManager(SyntaxDocument document, JScrollBar hbar, JScrollBar vbar) {
+	public ScrollBarsManager(SyntaxDocument document, JScrollBar hBar, JScrollBar vBar) {
 		this.document = document;
-		this.hbar = hbar;
-		this.vbar = vbar;
+		this.hBar = hBar;
+		this.vBar = vBar;
 	}
 
 	@Override
 	public void onDimensionsChanged(DimensionsEvent e) {
-		recalcMaxCols();
+		recalculateMaxCols();
 		if (e.getType() == DimensionType.X_AND_Y) {
-			recalcMaxRows();
+			recalculateMaxRows();
 		}
 	}
 
-	void recalcMaxRows() {
+	void recalculateMaxRows() {
 		int height = document.getSize();
 		int max = Math.max(height, document.getRows());
-		setBarFields(vbar, max, document.getRows());
+		setBarFields(vBar, max, document.getRows());
 	}
 
-	void recalcMaxCols() {
+	void recalculateMaxCols() {
 		int cols = document.getMaxCols();
 		int max = Math.max(cols, document.getCols());
-		setBarFields(hbar, max, document.getCols());
+		setBarFields(hBar, max, document.getCols());
 	}
 
 	@Override
@@ -43,10 +43,10 @@ public class ScrollBarsManager implements DocumentDimensionsListener, FrameListe
 		Integer value = e.getValue();
 		switch (e.getType()) {
 		case HORIZONTAL:
-			setBarValue(hbar, value);
+			setBarValue(hBar, value);
 			break;
 		case VERTICAL:
-			setBarValue(vbar, value);
+			setBarValue(vBar, value);
 			break;
 		}
 	}
@@ -54,13 +54,14 @@ public class ScrollBarsManager implements DocumentDimensionsListener, FrameListe
 	/**
 	 * Set bar maximum and visible amount without notification
 	 * 
-	 * @param height
+	 * @param max bar maximum
+	 * @param extent bar extent
 	 */
 	void setBarFields(JScrollBar bar, int max, int extent) {
 		AdjustmentListener[] listeners = bar.getAdjustmentListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			bar.removeAdjustmentListener(listeners[i]);
-		}
+        for (AdjustmentListener listener : listeners) {
+            bar.removeAdjustmentListener(listener);
+        }
 		bar.setMaximum(max);
 		bar.setVisibleAmount(extent);
 		for (AdjustmentListener l : listeners) {
@@ -71,14 +72,14 @@ public class ScrollBarsManager implements DocumentDimensionsListener, FrameListe
 	/**
 	 * Set bar current value without listeners notification
 	 * 
-	 * @param bar
-	 * @param value
+	 * @param bar scroll bar
+	 * @param value bar value
 	 */
 	void setBarValue(JScrollBar bar, int value) {
 		AdjustmentListener[] listeners = bar.getAdjustmentListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			bar.removeAdjustmentListener(listeners[i]);
-		}
+        for (AdjustmentListener listener : listeners) {
+            bar.removeAdjustmentListener(listener);
+        }
 		bar.setValue(value);
 		for (AdjustmentListener l : listeners) {
 			bar.addAdjustmentListener(l);

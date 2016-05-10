@@ -15,7 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class DocumentEditObservableTest {
 	@InjectMocks
-	private DocumentEditObservable observerable;
+	private DocumentEditObservable observable;
 	@Mock
 	private List<DocumentEditListener> listeners;
 	@Mock
@@ -25,22 +25,22 @@ public class DocumentEditObservableTest {
 
 	@Test
 	public final void testAddListener() throws Exception {
-		observerable.addListener(listener);
+		observable.addListener(listener);
 		verify(listeners).add(listener);
 	}
 
 	@Test
 	public final void testRemoveListener() throws Exception {
-		observerable.removeListener(listener);
+		observable.removeListener(listener);
 		verify(listeners).remove(listener);
 	}
 
 	@Test
 	public final void testNotifyListeners() throws Exception {
-		observerable.listeners = new ArrayList<>();
-		observerable.listeners.add(listener);
-		observerable.listeners.add(listener);
-		observerable.notifyListeners(event);
+		observable.listeners = new ArrayList<>();
+		observable.listeners.add(listener);
+		observable.listeners.add(listener);
+		observable.notifyListeners(event);
 		verify(listener, times(2)).onDocumentEdited(event);
 	}
 

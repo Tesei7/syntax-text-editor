@@ -86,7 +86,7 @@ public class CaretPainterTest {
 		verify(caretPainter, never()).highlightBracket(g, 0, 0, 0, Colors.FOUND_BRACKET_BACKGROUND);
 
 		when(bracketPositionService.getBracketAtCurrentPosition()).thenReturn(0);
-		when(bracketPositionService.getReletiveBracket()).thenReturn(null);
+		when(bracketPositionService.getRelativeBracket()).thenReturn(null);
 		when(document.getCurLineIndexToPaint()).thenReturn(2);
 		when(document.getCurrentLine()).thenReturn(line);
 		when(line.getOffsetToPaint()).thenReturn(3);
@@ -94,7 +94,7 @@ public class CaretPainterTest {
 		caretPainter.highlightBrackets(g);
 		verify(caretPainter).highlightBracket(g, 2, 2, 0, Colors.NOT_FOUND_BRACKET_BACKGROUND);
 
-		when(bracketPositionService.getReletiveBracket()).thenReturn(new int[] { 4, 5 });
+		when(bracketPositionService.getRelativeBracket()).thenReturn(new int[] { 4, 5 });
 		caretPainter.highlightBrackets(g);
 		verify(caretPainter).highlightBracket(g, 2, 2, 0, Colors.FOUND_BRACKET_BACKGROUND);
 		verify(caretPainter).highlightBracket(g, 4, 5, 0, Colors.FOUND_BRACKET_BACKGROUND);

@@ -1,8 +1,6 @@
 package ru.tesei7.textEditor.editor.listeners;
 
-import static org.assertj.core.api.Assertions.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;

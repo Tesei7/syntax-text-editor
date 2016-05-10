@@ -18,7 +18,7 @@ import ru.tesei7.textEditor.editor.document.dirtyState.DirtyStateObservable;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.document.model.SyntaxTextEditorViewMode;
 import ru.tesei7.textEditor.editor.frame.Direction;
-import ru.tesei7.textEditor.editor.frame.SyntaxScrollObserverable;
+import ru.tesei7.textEditor.editor.frame.SyntaxScrollObservable;
 import ru.tesei7.textEditor.editor.frame.SyntaxTextEditorFrame;
 import ru.tesei7.textEditor.editor.listeners.CaretKeyListener;
 import ru.tesei7.textEditor.editor.listeners.ScrollBarListener;
@@ -31,7 +31,7 @@ import ru.tesei7.textEditor.editor.scroll.DimensionsEvent;
 import ru.tesei7.textEditor.editor.scroll.DimensionsObservable;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameEventType;
-import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.FrameObservable;
 import ru.tesei7.textEditor.editor.scroll.ScrollBarsManager;
 
 /**
@@ -91,7 +91,7 @@ public class SyntaxTextEditor extends JPanel {
 	/**
 	 * Notify scroll changes
 	 */
-	private SyntaxScrollObserverable scrollObserverable = new SyntaxScrollObserverable();
+	private SyntaxScrollObservable scrollObservable = new SyntaxScrollObservable();
 	/**
 	 * Notify max height and width changes
 	 */
@@ -99,17 +99,17 @@ public class SyntaxTextEditor extends JPanel {
 	/**
 	 * Notify first visible line and xOffset changes
 	 */
-	private FrameObserverable frameObserverable = new FrameObserverable();
+	private FrameObservable frameObservable = new FrameObservable();
 	/**
 	 * Notify dirty state changes
 	 */
-	private DirtyStateObservable dirtyObserverable = new DirtyStateObservable();
+	private DirtyStateObservable dirtyObservable = new DirtyStateObservable();
 
 	private CaretKeyListener caretKeyListener = new CaretKeyListener(caretObservable);
 	private TextKeyListener textKeyListener = new TextKeyListener(documentEditObservable);
 	private SyntaxMouseListener mouseListener;
-	private ScrollBarListener hScrollListener = new ScrollBarListener(scrollObserverable, Direction.HORIZONTAL);
-	private ScrollBarListener vScrollListener = new ScrollBarListener(scrollObserverable, Direction.VERTICAL);
+	private ScrollBarListener hScrollListener = new ScrollBarListener(scrollObservable, Direction.HORIZONTAL);
+	private ScrollBarListener vScrollListener = new ScrollBarListener(scrollObservable, Direction.VERTICAL);
 
 	private SyntaxDocumentEditor syntaxDocumentEditor;
 	private SyntaxCaret caret;
@@ -122,8 +122,8 @@ public class SyntaxTextEditor extends JPanel {
 
 	private GridBagLayout layout;
 	private SyntaxTextPanel textPanel;
-	private JScrollBar hbar;
-	private JScrollBar vbar;
+	private JScrollBar hBar;
+	private JScrollBar vBar;
 
 	public SyntaxTextEditor() {
 		this(Language.PLAIN_TEXT, DEFAULT_ROWS, DEFAULT_COLS);
@@ -132,7 +132,7 @@ public class SyntaxTextEditor extends JPanel {
 	public SyntaxTextEditor(Language language, int rows, int cols) {
 		super();
 
-		this.document = new SyntaxDocument(frameObserverable, dirtyObserverable);
+		this.document = new SyntaxDocument(frameObservable, dirtyObservable);
 		document.setLanguage(language);
 
 		createComponent();
@@ -141,14 +141,14 @@ public class SyntaxTextEditor extends JPanel {
 
 		document.setRows(rows);
 		document.setCols(cols);
-		recalcSize();
+		recalculateSize();
 	}
 
 	protected void wireListeners() {
 		this.syntaxDocumentEditor = new SyntaxDocumentEditor(document, caretObservable, dimensionsObservable);
 		this.caret = new SyntaxCaret(document, fontProperties);
 		this.frame = new SyntaxTextEditorFrame(document);
-		this.scrollBarsManager = new ScrollBarsManager(document, hbar, vbar);
+		this.scrollBarsManager = new ScrollBarsManager(document, hBar, vBar);
 		this.caretPainter = new CaretPainter(document);
 		this.documentPainter = new SyntaxDocumentPainter(document, fontProperties);
 		this.mouseListener = new SyntaxMouseListener(document, caretObservable);
@@ -160,12 +160,12 @@ public class SyntaxTextEditor extends JPanel {
 		documentEditObservable.addListener(syntaxDocumentEditor);
 		documentEditObservable.addListener(textPanel);
 
-		scrollObserverable.addListener(frame);
-		scrollObserverable.addListener(textPanel);
+		scrollObservable.addListener(frame);
+		scrollObservable.addListener(textPanel);
 
 		dimensionsObservable.addListener(scrollBarsManager);
-		frameObserverable.addListener(scrollBarsManager);
-		frameObserverable.addListener(textPanel);
+		frameObservable.addListener(scrollBarsManager);
+		frameObservable.addListener(textPanel);
 	}
 
 	protected void createComponent() {
@@ -181,22 +181,22 @@ public class SyntaxTextEditor extends JPanel {
 		c.weighty = 1.0;
 		add(textPanel, c);
 
-		hbar = new JScrollBar(JScrollBar.HORIZONTAL, 0, getCols(), 0, getCols());
-		vbar = new JScrollBar(JScrollBar.VERTICAL, 0, getRows(), 0, getRows());
+		hBar = new JScrollBar(JScrollBar.HORIZONTAL, 0, getCols(), 0, getCols());
+		vBar = new JScrollBar(JScrollBar.VERTICAL, 0, getRows(), 0, getRows());
 		c.gridx = 0;
 		c.gridy = 1;
 		c.anchor = GridBagConstraints.PAGE_END;
 		c.weighty = 0;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		add(hbar, c);
+		add(hBar, c);
 		c.gridx = 1;
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.LINE_END;
 		c.weightx = 0;
 		c.fill = GridBagConstraints.VERTICAL;
-		add(vbar, c);
+		add(vBar, c);
 
-		recalcSize();
+		recalculateSize();
 	}
 
 	protected void initUIListeners() {
@@ -206,8 +206,8 @@ public class SyntaxTextEditor extends JPanel {
 		textPanel.addMouseWheelListener(mouseListener);
 		textPanel.addMouseMotionListener(mouseListener);
 
-		hbar.addAdjustmentListener(hScrollListener);
-		vbar.addAdjustmentListener(vScrollListener);
+		hBar.addAdjustmentListener(hScrollListener);
+		vBar.addAdjustmentListener(vScrollListener);
 	}
 
 	/**
@@ -273,7 +273,7 @@ public class SyntaxTextEditor extends JPanel {
 
 	public void setLanguage(Language language) {
 		document.setLanguage(language);
-		document.recalcTokens(0, document.getSize());
+		document.recalculateTokens(0, document.getSize());
 		textPanel.repaint();
 	}
 
@@ -295,7 +295,7 @@ public class SyntaxTextEditor extends JPanel {
 	 */
 	public void setRows(int rows) {
 		document.setRows(rows);
-		recalcSize();
+		recalculateSize();
 		textPanel.repaint();
 	}
 
@@ -315,7 +315,7 @@ public class SyntaxTextEditor extends JPanel {
 	 */
 	public void setCols(int cols) {
 		document.setCols(cols);
-		recalcSize();
+		recalculateSize();
 		textPanel.repaint();
 	}
 
@@ -336,20 +336,20 @@ public class SyntaxTextEditor extends JPanel {
 		int cols = textPanel.getWidth() / fontProperties.getCharWidth();
 		document.setRows(rows);
 		document.setCols(cols);
-		recalcSize();
+		recalculateSize();
 		dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
 		caretObservable.notifyListeners(new SyntaxCaretEvent());
-		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.HORIZONTAL, document.getFirstVisibleCol()));
-		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, document.getFirstVisibleRow()));
+		frameObservable.notifyListeners(new FrameEvent(FrameEventType.HORIZONTAL, document.getFirstVisibleCol()));
+		frameObservable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, document.getFirstVisibleRow()));
 	}
 
-	protected void recalcSize() {
+	protected void recalculateSize() {
 		FontMetrics fm = textPanel.getFontMetrics(textPanel.getFont());
 		fontProperties = new FontProperties(fm.charWidth('a'), fm.getHeight(), fm.getDescent());
 		int height = fontProperties.getLineHeight() * getRows();
 		int width = fontProperties.getCharWidth() * getCols() + CARET_WIDTH;
-		layout.columnWidths = new int[] { width, vbar.getWidth() };
-		layout.rowHeights = new int[] { height, hbar.getHeight() };
+		layout.columnWidths = new int[] { width, vBar.getWidth() };
+		layout.rowHeights = new int[] { height, hBar.getHeight() };
 		setLayout(layout);
 	}
 
@@ -372,11 +372,11 @@ public class SyntaxTextEditor extends JPanel {
 	}
 
 	public void addDirtyStateListener(DirtyStateListener listener) {
-		dirtyObserverable.addListener(listener);
+		dirtyObservable.addListener(listener);
 	}
 
 	public void removeDirtyStateListener(DirtyStateListener listener) {
-		dirtyObserverable.removeListener(listener);
+		dirtyObservable.removeListener(listener);
 	}
 
 	// Painters

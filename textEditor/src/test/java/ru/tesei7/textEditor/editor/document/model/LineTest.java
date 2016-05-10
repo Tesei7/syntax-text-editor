@@ -91,15 +91,15 @@ public class LineTest {
 	}
 
 	@Test
-	public void testGetOffestByOffsetToPaint() throws Exception {
+	public void testGetOffsetByOffsetToPaint() throws Exception {
 		l.setText(new char[] { 'a', 'b', 'c' });
-		assertTrue(l.getOffestByOffsetToPaint(2) == 2);
+		assertTrue(l.getOffsetByOffsetToPaint(2) == 2);
 
 		l.setText(new char[] { 'a', '\t', 'c' });
-		assertTrue(l.getOffestByOffsetToPaint(4) == 1);
-		assertTrue(l.getOffestByOffsetToPaint(5) == 2);
-		assertTrue(l.getOffestByOffsetToPaint(-1) == 0);
-		assertTrue(l.getOffestByOffsetToPaint(567) == 3);
+		assertTrue(l.getOffsetByOffsetToPaint(4) == 1);
+		assertTrue(l.getOffsetByOffsetToPaint(5) == 2);
+		assertTrue(l.getOffsetByOffsetToPaint(-1) == 0);
+		assertTrue(l.getOffsetByOffsetToPaint(567) == 3);
 	}
 
 	@Test

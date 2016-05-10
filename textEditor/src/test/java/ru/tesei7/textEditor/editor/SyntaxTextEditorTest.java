@@ -25,7 +25,7 @@ public class SyntaxTextEditorTest {
 
 	@Test
 	@Ignore
-	public void testRecalcSize() throws Exception {
+	public void testRecalculateSize() throws Exception {
 //		editor.rows = 1;
 //		editor.cols = 1;
 		doReturn(fm).when(editor).getFontMetrics(any());
@@ -33,7 +33,7 @@ public class SyntaxTextEditorTest {
 		when(fm.getDescent()).thenReturn(2);
 		when(fm.charWidth('a')).thenReturn(7);
 		
-		editor.recalcSize();
+		editor.recalculateSize();
 		verify(editor).setPreferredSize(any());
 	}
 

@@ -63,7 +63,7 @@ public class Line {
 
 	private void setTextInner(char[] text) {
 		this.text = text;
-		recalcLenghtToPaint();
+		recalculateLengthToPaint();
 	}
 
 	public int getLength() {
@@ -79,16 +79,16 @@ public class Line {
 	}
 
 	/**
-	 * Recalculates {@link lengthToPaint}. Should be run after each change of filed {@link text}
+	 * Recalculates {@link #lengthToPaint}. Should be run after each change of filed {@link #text}
 	 */
-	private void recalcLenghtToPaint() {
+	private void recalculateLengthToPaint() {
 		lengthToPaint = getLengthTabReplaced(text);
 	}
 
 	private int getLengthTabReplaced(char[] chars) {
 		int l = 0;
-		for (int i = 0; i < chars.length; i++) {
-			if (chars[i] == '\t') {
+		for (char aChar : chars) {
+			if (aChar == '\t') {
 				l += SyntaxTextEditor.TAB_INDENT;
 			} else {
 				l++;
@@ -104,16 +104,16 @@ public class Line {
 	public char[] getCharsTabReplaced(char[] chars) {
 		char[] charsReplaced = new char[getLengthTabReplaced(chars)];
 		int x = 0;
-		for (int i = 0; i < chars.length; i++) {
-			if (chars[i] == '\t') {
+		for (char aChar : chars) {
+			if (aChar == '\t') {
 				charsReplaced[x++] = ' ';
 				charsReplaced[x++] = ' ';
 				charsReplaced[x++] = ' ';
 				charsReplaced[x++] = ' ';
-			} else if (chars[i] == '\r' || chars[i] == '\f' || chars[i] == '\b' || chars[i] == '\n') {
+			} else if (aChar == '\r' || aChar == '\f' || aChar == '\b' || aChar == '\n') {
 				charsReplaced[x++] = ' ';
 			} else {
-				charsReplaced[x++] = chars[i];
+				charsReplaced[x++] = aChar;
 			}
 		}
 		return charsReplaced;
@@ -126,8 +126,8 @@ public class Line {
 
 	private List<Character> toList(char[] chars) {
 		List<Character> list = new LinkedList<>();
-		for (int i = 0; i < chars.length; i++) {
-			list.add(chars[i]);
+		for (char aChar : chars) {
+			list.add(aChar);
 		}
 		return list;
 	}
@@ -171,7 +171,7 @@ public class Line {
 		return x;
 	}
 
-	public int getOffestByOffsetToPaint(int offsetToPaint) {
+	public int getOffsetByOffsetToPaint(int offsetToPaint) {
 		int i = 0;
 		while (offsetToPaint > 0 && i < text.length) {
 			offsetToPaint -= text[i] == '\t' ? SyntaxTextEditor.TAB_INDENT : 1;
@@ -292,11 +292,7 @@ public class Line {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < text.length; i++) {
-			sb.append(text[i]);
-		}
-		return sb.toString();
+		return String.valueOf(text);
 	}
 
 }

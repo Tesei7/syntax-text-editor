@@ -1,9 +1,9 @@
 package ru.tesei7.textEditor.editor.syntax;
 
 public interface Token {
-	public int getType();
+	int getType();
 
-	public int getOffset();
+	int getOffset();
 	
-	public int getLength();
+	int getLength();
 }

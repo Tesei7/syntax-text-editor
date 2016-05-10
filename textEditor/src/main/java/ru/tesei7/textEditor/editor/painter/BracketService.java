@@ -15,7 +15,7 @@ public class BracketService {
 
 	/**
 	 * 
-	 * @return -1 - no bracket at curent position, 0 - bracket at curent
+	 * @return -1 - no bracket at current position, 0 - bracket at current
 	 *         position, 1 - bracket before current position
 	 */
 	public int getBracketAtCurrentPosition() {
@@ -35,11 +35,11 @@ public class BracketService {
 			return false;
 		}
 		int type = t.getType();
-		return type == TokenTypes.LBRACK || type == TokenTypes.RBRACK || type == TokenTypes.LBRACE
-				|| type == TokenTypes.RBRACE || type == TokenTypes.LPAREN || type == TokenTypes.RPAREN;
+		return type == TokenTypes.L_BRACKET || type == TokenTypes.R_BRACKET || type == TokenTypes.L_BRACE
+				|| type == TokenTypes.R_BRACE || type == TokenTypes.L_PARENTHESIS || type == TokenTypes.R_PARENTHESIS;
 	}
 
-	public int[] getReletiveBracket() {
+	public int[] getRelativeBracket() {
 		return new BracketFinder(document, this).find();
 	}
 

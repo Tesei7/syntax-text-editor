@@ -7,5 +7,5 @@ package ru.tesei7.textEditor.editor.scroll;
  *
  */
 public interface DocumentDimensionsListener {
-	public void onDimensionsChanged(DimensionsEvent e);
+	void onDimensionsChanged(DimensionsEvent e);
 }

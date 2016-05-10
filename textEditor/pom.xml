@@ -91,7 +91,7 @@
 		</dependency>
 
 		<!-- Tests -->
-		<!-- hamcrest-all shoul be higherthen jUnit -->
+		<!-- hamcrest-all should be higher then jUnit -->
 		<!-- http://stackoverflow.com/questions/7869711/getting-nosuchmethoderror-org-hamcrest-matcher-describemismatch-when-running -->
 		<dependency>
 			<groupId>org.hamcrest</groupId>

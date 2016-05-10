@@ -7,7 +7,7 @@ public class TokenizerTest {
 
 	public static void main(String[] args) throws IOException {
 		JavaTokenizer javaTokenizer = new JavaTokenizer(new FileReader(args[0]));
-		Token token = null;
+		Token token;
 		do {
 			token = javaTokenizer.yylex();
 			System.out.println(token.getType() + " - " + token.getOffset() + " | " + token.getLength());

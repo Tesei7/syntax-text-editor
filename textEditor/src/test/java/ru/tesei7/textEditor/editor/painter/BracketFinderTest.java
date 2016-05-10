@@ -4,12 +4,10 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
@@ -39,49 +37,49 @@ public class BracketFinderTest {
 	@Mock
 	private SyntaxDocument document;
 	@Mock
-	private Token reletiveBracketToken;
+	private Token relativeBracketToken;
 
 	@Test
-	public void testSetReletiveBracketType() throws Exception {
+	public void testSetRelativeBracketType() throws Exception {
 		bracketFinder.currentBracketToken = currentBracketToken;
 
-		when(currentBracketToken.getType()).thenReturn(TokenTypes.LBRACE);
-		bracketFinder.setReletiveBracketType();
-		assertThat(bracketFinder.reletiveBracketType, is(TokenTypes.RBRACE));
+		when(currentBracketToken.getType()).thenReturn(TokenTypes.L_BRACE);
+		bracketFinder.setRelativeBracketType();
+		assertThat(bracketFinder.relativeBracketType, is(TokenTypes.R_BRACE));
 
-		when(currentBracketToken.getType()).thenReturn(TokenTypes.LBRACK);
-		bracketFinder.setReletiveBracketType();
-		assertThat(bracketFinder.reletiveBracketType, is(TokenTypes.RBRACK));
+		when(currentBracketToken.getType()).thenReturn(TokenTypes.L_BRACKET);
+		bracketFinder.setRelativeBracketType();
+		assertThat(bracketFinder.relativeBracketType, is(TokenTypes.R_BRACKET));
 
-		when(currentBracketToken.getType()).thenReturn(TokenTypes.LPAREN);
-		bracketFinder.setReletiveBracketType();
-		assertThat(bracketFinder.reletiveBracketType, is(TokenTypes.RPAREN));
+		when(currentBracketToken.getType()).thenReturn(TokenTypes.L_PARENTHESIS);
+		bracketFinder.setRelativeBracketType();
+		assertThat(bracketFinder.relativeBracketType, is(TokenTypes.R_PARENTHESIS));
 
-		when(currentBracketToken.getType()).thenReturn(TokenTypes.RBRACE);
-		bracketFinder.setReletiveBracketType();
-		assertThat(bracketFinder.reletiveBracketType, is(TokenTypes.LBRACE));
+		when(currentBracketToken.getType()).thenReturn(TokenTypes.R_BRACE);
+		bracketFinder.setRelativeBracketType();
+		assertThat(bracketFinder.relativeBracketType, is(TokenTypes.L_BRACE));
 
-		when(currentBracketToken.getType()).thenReturn(TokenTypes.RBRACK);
-		bracketFinder.setReletiveBracketType();
-		assertThat(bracketFinder.reletiveBracketType, is(TokenTypes.LBRACK));
+		when(currentBracketToken.getType()).thenReturn(TokenTypes.R_BRACKET);
+		bracketFinder.setRelativeBracketType();
+		assertThat(bracketFinder.relativeBracketType, is(TokenTypes.L_BRACKET));
 
-		when(currentBracketToken.getType()).thenReturn(TokenTypes.RPAREN);
-		bracketFinder.setReletiveBracketType();
-		assertThat(bracketFinder.reletiveBracketType, is(TokenTypes.LPAREN));
+		when(currentBracketToken.getType()).thenReturn(TokenTypes.R_PARENTHESIS);
+		bracketFinder.setRelativeBracketType();
+		assertThat(bracketFinder.relativeBracketType, is(TokenTypes.L_PARENTHESIS));
 
 		when(currentBracketToken.getType()).thenReturn(TokenTypes.IDENTIFIER);
-		assertThatThrownBy(() -> bracketFinder.setReletiveBracketType()).isInstanceOf(Exception.class);
+		assertThatThrownBy(() -> bracketFinder.setRelativeBracketType()).isInstanceOf(Exception.class);
 	}
 
 	@Test
 	public void testSetSearchDirection() throws Exception {
 		bracketFinder.currentBracketToken = currentBracketToken;
 
-		when(currentBracketToken.getType()).thenReturn(TokenTypes.LBRACE);
+		when(currentBracketToken.getType()).thenReturn(TokenTypes.L_BRACE);
 		bracketFinder.setSearchDirection();
 		assertThat(bracketFinder.direction, is(1));
 
-		when(currentBracketToken.getType()).thenReturn(TokenTypes.RBRACE);
+		when(currentBracketToken.getType()).thenReturn(TokenTypes.R_BRACE);
 		bracketFinder.setSearchDirection();
 		assertThat(bracketFinder.direction, is(-1));
 
@@ -92,17 +90,17 @@ public class BracketFinderTest {
 	@Test
 	public void testFind() throws Exception {
 		doReturn(bracketFinder).when(bracketFinder).findCurrentBracket();
-		doReturn(bracketFinder).when(bracketFinder).setReletiveBracketType();
+		doReturn(bracketFinder).when(bracketFinder).setRelativeBracketType();
 		doReturn(bracketFinder).when(bracketFinder).setSearchDirection();
-		doReturn(bracketFinder).when(bracketFinder).findReletiveBracket();
+		doReturn(bracketFinder).when(bracketFinder).findRelativeBracket();
 		int[] toBeReturned = new int[] { 1, 2 };
-		doReturn(toBeReturned).when(bracketFinder).getReletiveBracketCoordinates();
+		doReturn(toBeReturned).when(bracketFinder).getRelativeBracketCoordinates();
 		assertThat(bracketFinder.find(), is(toBeReturned));
 		verify(bracketFinder).findCurrentBracket();
-		verify(bracketFinder).setReletiveBracketType();
+		verify(bracketFinder).setRelativeBracketType();
 		verify(bracketFinder).setSearchDirection();
-		verify(bracketFinder).findReletiveBracket();
-		verify(bracketFinder).getReletiveBracketCoordinates();
+		verify(bracketFinder).findRelativeBracket();
+		verify(bracketFinder).getRelativeBracketCoordinates();
 
 		Exception toBeThrown = new Exception();
 		doThrow(toBeThrown).when(bracketFinder).setSearchDirection();
@@ -110,15 +108,15 @@ public class BracketFinderTest {
 	}
 
 	@Test
-	public void testGetReletiveBracketCoordinates() throws Exception {
-		bracketFinder.reletiveBracketToken = mock(Token.class);
-		bracketFinder.reletiveBracketLine = 2;
-		when(bracketFinder.reletiveBracketToken.getOffset()).thenReturn(1);
+	public void testGetRelativeBracketCoordinates() throws Exception {
+		bracketFinder.relativeBracketToken = mock(Token.class);
+		bracketFinder.relativeBracketLine = 2;
+		when(bracketFinder.relativeBracketToken.getOffset()).thenReturn(1);
 		Line line = mock(Line.class);
 		when(document.getLineByIndex(2)).thenReturn(line);
 		when(document.getXToPaint(line, 1)).thenReturn(3);
 		when(document.getFirstVisibleRow()).thenReturn(1);
-		assertTrue(Arrays.equals(new int[] { 1, 3 }, bracketFinder.getReletiveBracketCoordinates()));
+		assertTrue(Arrays.equals(new int[] { 1, 3 }, bracketFinder.getRelativeBracketCoordinates()));
 	}
 
 	@Test

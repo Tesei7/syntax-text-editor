@@ -31,7 +31,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import ru.tesei7.textEditor.editor.document.dirtyState.DirtyStateObservable;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameEventType;
-import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.FrameObservable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntaxDocumentTest {
@@ -39,7 +39,7 @@ public class SyntaxDocumentTest {
 	@Spy
 	private SyntaxDocument syntaxDocument;
 	@Mock
-	private FrameObserverable frameObserverable;
+	private FrameObservable frameObservable;
 	@Mock
 	private List<Line> lines;
 	@Mock
@@ -63,7 +63,7 @@ public class SyntaxDocumentTest {
 		doNothing().when(syntaxDocument).checkLastColNotEmpty();
 		syntaxDocument.setFirstVisibleCol(-1);
 		assertThat(syntaxDocument.firstVisibleCol, is(0));
-		verify(frameObserverable).notifyListeners(argThat(isFrameEvent(FrameEventType.HORIZONTAL, 0)));
+		verify(frameObservable).notifyListeners(argThat(isFrameEvent(FrameEventType.HORIZONTAL, 0)));
 		verify(syntaxDocument).checkLastColNotEmpty();
 
 		syntaxDocument.setFirstVisibleCol(12);
@@ -117,7 +117,7 @@ public class SyntaxDocumentTest {
 		doNothing().when(syntaxDocument).checkLastLinesNotEmpty();
 		syntaxDocument.setFirstVisibleRow(-1);
 		assertThat(syntaxDocument.firstVisibleRow, is(0));
-		verify(frameObserverable).notifyListeners(argThat(isFrameEvent(FrameEventType.VERTICAL, 0)));
+		verify(frameObservable).notifyListeners(argThat(isFrameEvent(FrameEventType.VERTICAL, 0)));
 		verify(syntaxDocument).checkLastLinesNotEmpty();
 
 		syntaxDocument.setFirstVisibleRow(12);

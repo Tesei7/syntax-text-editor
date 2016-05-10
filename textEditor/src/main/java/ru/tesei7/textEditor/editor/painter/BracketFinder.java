@@ -11,9 +11,9 @@ public class BracketFinder {
 	private BracketService bracketService;
 	Token currentBracketToken;
 	int direction;
-	int reletiveBracketType;
-	Token reletiveBracketToken;
-	int reletiveBracketLine;
+	int relativeBracketType;
+	Token relativeBracketToken;
+	int relativeBracketLine;
 
 	public BracketFinder(SyntaxDocument document, BracketService bracketService) {
 		this.document = document;
@@ -22,8 +22,8 @@ public class BracketFinder {
 
 	public int[] find() {
 		try {
-			return findCurrentBracket().setReletiveBracketType().setSearchDirection().findReletiveBracket()
-					.getReletiveBracketCoordinates();
+			return findCurrentBracket().setRelativeBracketType().setSearchDirection().findRelativeBracket()
+					.getRelativeBracketCoordinates();
 		} catch (Exception e) {
 			return null;
 		}
@@ -41,25 +41,25 @@ public class BracketFinder {
 		return this;
 	}
 
-	BracketFinder setReletiveBracketType() throws Exception {
+	BracketFinder setRelativeBracketType() throws Exception {
 		switch (currentBracketToken.getType()) {
-		case TokenTypes.LBRACK:
-			reletiveBracketType = TokenTypes.RBRACK;
+		case TokenTypes.L_BRACKET:
+			relativeBracketType = TokenTypes.R_BRACKET;
 			return this;
-		case TokenTypes.RBRACK:
-			reletiveBracketType = TokenTypes.LBRACK;
+		case TokenTypes.R_BRACKET:
+			relativeBracketType = TokenTypes.L_BRACKET;
 			return this;
-		case TokenTypes.LBRACE:
-			reletiveBracketType = TokenTypes.RBRACE;
+		case TokenTypes.L_BRACE:
+			relativeBracketType = TokenTypes.R_BRACE;
 			return this;
-		case TokenTypes.RBRACE:
-			reletiveBracketType = TokenTypes.LBRACE;
+		case TokenTypes.R_BRACE:
+			relativeBracketType = TokenTypes.L_BRACE;
 			return this;
-		case TokenTypes.LPAREN:
-			reletiveBracketType = TokenTypes.RPAREN;
+		case TokenTypes.L_PARENTHESIS:
+			relativeBracketType = TokenTypes.R_PARENTHESIS;
 			return this;
-		case TokenTypes.RPAREN:
-			reletiveBracketType = TokenTypes.LPAREN;
+		case TokenTypes.R_PARENTHESIS:
+			relativeBracketType = TokenTypes.L_PARENTHESIS;
 			return this;
 		}
 		throw new Exception();
@@ -67,21 +67,21 @@ public class BracketFinder {
 
 	BracketFinder setSearchDirection() throws Exception {
 		switch (currentBracketToken.getType()) {
-		case TokenTypes.LBRACK:
-		case TokenTypes.LBRACE:
-		case TokenTypes.LPAREN:
+		case TokenTypes.L_BRACKET:
+		case TokenTypes.L_BRACE:
+		case TokenTypes.L_PARENTHESIS:
 			direction = 1;
 			return this;
-		case TokenTypes.RBRACK:
-		case TokenTypes.RBRACE:
-		case TokenTypes.RPAREN:
+		case TokenTypes.R_BRACKET:
+		case TokenTypes.R_BRACE:
+		case TokenTypes.R_PARENTHESIS:
 			direction = -1;
 			return this;
 		}
 		throw new Exception();
 	}
 
-	BracketFinder findReletiveBracket() throws Exception {
+	BracketFinder findRelativeBracket() throws Exception {
 		int currTokenType = currentBracketToken.getType();
 		int openBracketsCount = 1;
 		for (int i = document.getCurLineIndex(); direction > 0 ? i < document.getSize() : i >= 0; i = i + direction) {
@@ -93,12 +93,12 @@ public class BracketFinder {
 				Token t = l.getTokens().get(j);
 				if (t.getType() == currTokenType) {
 					openBracketsCount++;
-				} else if (t.getType() == reletiveBracketType) {
+				} else if (t.getType() == relativeBracketType) {
 					openBracketsCount--;
 				}
 				if (openBracketsCount == 0) {
-					reletiveBracketToken = t;
-					reletiveBracketLine = i;
+					relativeBracketToken = t;
+					relativeBracketLine = i;
 					return this;
 				}
 			}
@@ -106,10 +106,10 @@ public class BracketFinder {
 		throw new Exception();
 	}
 
-	int[] getReletiveBracketCoordinates() {
-		int offset = reletiveBracketToken.getOffset();
-		int offsetToPaint = document.getXToPaint(document.getLineByIndex(reletiveBracketLine), offset);
-		int rowToPaint = reletiveBracketLine - document.getFirstVisibleRow();
+	int[] getRelativeBracketCoordinates() {
+		int offset = relativeBracketToken.getOffset();
+		int offsetToPaint = document.getXToPaint(document.getLineByIndex(relativeBracketLine), offset);
+		int rowToPaint = relativeBracketLine - document.getFirstVisibleRow();
 		return new int[] { rowToPaint, offsetToPaint };
 	}
 

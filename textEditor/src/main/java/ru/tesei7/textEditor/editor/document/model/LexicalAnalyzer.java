@@ -44,13 +44,11 @@ public class LexicalAnalyzer {
 	 *            list of tokens to fill
 	 * @param tokenizer
 	 *            tokenizer to read tokens
-	 * @param state
-	 *            initial state of tokenizer
 	 * @return last state of tokenizer
 	 */
 	int readTokens(final List<Token> tokens, Tokenizer tokenizer) {
 		int state = 0;
-		Token token = null;
+		Token token;
 		do {
 			try {
 				token = tokenizer.yylex();

@@ -20,7 +20,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import ru.tesei7.textEditor.editor.frame.Direction;
 import ru.tesei7.textEditor.editor.frame.SyntaxScrollEvent;
 import ru.tesei7.textEditor.editor.frame.SyntaxScrollListener;
-import ru.tesei7.textEditor.editor.frame.SyntaxScrollObserverable;
+import ru.tesei7.textEditor.editor.frame.SyntaxScrollObservable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ScrollBarListenerTest {
@@ -31,14 +31,14 @@ public class ScrollBarListenerTest {
 	@Mock
 	private AdjustmentEvent e;
 	@Mock
-	private SyntaxScrollObserverable scrollObserverable;
+	private SyntaxScrollObservable scrollObservable;
 
 	@Test
 	public void testAdjustmentValueChanged() throws Exception {
 		when(e.getValue()).thenReturn(10);
 		scrollBarListener.direction = Direction.HORIZONTAL;
 		scrollBarListener.adjustmentValueChanged(e);
-		verify(scrollObserverable).notifyListeners(argThat(isSyntaxScrollEvent(Direction.HORIZONTAL, 10)));
+		verify(scrollObservable).notifyListeners(argThat(isSyntaxScrollEvent(Direction.HORIZONTAL, 10)));
 	}
 
 	@SuppressWarnings("unchecked")

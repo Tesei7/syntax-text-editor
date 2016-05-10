@@ -13,7 +13,7 @@ import ru.tesei7.textEditor.editor.document.dirtyState.DirtyStateEvent;
 import ru.tesei7.textEditor.editor.document.dirtyState.DirtyStateObservable;
 import ru.tesei7.textEditor.editor.scroll.FrameEvent;
 import ru.tesei7.textEditor.editor.scroll.FrameEventType;
-import ru.tesei7.textEditor.editor.scroll.FrameObserverable;
+import ru.tesei7.textEditor.editor.scroll.FrameObservable;
 import ru.tesei7.textEditor.editor.syntax.JavaTokenizer;
 import ru.tesei7.textEditor.editor.syntax.Token;
 
@@ -71,7 +71,7 @@ public class SyntaxDocument {
 	/**
 	 * Broadcaster for frame movements
 	 */
-	private FrameObserverable frameObserverable;
+	private FrameObservable frameObservable;
 	/**
 	 * Read tokens from line
 	 */
@@ -84,11 +84,11 @@ public class SyntaxDocument {
 	 * Dirty state flag
 	 */
 	private boolean isDirty = false;
-	private DirtyStateObservable dirtyObserverable;
+	private DirtyStateObservable dirtyObservable;
 
-	public SyntaxDocument(FrameObserverable frameObserverable, DirtyStateObservable dirtyObserverable) {
-		this.frameObserverable = frameObserverable;
-		this.dirtyObserverable = dirtyObserverable;
+	public SyntaxDocument(FrameObservable frameObservable, DirtyStateObservable dirtyObservable) {
+		this.frameObservable = frameObservable;
+		this.dirtyObservable = dirtyObservable;
 		selection = new TextSelection(this);
 		lines.add(new Line());
 		lexicalAnalyzer = new LexicalAnalyzer();
@@ -156,8 +156,8 @@ public class SyntaxDocument {
 		this.curLineIndex = getCorrectLineIndex(curLineIndex);
 	}
 
-	public void moveCurLineIndex(int reletive) {
-		setCurLineIndex(curLineIndex + reletive);
+	public void moveCurLineIndex(int relative) {
+		setCurLineIndex(curLineIndex + relative);
 	}
 
 	public Line getCurrentLine() {
@@ -176,7 +176,7 @@ public class SyntaxDocument {
 		}
 		this.firstVisibleRow = firstVisibleRow;
 		checkLastLinesNotEmpty();
-		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, firstVisibleRow));
+		frameObservable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, firstVisibleRow));
 	}
 
 	public void checkLastLinesNotEmpty() {
@@ -196,7 +196,7 @@ public class SyntaxDocument {
 		}
 		this.firstVisibleCol = firstVisibleCol;
 		checkLastColNotEmpty();
-		frameObserverable.notifyListeners(new FrameEvent(FrameEventType.HORIZONTAL, firstVisibleCol));
+		frameObservable.notifyListeners(new FrameEvent(FrameEventType.HORIZONTAL, firstVisibleCol));
 	}
 
 	public void checkLastColNotEmpty() {
@@ -268,13 +268,7 @@ public class SyntaxDocument {
 	}
 
 	public boolean isCorrectLineIndex(int index) {
-		if (index < 0) {
-			return false;
-		}
-		if (index > lines.size() - 1) {
-			return false;
-		}
-		return true;
+		return index >= 0 && index <= lines.size() - 1;
 	}
 
 	// Selection
@@ -364,9 +358,9 @@ public class SyntaxDocument {
 			return maxCols;
 		} else {
 			// parallel stream will run faster because of using parallel
-			// calculation of maximim length.
+			// calculation of maximum length.
 			// We can use it because max() is associative operation.
-			OptionalInt max = lines.parallelStream().mapToInt(l -> l.getLengthToPaint()).max();
+			OptionalInt max = lines.parallelStream().mapToInt(Line::getLengthToPaint).max();
 			return max.isPresent() ? max.getAsInt() : cols;
 		}
 	}
@@ -377,8 +371,7 @@ public class SyntaxDocument {
 		int xToPaint = getCurrentLine().getOffsetToPaint();
 
 		int i = 0;
-		for (Iterator<Character> iterator = targetLine.getChars().iterator(); iterator.hasNext();) {
-			Character c = iterator.next();
+		for (Character c : targetLine.getChars()) {
 			xToPaint -= c.equals('\t') ? SyntaxTextEditor.TAB_INDENT : 1;
 			if (xToPaint < 0) {
 				break;
@@ -390,7 +383,7 @@ public class SyntaxDocument {
 
 	/**
 	 * 
-	 * @return caret position considering {@link firstVisibleCol}
+	 * @return caret position considering {@link #firstVisibleCol}
 	 */
 	public int getXToPaint() {
 		int xToPaint = getCurrentLine().getOffsetToPaint();
@@ -408,11 +401,11 @@ public class SyntaxDocument {
 		isReady = false;
 		try {
 			lines.clear();
-			// -1 in split methods used to not ommit \n at the end of file
+			// -1 in split methods used to not omit \n at the end of file
 			String[] split = text.split("\n", -1);
-			for (int i = 0; i < split.length; i++) {
+			for (String aSplit : split) {
 				Line l = new Line();
-				l.setText(split[i].toCharArray());
+				l.setText(aSplit.toCharArray());
 				l.setOffset(0);
 				lines.add(l);
 			}
@@ -422,14 +415,14 @@ public class SyntaxDocument {
 			selection.clear();
 
 			if (language != Language.PLAIN_TEXT) {
-				recalcTokens(0, split.length);
+				recalculateTokens(0, split.length);
 			}
 		} finally {
 			isReady = true;
 		}
 	}
 
-	public void recalcTokens(int firstLineIndex, int lines) {
+	public void recalculateTokens(int firstLineIndex, int lines) {
 		isReady = false;
 		try {
 			if (getLanguage() == Language.PLAIN_TEXT) {
@@ -490,6 +483,6 @@ public class SyntaxDocument {
 	public void setDirty(boolean isDirty) {
 		boolean oldState = this.isDirty;
 		this.isDirty = isDirty;
-		dirtyObserverable.notifyListeners(new DirtyStateEvent(oldState, isDirty));
+		dirtyObservable.notifyListeners(new DirtyStateEvent(oldState, isDirty));
 	}
 }

@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.io.Reader;
 
 public interface Tokenizer {
-	public void yyclose() throws IOException;
+	void yyclose() throws IOException;
 
-	public void yyreset(Reader reader);
+	void yyreset(Reader reader);
 
-	public int yystate();
+	int yystate();
 
-	public void yybegin(int newState);
+	void yybegin(int newState);
 
-	public Token yylex() throws IOException;
+	Token yylex() throws IOException;
 }

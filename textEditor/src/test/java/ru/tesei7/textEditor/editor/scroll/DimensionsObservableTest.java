@@ -15,7 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class DimensionsObservableTest {
 	@InjectMocks
-	private DimensionsObservable observerable;
+	private DimensionsObservable observable;
 	@Mock
 	private List<DocumentDimensionsListener> listeners;
 	@Mock
@@ -25,22 +25,22 @@ public class DimensionsObservableTest {
 
 	@Test
 	public final void testAddListener() throws Exception {
-		observerable.addListener(listener);
+		observable.addListener(listener);
 		verify(listeners).add(listener);
 	}
 
 	@Test
 	public final void testRemoveListener() throws Exception {
-		observerable.removeListener(listener);
+		observable.removeListener(listener);
 		verify(listeners).remove(listener);
 	}
 
 	@Test
 	public final void testNotifyListeners() throws Exception {
-		observerable.listeners = new ArrayList<>();
-		observerable.listeners.add(listener);
-		observerable.listeners.add(listener);
-		observerable.notifyListeners(event);
+		observable.listeners = new ArrayList<>();
+		observable.listeners.add(listener);
+		observable.listeners.add(listener);
+		observable.notifyListeners(event);
 		verify(listener, times(2)).onDimensionsChanged(event);
 	}
 }

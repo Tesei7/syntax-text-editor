@@ -37,7 +37,7 @@ public class ApplicationActionListenerTest {
 	@Mock
 	private ActionEvent e;
 	@Mock
-	private LoadedFile lfile;
+	private LoadedFile file;
 
 	@Test
 	public void testActionPerformed() throws Exception {
@@ -62,8 +62,8 @@ public class ApplicationActionListenerTest {
 		applicationActionListener.actionPerformed(e);
 		verify(applicationActionListener).saveAs();
 		
-		when(app.getLoadFile()).thenReturn(lfile);
-		when(lfile.getFile()).thenReturn(new File(""));
+		when(app.getLoadFile()).thenReturn(file);
+		when(file.getFile()).thenReturn(new File(""));
 		doNothing().when(applicationActionListener).save();
 		applicationActionListener.actionPerformed(e);
 		verify(applicationActionListener).save();

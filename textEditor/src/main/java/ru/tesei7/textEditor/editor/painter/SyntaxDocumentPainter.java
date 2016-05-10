@@ -94,8 +94,7 @@ public class SyntaxDocumentPainter {
 	int getHeightToPaint(int i) {
 		int rowHeight = fontProperties.getLineHeight();
 		int descent = fontProperties.getDescent();
-		int height = rowHeight * (i + 1) - descent;
-		return height;
+		return rowHeight * (i + 1) - descent;
 	}
 
 }

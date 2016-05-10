@@ -6,7 +6,7 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 
 /**
  * This listener moves visible part of document (frame) when caret moves and
- * scroll events occured
+ * scroll events occurred
  * 
  * @author Ilya Bochkarev
  *

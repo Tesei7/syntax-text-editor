@@ -5,21 +5,21 @@ import java.awt.event.AdjustmentListener;
 
 import ru.tesei7.textEditor.editor.frame.Direction;
 import ru.tesei7.textEditor.editor.frame.SyntaxScrollEvent;
-import ru.tesei7.textEditor.editor.frame.SyntaxScrollObserverable;
+import ru.tesei7.textEditor.editor.frame.SyntaxScrollObservable;
 
-public class ScrollBarListener extends SyntaxScrollObserverable implements AdjustmentListener {
+public class ScrollBarListener extends SyntaxScrollObservable implements AdjustmentListener {
 
 	Direction direction;
-	private SyntaxScrollObserverable scrollObserverable;
+	private SyntaxScrollObservable scrollObservable;
 
-	public ScrollBarListener(SyntaxScrollObserverable scrollObserverable, Direction direction) {
-		this.scrollObserverable = scrollObserverable;
+	public ScrollBarListener(SyntaxScrollObservable scrollObservable, Direction direction) {
+		this.scrollObservable = scrollObservable;
 		this.direction = direction;
 	}
 
 	@Override
 	public void adjustmentValueChanged(AdjustmentEvent e) {
-		scrollObserverable.notifyListeners(new SyntaxScrollEvent(direction, e.getValue()));
+		scrollObservable.notifyListeners(new SyntaxScrollEvent(direction, e.getValue()));
 	}
 
 }
