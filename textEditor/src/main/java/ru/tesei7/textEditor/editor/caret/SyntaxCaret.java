@@ -21,10 +21,6 @@ public class SyntaxCaret implements SyntaxCaretListener {
 		this.fontProperties = fontProperties;
 	}
 
-	public void setDocument(SyntaxDocument document) {
-		this.document = document;
-	}
-
 	@Override
 	public void onCaretChanged(SyntaxCaretEvent e) {
 		if (e.getType() == null) {

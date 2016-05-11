@@ -51,6 +51,12 @@ public class SyntaxTextEditorFrameTest {
 		syntaxTextEditorFrame.onScrollChanged(scrollEvent);
 		verify(document).setFirstVisibleRow(12);
 
+		when(scrollEvent.getDirection()).thenReturn(Direction.VERTICAL_ADD);
+		when(scrollEvent.getValue()).thenReturn(12);
+		when(document.getFirstVisibleRow()).thenReturn(21);
+		syntaxTextEditorFrame.onScrollChanged(scrollEvent);
+		verify(document).setFirstVisibleRow(33);
+
 		when(scrollEvent.getDirection()).thenReturn(Direction.HORIZONTAL);
 		syntaxTextEditorFrame.onScrollChanged(scrollEvent);
 		verify(document).setFirstVisibleRow(12);

@@ -20,10 +20,6 @@ public class CaretPainter {
 		this.bracketPositionService = new BracketService(document);
 	}
 
-	public void setDocument(SyntaxDocument document) {
-		this.document = document;
-	}
-
 	public void paintCaret(Graphics g, boolean caretVisible) {
 		if (!caretVisible) {
 			return;

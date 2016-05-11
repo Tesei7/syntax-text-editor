@@ -18,6 +18,10 @@ public class FrameObservable {
         listeners.remove(listener);
     }
 
+    public void removeAllListeners() {
+        listeners.clear();
+    }
+
     public void notifyListeners(FrameEvent e) {
         listeners.stream().forEach(l -> l.onFrameChanged(e));
     }

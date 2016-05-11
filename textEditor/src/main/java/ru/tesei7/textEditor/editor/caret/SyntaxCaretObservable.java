@@ -15,6 +15,10 @@ public class SyntaxCaretObservable {
 		listeners.remove(listener);
 	}
 
+	public void removeAllListeners() {
+		listeners.clear();
+	}
+
 	public void notifyListeners(SyntaxCaretEvent e) {
 		listeners.stream().forEach(l -> l.onCaretChanged(e));
 	}

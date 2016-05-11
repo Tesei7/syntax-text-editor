@@ -22,6 +22,12 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
+import ru.tesei7.textEditor.editor.frame.Direction;
+import ru.tesei7.textEditor.editor.frame.SyntaxScrollEvent;
+import ru.tesei7.textEditor.editor.frame.SyntaxScrollObservable;
+import ru.tesei7.textEditor.editor.scroll.FrameEvent;
+import ru.tesei7.textEditor.editor.scroll.FrameEventType;
+import ru.tesei7.textEditor.editor.scroll.FrameObservable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntaxMouseListenerTest {
@@ -29,8 +35,10 @@ public class SyntaxMouseListenerTest {
 	private SyntaxMouseListener syntaxMouseListener;
 	@Mock
 	private SyntaxCaretObservable caretObservable;
+    @Mock
+    private FrameObservable frameObservable;
 	@Mock
-	private SyntaxDocument document;
+	private SyntaxScrollObservable scrollObservable;
 	@Mock
 	private MouseWheelEvent e;
 	@Mock
@@ -39,12 +47,22 @@ public class SyntaxMouseListenerTest {
 	@Test
 	public void testMouseWheelMoved() throws Exception {
 		when(e.getWheelRotation()).thenReturn(2);
-		when(document.getFirstVisibleRow()).thenReturn(12);
 		syntaxMouseListener.mouseWheelMoved(e);
-		verify(document).setFirstVisibleRow(12 + SyntaxTextEditor.MOUSE_WHEEL_SCROLL_LINES * 2);
+		verify(scrollObservable).notifyListeners(
+                argThat(isScrollEvent(Direction.VERTICAL_ADD, SyntaxTextEditor.MOUSE_WHEEL_SCROLL_LINES * 2)));
+        verify(frameObservable).notifyListeners(
+                argThat(isFrameEvent(FrameEventType.VERTICAL_ADD, SyntaxTextEditor.MOUSE_WHEEL_SCROLL_LINES * 2)));
 	}
 
-	@Test
+    private Matcher<FrameEvent> isFrameEvent(FrameEventType type, int value) {
+        return allOf(hasProperty("type", equalTo(type)), hasProperty("value", equalTo(value)));
+    }
+
+    private Matcher<SyntaxScrollEvent> isScrollEvent(Direction direction, int value) {
+        return allOf(hasProperty("direction", equalTo(direction)), hasProperty("value", equalTo(value)));
+    }
+
+    @Test
 	public void testMousePressed() throws Exception {
 		when(me.isShiftDown()).thenReturn(true);
 		when(me.getX()).thenReturn(1);

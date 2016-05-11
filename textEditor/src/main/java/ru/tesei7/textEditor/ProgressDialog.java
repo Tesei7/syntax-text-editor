@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.function.BooleanSupplier;
 
 import javax.swing.*;
 
@@ -11,10 +12,12 @@ public class ProgressDialog extends JDialog {
     private static final long serialVersionUID = -2001379600243197970L;
     private final String message;
     private final boolean canCancel;
-    private final Runnable task;
+    private final BooleanSupplier task;
     private SwingWorker<Void, Void> worker;
 
-    public ProgressDialog(JFrame parent, String title, String message, boolean canCancel, Runnable task) {
+    private boolean result;
+
+    public ProgressDialog(JFrame parent, String title, String message, boolean canCancel, BooleanSupplier task) {
         super(parent, title, true);
         this.message = message;
         this.canCancel = canCancel;
@@ -30,7 +33,7 @@ public class ProgressDialog extends JDialog {
         worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                task.run();
+                result = task.getAsBoolean();
                 return null;
             }
 
@@ -92,5 +95,9 @@ public class ProgressDialog extends JDialog {
 
     private void cancelTask() {
         worker.cancel(true);
+    }
+
+    public boolean getResult(){
+        return result;
     }
 }

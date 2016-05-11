@@ -19,6 +19,10 @@ public class DimensionsObservable {
 		listeners.remove(listener);
 	}
 
+	public void removeAllListeners() {
+		listeners.clear();
+	}
+
 	public void notifyListeners(DimensionsEvent e) {
 		listeners.stream().forEach(l -> l.onDimensionsChanged(e));
 	}

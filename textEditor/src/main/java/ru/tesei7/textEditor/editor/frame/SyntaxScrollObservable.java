@@ -18,6 +18,10 @@ public class SyntaxScrollObservable {
         listeners.remove(listener);
     }
 
+    public void removeAllListeners() {
+        listeners.clear();
+    }
+
     public void notifyListeners(SyntaxScrollEvent e) {
         listeners.stream().forEach(l -> l.onScrollChanged(e));
     }

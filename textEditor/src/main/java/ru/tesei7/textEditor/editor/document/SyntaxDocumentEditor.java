@@ -33,10 +33,6 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 		this.dimensionsObservable = dimensionsObservable;
 	}
 
-	public void setDocument(SyntaxDocument document) {
-		this.document = document;
-	}
-
 	@Override
 	public void onDocumentEdited(DocumentEditEvent e) {
 		switch (e.getType()) {

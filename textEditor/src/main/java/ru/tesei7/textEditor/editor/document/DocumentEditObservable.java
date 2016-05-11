@@ -14,6 +14,10 @@ public class DocumentEditObservable {
 		listeners.remove(listener);
 	}
 
+	public void removeAllListeners() {
+		listeners.clear();
+	}
+
 	public void notifyListeners(DocumentEditEvent e) {
 		listeners.stream().forEach(l -> l.onDocumentEdited(e));
 	}

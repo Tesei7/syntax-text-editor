@@ -9,25 +9,30 @@ import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
 import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
+import ru.tesei7.textEditor.editor.frame.Direction;
+import ru.tesei7.textEditor.editor.frame.SyntaxScrollEvent;
+import ru.tesei7.textEditor.editor.frame.SyntaxScrollObservable;
+import ru.tesei7.textEditor.editor.scroll.FrameEvent;
+import ru.tesei7.textEditor.editor.scroll.FrameEventType;
+import ru.tesei7.textEditor.editor.scroll.FrameObservable;
 
 public class SyntaxMouseListener extends MouseAdapter {
 
-	private SyntaxCaretObservable caretObservable;
-	private SyntaxDocument document;
+    private FrameObservable frameObservable;
+    private SyntaxCaretObservable caretObservable;
+	private SyntaxScrollObservable scrollObservable;
 
-	public SyntaxMouseListener(SyntaxDocument document, SyntaxCaretObservable caretObservable) {
-		this.document = document;
-		this.caretObservable = caretObservable;
-	}
-
-	public void setDocument(SyntaxDocument document) {
-		this.document = document;
+	public SyntaxMouseListener(SyntaxScrollObservable scrollObservable, FrameObservable frameObservable, SyntaxCaretObservable caretObservable) {
+		this.scrollObservable = scrollObservable;
+        this.frameObservable = frameObservable;
+        this.caretObservable = caretObservable;
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		int value = e.getWheelRotation() * SyntaxTextEditor.MOUSE_WHEEL_SCROLL_LINES;
-		document.setFirstVisibleRow(document.getFirstVisibleRow() + value);
+		scrollObservable.notifyListeners(new SyntaxScrollEvent(Direction.VERTICAL_ADD, value));
+        frameObservable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL_ADD, value));
 	}
 
 	@Override

@@ -115,7 +115,7 @@ public class SyntaxTextEditor extends JPanel {
 
     private CaretKeyListener caretKeyListener = new CaretKeyListener(caretObservable);
     private TextKeyListener textKeyListener = new TextKeyListener(documentEditObservable);
-    private SyntaxMouseListener mouseListener;
+    private SyntaxMouseListener mouseListener = new SyntaxMouseListener(scrollObservable, frameObservable, caretObservable);
     private ScrollBarListener hScrollListener = new ScrollBarListener(scrollObservable, Direction.HORIZONTAL);
     private ScrollBarListener vScrollListener = new ScrollBarListener(scrollObservable, Direction.VERTICAL);
 
@@ -125,8 +125,8 @@ public class SyntaxTextEditor extends JPanel {
     private ScrollBarsManager scrollBarsManager;
 
     private FontProperties fontProperties;
-    private SyntaxDocumentPainter documentPainter;
-    private CaretPainter caretPainter;
+    volatile private SyntaxDocumentPainter documentPainter;
+    volatile private CaretPainter caretPainter;
 
     private GridBagLayout layout;
     private SyntaxTextPanel textPanel;
@@ -159,31 +159,25 @@ public class SyntaxTextEditor extends JPanel {
         this.scrollBarsManager = new ScrollBarsManager(document, hBar, vBar);
         this.caretPainter = new CaretPainter(document);
         this.documentPainter = new SyntaxDocumentPainter(document, fontProperties);
-        this.mouseListener = new SyntaxMouseListener(document, caretObservable);
 
+        caretObservable.removeAllListeners();
         caretObservable.addListener(caret);
         caretObservable.addListener(frame);
         caretObservable.addListener(textPanel);
 
+        documentEditObservable.removeAllListeners();
         documentEditObservable.addListener(syntaxDocumentEditor);
         documentEditObservable.addListener(textPanel);
 
+        scrollObservable.removeAllListeners();
         scrollObservable.addListener(frame);
         scrollObservable.addListener(textPanel);
 
+        dimensionsObservable.removeAllListeners();
         dimensionsObservable.addListener(scrollBarsManager);
+        frameObservable.removeAllListeners();
         frameObservable.addListener(scrollBarsManager);
         frameObservable.addListener(textPanel);
-    }
-
-    protected void rewireDocument() {
-        syntaxDocumentEditor.setDocument(document);
-        caret.setDocument(document);
-        frame.setDocument(document);
-        scrollBarsManager.setDocument(document);
-        caretPainter.setDocument(document);
-        documentPainter.setDocument(document);
-        mouseListener.setDocument(document);
     }
 
     protected void createComponent() {
@@ -249,8 +243,8 @@ public class SyntaxTextEditor extends JPanel {
      *
      * @param text text to show in editor
      */
-    public void setText(String text) {
-        this.setText(text, Language.PLAIN_TEXT);
+    public boolean setText(String text) {
+        return setText(text, Language.PLAIN_TEXT);
     }
 
     /**
@@ -258,25 +252,33 @@ public class SyntaxTextEditor extends JPanel {
      *
      * @param text     text to show
      * @param language syntax
+     * @return {@code true} if text was set, {@code false} if operation was cancelled
      */
-    public void setText(String text, Language language) {
+    public boolean setText(String text, Language language) {
         isReady = false;
         documentMemento = new SyntaxDocumentMemento(document);
+        boolean wasInterrupted = false;
         try {
             document = new SyntaxDocument(frameObservable, dirtyObservable);
             document.setLanguage(language);
             document.setText(text);
-            rewireDocument();
+            wireListeners();
+            //update title
+            document.setDirty(true);
+            document.setDirty(false);
         } catch (InterruptedException e) {
             document = documentMemento.getState();
+            wasInterrupted = true;
         } finally {
             documentMemento = null;
             isReady = true;
 
+            //update frame
             dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
             caretObservable.notifyListeners(new SyntaxCaretEvent());
             textPanel.repaint();
         }
+        return !wasInterrupted;
     }
 
 
@@ -302,7 +304,7 @@ public class SyntaxTextEditor extends JPanel {
         return document.getLanguage();
     }
 
-    public void setLanguage(Language language) {
+    public boolean setLanguage(Language language) {
         isReady = false;
         try {
             document.setLanguage(language);
@@ -311,6 +313,8 @@ public class SyntaxTextEditor extends JPanel {
         } finally {
             isReady = true;
         }
+        //TODO cancellable action
+        return true;
     }
 
     // Size

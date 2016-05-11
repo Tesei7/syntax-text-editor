@@ -25,10 +25,6 @@ public class SyntaxDocumentPainter {
 		this.linePainter = new LinePainter();
 	}
 
-	public void setDocument(SyntaxDocument document) {
-		this.document = document;
-	}
-
 	public void paint(Graphics g, Language language) {
 		List<Line> lines = document.getVisibleLines();
 

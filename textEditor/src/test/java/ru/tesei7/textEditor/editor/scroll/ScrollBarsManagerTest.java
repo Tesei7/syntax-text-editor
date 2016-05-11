@@ -61,6 +61,11 @@ public class ScrollBarsManagerTest {
 		scrollBarsManager.onFrameChanged(new FrameEvent(FrameEventType.VERTICAL, 42));
 		verify(scrollBarsManager).setBarValue(vBar, 42);
 
+        when(vBar.getValue()).thenReturn(10);
+        doNothing().when(scrollBarsManager).setBarValue(vBar, 52);
+		scrollBarsManager.onFrameChanged(new FrameEvent(FrameEventType.VERTICAL_ADD, 42));
+		verify(scrollBarsManager).setBarValue(vBar, 52);
+
 		doNothing().when(scrollBarsManager).setBarValue(hBar, 43);
 		scrollBarsManager.onFrameChanged(new FrameEvent(FrameEventType.HORIZONTAL, 43));
 		verify(scrollBarsManager).setBarValue(hBar, 43);
