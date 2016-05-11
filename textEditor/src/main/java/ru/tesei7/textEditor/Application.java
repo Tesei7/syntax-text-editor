@@ -21,7 +21,7 @@ import javax.swing.KeyStroke;
 import ru.tesei7.textEditor.editor.Language;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 
-public class Application {
+class Application {
 	static final String TITLE = "Syntax Text Editor";
 
 	private SyntaxTextEditor textArea;
@@ -33,7 +33,7 @@ public class Application {
 	private JRadioButtonMenuItem javaMenuItem;
 	private JRadioButtonMenuItem jsMenuItem;
 
-	public void createAndShowGUI() {
+	void createAndShowGUI() {
 		frame = new JFrame(TITLE + " - New Document");
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
@@ -64,7 +64,7 @@ public class Application {
 		frame.addComponentListener(new ResizeListener(textArea));
 	}
 
-	public Container createContentPane() {
+	private Container createContentPane() {
 		JPanel contentPane = new JPanel(new BorderLayout());
 		contentPane.setOpaque(true);
 		textArea = new SyntaxTextEditor();
@@ -73,7 +73,7 @@ public class Application {
 		return contentPane;
 	}
 
-	public JMenuBar createMenuBar() {
+	private JMenuBar createMenuBar() {
 		actionListener = new ApplicationActionListener(this);
 		JMenuBar menuBar = new JMenuBar();
 		createFileMenu(menuBar);

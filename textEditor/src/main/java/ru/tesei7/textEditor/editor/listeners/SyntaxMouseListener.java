@@ -8,7 +8,6 @@ import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEvent;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretEventType;
 import ru.tesei7.textEditor.editor.caret.SyntaxCaretObservable;
-import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.frame.Direction;
 import ru.tesei7.textEditor.editor.frame.SyntaxScrollEvent;
 import ru.tesei7.textEditor.editor.frame.SyntaxScrollObservable;

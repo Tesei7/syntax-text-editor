@@ -1,6 +1,5 @@
 package ru.tesei7.textEditor;
 
-import java.awt.Component;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 

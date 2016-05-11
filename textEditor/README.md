@@ -11,12 +11,12 @@ Editor loads and saves file in UTF-8 encoding and uses `\n` as new line characte
 * Placing caret using mouse;
 * Scrolling using mouse wheel and scroll bars;
 * Test selection using shift key and mouse;
-* Copy and paste actions with hot keys: Ctrl+C to copy and Ctrl+V or Shift+Ins to paste;
+* Copy and paste actions with hot keys: Ctrl+C to copy, Ctrl+X to copy and remove, Ctrl+V or Shift+Ins to paste;
 * Java and JavaScript syntax highlighting;
 * Big text files support;
 
 ## View modes
-Syntax Text editor has too view modes: default and fixed width. In default view mode horizontal scroll bar resizes to fit longest line in document. In fixed width mode editor by default shows only first 256 columns of text. This value could be changed using editor component API.
+Syntax Text editor has two view modes: default and fixed width. In default view mode horizontal scroll bar resizes to fit longest line in document. In fixed width mode editor by default shows only first 256 columns of text. This value could be changed using editor component API.
 
 Default view mode is how text editors usually work. Fixed width mode is useful when big file (dozens of MBs) is edited, because in this mode total width of document is not recalculated.
 
@@ -28,7 +28,7 @@ To compile, run all unit tests, and create the jar, change directory to Syntax T
 
 To run Syntax Text Editor run
 
-	java -jar target/syntaxTextEditor-1.0.0-jar-with-dependencies.jar	
+	java -jar target/syntaxTextEditor-<version>-jar-with-dependencies.jar
 	
 ## Syntax highlighting
 Syntax Text Editor supports Java and JavaScript syntax highlighting, you also can disable highlighting using "Plain text" option. 

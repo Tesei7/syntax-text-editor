@@ -14,12 +14,12 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxTextEditorViewMode;
 import ru.tesei7.textEditor.progressDialog.ProgressDialog;
 import ru.tesei7.textEditor.progressDialog.ProgressDialogBuilder;
 
-public class ApplicationActionListener implements ActionListener {
+class ApplicationActionListener implements ActionListener {
 
     private Application app;
     private SaveLoadFileService saveLoadFileService;
 
-    public ApplicationActionListener(Application application) {
+    ApplicationActionListener(Application application) {
         this.app = application;
         saveLoadFileService = new SaveLoadFileService();
     }

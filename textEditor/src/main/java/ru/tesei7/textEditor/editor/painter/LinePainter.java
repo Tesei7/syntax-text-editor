@@ -40,19 +40,19 @@ public class LinePainter {
 		List<StyledText> styledText = getStyledText(line, line.getTokens());
 		int x = 0;
 		for (StyledText st : styledText) {
-			g.setFont(st.font);
-			g.setColor(st.color);
+			g.setFont(st.getFont());
+			g.setColor(st.getColor());
 
 			int offset, length;
-			if (st.offset >= firstVisibleCol) {
+			if (st.getOffset() >= firstVisibleCol) {
 				offset = 0;
-				length = st.text.length;
+				length = st.getText().length;
 			} else {
-				offset = Math.min(st.text.length, firstVisibleCol - st.offset);
-				length = Math.max(0, st.text.length - (firstVisibleCol - st.offset));
+				offset = Math.min(st.getText().length, firstVisibleCol - st.getOffset());
+				length = Math.max(0, st.getText().length - (firstVisibleCol - st.getOffset()));
 			}
 
-			g.drawChars(st.text, offset, length, fp.getCharWidth() * x, y);
+			g.drawChars(st.getText(), offset, length, fp.getCharWidth() * x, y);
 			x += length;
 		}
 	}

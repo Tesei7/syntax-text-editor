@@ -83,17 +83,11 @@ public class TextSelection {
 	}
 
 	public boolean isReversedLines() {
-		if (notSelected()) {
-			return false;
-		}
-		return startLine > endLine;
+		return !notSelected() && startLine > endLine;
 	}
 
 	public boolean isReversedOffset(Line l) {
-		if (notSelected()) {
-			return false;
-		}
-		return isReversedLines() || (startLine.equals(endLine) && getStartOffsetToPaint(l) > getEndOffsetToPaint(l));
+		return !notSelected() && (isReversedLines() || (startLine.equals(endLine) && getStartOffsetToPaint(l) > getEndOffsetToPaint(l)));
 	}
 
 	boolean isReversed() {

@@ -118,10 +118,10 @@ public class SyntaxTextEditor extends JPanel {
     private ScrollBarListener hScrollListener = new ScrollBarListener(scrollObservable, Direction.HORIZONTAL);
     private ScrollBarListener vScrollListener = new ScrollBarListener(scrollObservable, Direction.VERTICAL);
 
-    private SyntaxDocumentEditor syntaxDocumentEditor;
-    private SyntaxCaret caret;
-    private SyntaxTextEditorFrame frame;
-    private ScrollBarsManager scrollBarsManager;
+    protected SyntaxDocumentEditor syntaxDocumentEditor;
+    protected SyntaxCaret caret;
+    protected SyntaxTextEditorFrame frame;
+    protected ScrollBarsManager scrollBarsManager;
 
     private FontProperties fontProperties;
     volatile private SyntaxDocumentPainter documentPainter;

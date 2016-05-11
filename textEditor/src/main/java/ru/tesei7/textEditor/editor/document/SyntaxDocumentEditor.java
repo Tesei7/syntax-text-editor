@@ -17,7 +17,6 @@ import ru.tesei7.textEditor.editor.document.model.SyntaxDocument;
 import ru.tesei7.textEditor.editor.scroll.DimensionType;
 import ru.tesei7.textEditor.editor.scroll.DimensionsEvent;
 import ru.tesei7.textEditor.editor.scroll.DimensionsObservable;
-import ru.tesei7.textEditor.editor.scroll.FrameObservable;
 
 public class SyntaxDocumentEditor implements DocumentEditListener {
 

@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.Font;
 
 public class StyledText {
-	char[] text;
-	int offset;
-	Color color;
-	Font font;
+	private char[] text;
+	private int offset;
+	private Color color;
+	private Font font;
 
 	public StyledText(char[] text, int offset, Font font, Color color) {
 		this.text = text;
