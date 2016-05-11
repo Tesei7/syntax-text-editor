@@ -21,8 +21,8 @@ import ru.tesei7.textEditor.editor.scroll.DimensionsObservable;
 public class SyntaxDocumentEditor implements DocumentEditListener {
 
 	private SyntaxDocument document;
-	SyntaxCaretObservable caretObservable;
-	DimensionsObservable dimensionsObservable;
+	private SyntaxCaretObservable caretObservable;
+	private DimensionsObservable dimensionsObservable;
 
 	public SyntaxDocumentEditor(SyntaxDocument document, SyntaxCaretObservable syntaxCaretObservable,
 			DimensionsObservable dimensionsObservable) {

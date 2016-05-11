@@ -273,6 +273,8 @@ public class SyntaxTextEditor extends JPanel {
 
             //update frame
             dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
+            frameObservable.notifyListeners(new FrameEvent(FrameEventType.HORIZONTAL, 0));
+            frameObservable.notifyListeners(new FrameEvent(FrameEventType.VERTICAL, 0));
             caretObservable.notifyListeners(new SyntaxCaretEvent());
             textPanel.repaint();
         }
@@ -453,10 +455,6 @@ public class SyntaxTextEditor extends JPanel {
 
     SyntaxDocumentPainter getDocumentPainter() {
         return documentPainter;
-    }
-
-    SyntaxDocument getDocument() {
-        return document;
     }
 
 }

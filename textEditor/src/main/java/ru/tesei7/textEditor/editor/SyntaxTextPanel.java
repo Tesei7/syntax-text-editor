@@ -82,7 +82,7 @@ class SyntaxTextPanel extends JPanel
     /**
      * Prevent caret from blinking while text editing
      */
-    void freezeCaret() {
+    private void freezeCaret() {
         caretVisible = true;
         skipNextBlink = true;
     }

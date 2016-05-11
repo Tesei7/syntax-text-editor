@@ -498,11 +498,11 @@ public class SyntaxDocument {
      *
      * @param tasks total number of tasks
      */
-    void startLongRunOperation(int tasks) {
+    private void startLongRunOperation(int tasks) {
         longRunProgressCalculator = new LongRunProgressCalculator(tasks);
     }
 
-    void updateLongRunOperation() {
+    private void updateLongRunOperation() {
         if (longRunProgressCalculator != null) {
             longRunProgressCalculator.doTask();
         }
