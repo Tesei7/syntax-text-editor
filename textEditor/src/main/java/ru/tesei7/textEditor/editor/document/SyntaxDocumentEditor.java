@@ -24,7 +24,6 @@ public class SyntaxDocumentEditor implements DocumentEditListener {
 	private SyntaxDocument document;
 	SyntaxCaretObservable caretObservable;
 	DimensionsObservable dimensionsObservable;
-	FrameObservable frameObservable;
 
 	public SyntaxDocumentEditor(SyntaxDocument document, SyntaxCaretObservable syntaxCaretObservable,
 			DimensionsObservable dimensionsObservable) {

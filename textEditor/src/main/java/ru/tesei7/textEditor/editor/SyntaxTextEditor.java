@@ -1,6 +1,5 @@
 package ru.tesei7.textEditor.editor;
 
-import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -80,13 +79,13 @@ public class SyntaxTextEditor extends JPanel {
      */
     private SyntaxDocument document;
     /**
-     * Memento to store and restore document
+     * Caretaker to store and restore state
      */
-    private SyntaxDocumentMemento documentMemento;
+    private SyntaxTextEditorCaretaker caretaker = new SyntaxTextEditorCaretaker();
     /**
      * Can paint document content flag
      */
-    volatile public boolean isReady = true;
+    volatile private boolean isReady = true;
 
     /**
      * Notify caret changes
@@ -256,7 +255,7 @@ public class SyntaxTextEditor extends JPanel {
      */
     public boolean setText(String text, Language language) {
         isReady = false;
-        documentMemento = new SyntaxDocumentMemento(document);
+        caretaker.setMemento(saveState());
         boolean wasInterrupted = false;
         try {
             document = new SyntaxDocument(frameObservable, dirtyObservable);
@@ -267,11 +266,9 @@ public class SyntaxTextEditor extends JPanel {
             document.setDirty(true);
             document.setDirty(false);
         } catch (InterruptedException e) {
-            document = documentMemento.getState();
-            wireListeners();
+            restoreState();
             wasInterrupted = true;
         } finally {
-            documentMemento = null;
             isReady = true;
 
             //update frame
@@ -280,6 +277,18 @@ public class SyntaxTextEditor extends JPanel {
             textPanel.repaint();
         }
         return !wasInterrupted;
+    }
+
+    private SyntaxDocumentMemento saveState() {
+        return new SyntaxDocumentMemento(document);
+    }
+
+    private void restoreState() {
+        SyntaxDocumentMemento memento = caretaker.getMemento();
+        if (memento != null) {
+            document = memento.getState();
+            wireListeners();
+        }
     }
 
 

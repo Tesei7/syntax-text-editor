@@ -23,7 +23,7 @@ import ru.tesei7.textEditor.editor.utils.Fonts;
  *
  * @author Ilya
  */
-public class SyntaxTextPanel extends JPanel
+class SyntaxTextPanel extends JPanel
         implements SyntaxCaretListener, DocumentEditListener, SyntaxScrollListener, FrameListener {
     private static final long serialVersionUID = -8378730572715369064L;
 
@@ -38,7 +38,7 @@ public class SyntaxTextPanel extends JPanel
      */
     private boolean skipNextBlink = false;
 
-    public SyntaxTextPanel(SyntaxTextEditor editor) {
+    SyntaxTextPanel(SyntaxTextEditor editor) {
         this.editor = editor;
 
         setBackground(Color.WHITE);
