@@ -11,6 +11,8 @@ import org.apache.commons.io.FileUtils;
 import ru.tesei7.textEditor.editor.Language;
 import ru.tesei7.textEditor.editor.SyntaxTextEditor;
 import ru.tesei7.textEditor.editor.document.model.SyntaxTextEditorViewMode;
+import ru.tesei7.textEditor.progressDialog.ProgressDialog;
+import ru.tesei7.textEditor.progressDialog.ProgressDialogBuilder;
 
 public class ApplicationActionListener implements ActionListener {
 
@@ -67,8 +69,9 @@ public class ApplicationActionListener implements ActionListener {
     }
 
     void changeSyntax(Language language) {
-        new ProgressDialog(app.getFrame(), "Changing syntax...",
-                "Changing syntax, please wait", false, () -> app.getTextArea().setLanguage(language));
+        ProgressDialog d = new ProgressDialogBuilder(app.getFrame(), "Changing syntax...",
+                "Changing syntax, please wait", () -> app.getTextArea().setLanguage(language)).canCancel().build();
+        d.showDialog();
     }
 
     void newFile() {
@@ -113,13 +116,13 @@ public class ApplicationActionListener implements ActionListener {
         app.setLoadFile(loadFile);
         if (loadFile != null) {
             Language language = getLanguage(loadFile.getExtension());
-            ProgressDialog d = new ProgressDialog(app.getFrame(), "Loading file...", "Loading file, please wait",
-                    true, () -> app.getTextArea().setText(loadFile.getData(), language));
-            // remove link to data, because it is not necessary to store it any more
-            loadFile.clearData();
-            if (d.getResult()) {
+            ProgressDialog d = new ProgressDialogBuilder(app.getFrame(), "Loading file...", "Loading file, please wait",
+                    () -> app.getTextArea().setText(loadFile.getData(), language)).canCancel().build();
+            if (d.showDialog()) {
                 app.selectSyntaxMenuItem(language);
             }
+            // remove link to data, because it is not necessary to store it any more
+            loadFile.clearData();
         }
     }
 

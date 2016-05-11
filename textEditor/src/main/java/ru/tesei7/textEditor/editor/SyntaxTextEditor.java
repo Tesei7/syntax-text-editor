@@ -268,6 +268,7 @@ public class SyntaxTextEditor extends JPanel {
             document.setDirty(false);
         } catch (InterruptedException e) {
             document = documentMemento.getState();
+            wireListeners();
             wasInterrupted = true;
         } finally {
             documentMemento = null;
