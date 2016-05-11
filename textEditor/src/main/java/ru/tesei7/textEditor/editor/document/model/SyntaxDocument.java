@@ -71,15 +71,22 @@ public class SyntaxDocument {
      */
     private FrameObservable frameObservable;
     /**
+     * Broadcaster for dirty state
+     */
+    private DirtyStateObservable dirtyObservable;
+    /**
      * Read tokens from line
      */
     private LexicalAnalyzer lexicalAnalyzer;
-
     /**
      * Dirty state flag
      */
     private boolean isDirty = false;
-    private DirtyStateObservable dirtyObservable;
+    /**
+     * Performs calculation of long run operations progress
+     */
+    private LongRunProgressCalculator longRunProgressCalculator;
+
 
     public SyntaxDocument(FrameObservable frameObservable, DirtyStateObservable dirtyObservable) {
         this.frameObservable = frameObservable;
@@ -394,14 +401,17 @@ public class SyntaxDocument {
         lines.clear();
         // -1 in split methods used to not omit \n at the end of file
         String[] split = text.split("\n", -1);
+        startLongRunOperation(split.length * 2);
         for (String aSplit : split) {
-            if (Thread.interrupted()){
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
             Line l = new Line();
             l.setText(aSplit.toCharArray());
             l.setOffset(0);
             lines.add(l);
+
+            updateLongRunOperation();
         }
         firstVisibleRow = 0;
         firstVisibleCol = 0;
@@ -411,16 +421,26 @@ public class SyntaxDocument {
         if (language != Language.PLAIN_TEXT) {
             try {
                 recalculateTokens(0, split.length);
-            } catch (RuntimeException e){
+            } catch (RuntimeException e) {
                 throw new InterruptedException();
             }
         }
+    }
+
+    /**
+     * Perform long run operation for recalculation all tokens
+     */
+    public void recalculateAllTokens() {
+        int size = getSize();
+        startLongRunOperation(size);
+        recalculateTokens(0, size);
     }
 
     public void recalculateTokens(int firstLineIndex, int lines) {
         if (getLanguage() == Language.PLAIN_TEXT) {
             return;
         }
+
         for (int i = firstLineIndex; i < firstLineIndex + lines; i++) {
             if (Thread.interrupted()) throw new RuntimeException("Thread is interrupted");
             // do not infinite loop
@@ -442,6 +462,8 @@ public class SyntaxDocument {
             if (newState != oldState && isLastRecalculatedLine) {
                 lines++;
             }
+
+            updateLongRunOperation();
         }
     }
 
@@ -468,4 +490,29 @@ public class SyntaxDocument {
         this.isDirty = isDirty;
         dirtyObservable.notifyListeners(new DirtyStateEvent(oldState, isDirty));
     }
+
+    // Long run
+
+    /**
+     * Start long operation with specified number of tasks
+     *
+     * @param tasks total number of tasks
+     */
+    void startLongRunOperation(int tasks) {
+        longRunProgressCalculator = new LongRunProgressCalculator(tasks);
+    }
+
+    void updateLongRunOperation() {
+        if (longRunProgressCalculator != null) {
+            longRunProgressCalculator.doTask();
+        }
+    }
+
+    /**
+     * @return long operation progress in percents
+     */
+    public int getProgress() {
+        return longRunProgressCalculator == null ? 0 : longRunProgressCalculator.getProgress();
+    }
+
 }

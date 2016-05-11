@@ -72,9 +72,10 @@ class ApplicationActionListener implements ActionListener {
         Language oldLanguage = app.getTextArea().getLanguage();
         ProgressDialogBuilder builder = new ProgressDialogBuilder(app.getFrame(), "Changing syntax...",
                 "Changing syntax, please wait", () -> app.getTextArea().setLanguage(language));
-        if (oldLanguage==Language.PLAIN_TEXT){
+        if (oldLanguage == Language.PLAIN_TEXT) {
             builder.canCancel();
         }
+        builder.showPercents(() -> app.getTextArea().getLongRunProgress());
         ProgressDialog d = builder.build();
         if (!d.showDialog()) {
             app.selectSyntaxMenuItem(oldLanguage);
@@ -124,7 +125,8 @@ class ApplicationActionListener implements ActionListener {
         if (loadFile != null) {
             Language language = getLanguage(loadFile.getExtension());
             ProgressDialog d = new ProgressDialogBuilder(app.getFrame(), "Loading file...", "Loading file, please wait",
-                    () -> app.getTextArea().setText(loadFile.getData(), language)).canCancel().build();
+                    () -> app.getTextArea().setText(loadFile.getData(), language)).canCancel()
+                    .showPercents(() -> app.getTextArea().getLongRunProgress()).build();
             if (d.showDialog()) {
                 app.selectSyntaxMenuItem(language);
             }

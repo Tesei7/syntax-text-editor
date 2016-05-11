@@ -291,6 +291,40 @@ public class SyntaxTextEditor extends JPanel {
         }
     }
 
+    public Language getLanguage() {
+        return document.getLanguage();
+    }
+
+    /**
+     * Set syntax to paint text. Can be interrupted only if old language is {@link Language#PLAIN_TEXT}
+     *
+     * @param language language
+     * @return {@code true} if text was set, {@code false} if operation was cancelled
+     */
+    public boolean setLanguage(Language language) {
+        isReady = false;
+        boolean wasInterrupted = false;
+        Language oldLanguage = document.getLanguage();
+        try {
+            document.setLanguage(language);
+            document.recalculateAllTokens();
+        } catch (RuntimeException e) {
+            document.setLanguage(oldLanguage);
+            wasInterrupted = true;
+        } finally {
+            isReady = true;
+            textPanel.repaint();
+        }
+        return !wasInterrupted;
+    }
+
+    /**
+     * Return progress of current running operation in percents
+     * @return percents
+     */
+    public int getLongRunProgress(){
+        return document.getProgress();
+    }
 
     /**
      * @return current editor view mode
@@ -308,33 +342,6 @@ public class SyntaxTextEditor extends JPanel {
         document.setViewMode(mode);
         dimensionsObservable.notifyListeners(new DimensionsEvent(DimensionType.X_AND_Y));
         caretObservable.notifyListeners(new SyntaxCaretEvent());
-    }
-
-    public Language getLanguage() {
-        return document.getLanguage();
-    }
-
-    /**
-     * Set syntax to paint text. Can be interrupted only if old language is {@link Language#PLAIN_TEXT}
-     *
-     * @param language language
-     * @return {@code true} if text was set, {@code false} if operation was cancelled
-     */
-    public boolean setLanguage(Language language) {
-        isReady = false;
-        boolean wasInterrupted = false;
-        Language oldLanguage = document.getLanguage();
-        try {
-            document.setLanguage(language);
-            document.recalculateTokens(0, document.getSize());
-        } catch (RuntimeException e) {
-            document.setLanguage(oldLanguage);
-            wasInterrupted = true;
-        } finally {
-            isReady = true;
-            textPanel.repaint();
-        }
-        return !wasInterrupted;
     }
 
     // Size

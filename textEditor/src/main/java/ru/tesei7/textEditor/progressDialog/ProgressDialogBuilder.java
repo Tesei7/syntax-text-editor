@@ -2,6 +2,7 @@ package ru.tesei7.textEditor.progressDialog;
 
 import javax.swing.*;
 import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
 
 /**
  * Builder for {@link ProgressDialog}.
@@ -13,6 +14,7 @@ public class ProgressDialogBuilder {
     private final String message;
     private final BooleanSupplier task;
     private boolean canCancel;
+    private IntSupplier percentLoader;
 
     public ProgressDialogBuilder(JFrame parent, String title, String message, BooleanSupplier task) {
         this.parent = parent;
@@ -24,6 +26,11 @@ public class ProgressDialogBuilder {
 
     public ProgressDialogBuilder canCancel() {
         canCancel = true;
+        return this;
+    }
+
+    public ProgressDialogBuilder showPercents(IntSupplier percentLoader) {
+        this.percentLoader = percentLoader;
         return this;
     }
 
@@ -49,5 +56,9 @@ public class ProgressDialogBuilder {
 
     boolean isCanCancel() {
         return canCancel;
+    }
+
+    public IntSupplier getPercentLoader() {
+        return percentLoader;
     }
 }

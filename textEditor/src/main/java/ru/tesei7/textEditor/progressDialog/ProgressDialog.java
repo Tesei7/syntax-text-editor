@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
 
 import javax.swing.*;
 
@@ -13,18 +14,28 @@ import javax.swing.*;
  */
 public class ProgressDialog extends JDialog {
     private static final long serialVersionUID = -2001379600243197970L;
+    /**
+     * Percents label refresh period in milliseconds
+     */
+    private static final int PERCENT_REFRESH_PERIOD = 200;
+
     private final String message;
     private final boolean canCancel;
     private final BooleanSupplier task;
+    private final IntSupplier percentLoader;
     private SwingWorker<Void, Void> worker;
+    private Timer percentTimer;
 
     private boolean result;
+    private JProgressBar progressBar;
 
     ProgressDialog(ProgressDialogBuilder builder) {
         super(builder.getParent(), builder.getTitle(), true);
         this.message = builder.getMessage();
         this.canCancel = builder.isCanCancel();
         this.task = builder.getTask();
+        this.percentLoader = builder.getPercentLoader();
+
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -46,8 +57,21 @@ public class ProgressDialog extends JDialog {
         };
 
         createUI();
+        percentTimer = new Timer(ProgressDialog.PERCENT_REFRESH_PERIOD, this::refreshPercentsLabel);
         pack();
         setLocationRelativeTo(builder.getParent());
+    }
+
+    private boolean isDeterminate() {
+        return percentLoader != null;
+    }
+
+    private void refreshPercentsLabel(ActionEvent actionEvent) {
+        if (isDeterminate()) {
+            int percents = percentLoader.getAsInt();
+            progressBar.setString(percents + "%");
+            progressBar.setValue(percents);
+        }
     }
 
 
@@ -56,7 +80,7 @@ public class ProgressDialog extends JDialog {
         GridBagLayout layout = new GridBagLayout();
         contentPane.setLayout(layout);
 
-        JLabel label = new JLabel(message);
+        JLabel messageLabel = new JLabel(message);
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(10, 10, 10, 10);
         c.gridx = 0;
@@ -64,10 +88,11 @@ public class ProgressDialog extends JDialog {
         c.weightx = 1.0;
         c.weighty = 1.0;
         c.anchor = GridBagConstraints.LINE_START;
-        contentPane.add(label, c);
+        contentPane.add(messageLabel, c);
 
-        JProgressBar progressBar = new JProgressBar(0, 100);
-        progressBar.setIndeterminate(true);
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setIndeterminate(!isDeterminate());
+        progressBar.setStringPainted(isDeterminate());
         progressBar.setPreferredSize(new Dimension(420, 20));
         c.insets = new Insets(0, 10, 0, 10);
         c.gridx = 0;
@@ -107,7 +132,9 @@ public class ProgressDialog extends JDialog {
      */
     public boolean showDialog() {
         worker.execute();
+        percentTimer.start();
         setVisible(true);
+        percentTimer.stop();
         return result;
     }
 }
