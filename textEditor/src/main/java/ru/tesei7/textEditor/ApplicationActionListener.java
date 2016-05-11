@@ -69,9 +69,16 @@ public class ApplicationActionListener implements ActionListener {
     }
 
     void changeSyntax(Language language) {
-        ProgressDialog d = new ProgressDialogBuilder(app.getFrame(), "Changing syntax...",
-                "Changing syntax, please wait", () -> app.getTextArea().setLanguage(language)).canCancel().build();
-        d.showDialog();
+        Language oldLanguage = app.getTextArea().getLanguage();
+        ProgressDialogBuilder builder = new ProgressDialogBuilder(app.getFrame(), "Changing syntax...",
+                "Changing syntax, please wait", () -> app.getTextArea().setLanguage(language));
+        if (oldLanguage==Language.PLAIN_TEXT){
+            builder.canCancel();
+        }
+        ProgressDialog d = builder.build();
+        if (!d.showDialog()) {
+            app.selectSyntaxMenuItem(oldLanguage);
+        }
     }
 
     void newFile() {

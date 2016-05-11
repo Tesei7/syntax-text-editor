@@ -314,17 +314,27 @@ public class SyntaxTextEditor extends JPanel {
         return document.getLanguage();
     }
 
+    /**
+     * Set syntax to paint text. Can be interrupted only if old language is {@link Language#PLAIN_TEXT}
+     *
+     * @param language language
+     * @return {@code true} if text was set, {@code false} if operation was cancelled
+     */
     public boolean setLanguage(Language language) {
         isReady = false;
+        boolean wasInterrupted = false;
+        Language oldLanguage = document.getLanguage();
         try {
             document.setLanguage(language);
             document.recalculateTokens(0, document.getSize());
-            textPanel.repaint();
+        } catch (RuntimeException e) {
+            document.setLanguage(oldLanguage);
+            wasInterrupted = true;
         } finally {
             isReady = true;
+            textPanel.repaint();
         }
-        //TODO cancellable action
-        return true;
+        return !wasInterrupted;
     }
 
     // Size

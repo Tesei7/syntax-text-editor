@@ -51,7 +51,6 @@ public class ProgressDialog extends JDialog {
     }
 
 
-
     private void createUI() {
         Container contentPane = getContentPane();
         GridBagLayout layout = new GridBagLayout();
@@ -96,14 +95,17 @@ public class ProgressDialog extends JDialog {
     }
 
     private void cancelTask() {
-        worker.cancel(true);
+        if (canCancel) {
+            worker.cancel(true);
+        }
     }
 
     /**
      * Start task and show dialog
+     *
      * @return task result. {@code true} if finished successfully, {@code false} - otherwise
      */
-    public boolean showDialog(){
+    public boolean showDialog() {
         worker.execute();
         setVisible(true);
         return result;
